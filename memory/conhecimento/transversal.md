@@ -30,7 +30,7 @@
 | RN-210 | Todo tratamento de dados pessoais deve ter base legal registrada | Cada tipo de dado pessoal (CNPJ fornecedor, dados de fiscal, contatos) deve ter base legal identificada (execução contratual, obrigação legal, etc.) |
 | RN-211 | Acesso a dados sensíveis deve ser logado | Login: `login_logs`. Documentos: `log_acesso_documentos`. Dados pessoais: auditoria via `historico_alteracoes`. Logs são imutáveis (append-only) |
 | RN-212 | Política de retenção de dados configurável por tenant | Cada prefeitura define por quanto tempo manter dados pessoais e logs. Padrão: 5 anos (compatível com prazos legais de guarda de documentos públicos) |
-| RN-213 | Dados pessoais devem ser anonimizáveis sob solicitação | O sistema deve permitir anonimizar dados pessoais de fornecedores e fiscais quando solicitado formalmente, mantendo integridade dos contratos |
+| RN-213 | Dados pessoais anonimizáveis por solicitação formal — com estratégia de dois planos para preservar imutabilidade do audit trail | Tabelas operacionais (fornecedores, fiscais, users inativos): anonimização via `LGPDService`. Tabelas de auditoria (historico_alteracoes, login_logs, log_acesso_documentos): preservadas conforme mandato legal de controle público (art. 4o, III da LGPD). Nova tabela `log_lgpd_solicitacoes` registra todas as solicitações. Ver especificação completa em `memory/regras/seguranca.md` seção LGPD (ADR-057) |
 
 ---
 

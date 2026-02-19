@@ -61,10 +61,10 @@ O módulo de Perfis de Usuário é essencial para posicionar o sistema como **se
 
 | ID | Regra | Detalhamento |
 |---|---|---|
-| RN-330 | Permissões temporárias possuem data de expiração (`expires_at`) | Após a data, permissão é revogada automaticamente por job diário |
+| RN-330 | Permissões temporárias possuem data de expiração (`expires_at`) verificada em tempo real | `hasPermission()` verifica `expires_at > now()` em toda chamada — não depende de job para ser efetivo. Job diário apenas faz limpeza do banco |
 | RN-331 | Admin pode designar substituto com acesso temporário | Permissão individual na tabela `user_permissions` com `expires_at` + `concedido_por` |
 | RN-332 | Expiração registrada em log de auditoria | Sistema registra revogação automática em `historico_alteracoes` |
-| RN-333 | Job diário verifica e revoga permissões expiradas | Command `permissoes:verificar-expiradas` integrado ao scheduler |
+| RN-333 | Job diário realiza limpeza de permissões expiradas (não é a defesa primária) | Command `permissoes:verificar-expiradas` remove do banco permissões com `expires_at < now()` e registra revogação em auditoria. A defesa primária é `hasPermission()` com verificação em tempo real |
 
 ### Módulo: Perfis de Usuário — Workflow de Aprovação (Módulo 7)
 

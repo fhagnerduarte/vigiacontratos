@@ -312,6 +312,7 @@
 | valor_anterior | text | Não | Valor antes da alteração (null em criação) |
 | valor_novo | text | Não | Valor após a alteração (null em exclusão) |
 | user_id | bigint | Sim | FK → users (quem alterou) |
+| role_nome | varchar(100) | Sim | Nome do perfil (role) do usuário no momento da ação (RN-340, RN-341). Snapshot imutável — não muda se o usuário mudar de perfil depois |
 | ip_address | varchar(45) | Não | IP do usuário no momento da alteração |
 | created_at | datetime | Sim | Automático (imutável — RN-037) |
 
@@ -321,6 +322,8 @@
 
 **Regras:**
 - Registros imutáveis — nunca editar ou deletar (RN-037)
+- Campo `role_nome` é um snapshot do perfil no momento da ação — nunca atualizar retroativamente (RN-341)
+- Toda inserção deve capturar `$user->role->nome` no momento do evento, não via FK (garante imutabilidade histórica)
 - Usado para auditoria, Tribunal de Contas, segurança jurídica
 
 #### Entidade: Alerta
@@ -520,6 +523,7 @@
 **Regras:**
 - 5 registros criados por aditivo solicitado (RN-335)
 - Registros são imutáveis após aprovação/reprovação (append-only para integridade)
+- Imutabilidade enforçada no nível de aplicação: WorkflowAprovacao não expõe métodos de update após status != pendente. Proteção adicional via DB trigger descrita em `memory/regras/auditoria-performance.md`
 - Avanço sequencial obrigatório (RN-337)
 
 #### Entidade: LoginLog (Nova — Segurança Expandida)
@@ -528,6 +532,7 @@
 |---|---|---|---|
 | id | bigint (auto) | Sim | PK |
 | user_id | bigint | Sim | FK → users |
+| tenant_id | bigint | Sim | ID do tenant (referência ao banco master — RN-223, ADR-048). Armazenado como valor inteiro no banco tenant para correlação com o banco master |
 | ip_address | varchar(45) | Sim | IP do usuário (IPv4 ou IPv6) |
 | user_agent | varchar(500) | Não | User-Agent do navegador |
 | success | boolean | Sim | Se o login foi bem-sucedido |
@@ -539,6 +544,8 @@
 **Regras:**
 - Tabela append-only — nunca editar ou deletar (ADR-048, RN-223)
 - Sem `updated_at` (registros imutáveis)
+- Campo `tenant_id` é armazenado como valor (não FK real) porque o banco tenant não tem FK para o banco master — padrão idêntico a TenantUser.user_id (ADR-042)
+- Necessário para relatórios de auditoria cross-sessão e para correlação em investigações de segurança
 - Registra toda tentativa de login (sucesso e falha)
 - Usado para relatório de logs exportável (RN-222) e controle de lockout (ADR-046)
 

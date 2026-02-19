@@ -31,9 +31,55 @@ O sistema opera com RBAC (Role-Based Access Control) via tabela `roles` dinâmic
 - Tabela `user_secretarias` — escopo de acesso por secretaria (ADR-054)
 - Middleware `EnsureUserHasPermission` (substitui `EnsureUserIsAdmin` e `EnsureUserIsGestor`)
 - Policies para controle granular por entidade — verificam role + permission + secretaria
-- Helper: `$user->hasPermission('contrato.editar')` no Model User
+- Helper: `$user->hasPermission('contrato.editar')` no Model User — com verificação em tempo real de `expires_at`
+
+#### Helper `$user->hasPermission()` — Verificação em Tempo Real
+
+```php
+// Especificação do comportamento obrigatório no Model User
+public function hasPermission(string $permission): bool
+{
+    // 1. Verificar via role (permissões do perfil — sem expiração)
+    if ($this->role->permissions()->where('nome', $permission)->exists()) {
+        return true;
+    }
+
+    // 2. Verificar permissão individual — com verificação de expiração em tempo real
+    return $this->permissions()
+        ->where('nome', $permission)
+        ->where(function ($query) {
+            $query->whereNull('user_permissions.expires_at')           // permanente
+                  ->orWhere('user_permissions.expires_at', '>', now()); // ainda válida
+        })
+        ->exists();
+}
+```
+
+**Regra:** A verificação de `expires_at` DEVE acontecer em tempo real no `hasPermission()` — não confiar apenas no job diário `permissoes:verificar-expiradas`.
+
+**Justificativa:** O job diário remove permissões do banco (limpeza), mas se uma permissão expirar às 14h e o job só rodar à meia-noite, o usuário teria acesso indevido por até 10 horas. A verificação em tempo real no método é a linha primária de defesa.
+
+**Job diário `permissoes:verificar-expiradas` (RN-333):** mantido como limpeza/housekeeping do banco — remove registros expirados e gera log de auditoria. Não é a linha de defesa primária.
+
+**Cache:** Se performance for impactada em sistemas de alto volume, cachear `hasPermission()` com TTL de 5 minutos (Redis, chave `perm:{user_id}:{permission}`) — mas sempre invalidar cache quando `user_permissions` for modificada.
 - Eloquent Global Scope por secretaria para queries filtradas automaticamente (RN-326)
 - Workflow de aprovação: tabela `workflow_aprovacoes` com 5 etapas sequenciais (ADR-052)
+
+#### Limites do Administrador Geral sobre Tabelas Imutáveis
+
+O perfil `administrador_geral` tem acesso total ao sistema — mas este acesso não se estende à modificação direta de tabelas imutáveis:
+
+| Tabela Imutável | O Admin PODE | O Admin NÃO PODE |
+|---|---|---|
+| `historico_alteracoes` | Visualizar, exportar, filtrar | Editar, deletar qualquer registro |
+| `log_acesso_documentos` | Visualizar, exportar | Editar, deletar |
+| `login_logs` | Visualizar, exportar, correlacionar | Editar, deletar |
+| `log_notificacoes` | Visualizar | Editar, deletar |
+| `workflow_aprovacoes` | Visualizar histórico de aprovações | Alterar etapas já aprovadas/reprovadas |
+
+**Implementação:** Policies para estas tabelas devem retornar `false` para as ações `update` e `delete` independentemente do perfil do usuário — inclusive `administrador_geral`.
+
+**Proteção adicional:** Ver `memory/regras/auditoria-performance.md` para especificação de triggers MySQL que reforçam esta regra no nível de banco de dados.
 
 ### Segurança de Autenticação e Sessão (RBAC)
 
