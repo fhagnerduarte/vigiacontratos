@@ -78,62 +78,6 @@
 
 ---
 
-## Decisões Recentes
-
-| Data | Decisão | Contexto |
-|---|---|---|
-| 2026-02-18 | Stack: Laravel 12 + MySQL 8 + Redis + Docker/Sail | Escolha inicial da stack do projeto |
-| 2026-02-18 | Template UI: WowDash (Bootstrap 5) | Template admin com dashboard, componentes e dark mode |
-| 2026-02-18 | ~~Perfis: Admin, Gestor, Consulta~~ **→ Substituído por RBAC (ADR-050)** | 8 perfis dinâmicos via tabela roles + permissões granulares |
-| 2026-02-18 | Alertas com prazos configuráveis | Admin define dias de antecedência para alertas |
-| 2026-02-18 | Cadastro inteligente de contratos (wizard 6 etapas) | Formulário multi-etapa com validação por passo |
-| 2026-02-18 | Fiscal como entidade com histórico | Rastreabilidade de trocas de fiscal |
-| 2026-02-18 | Audit trail completo (historico_alteracoes) | Toda alteração logada com campo, valor, usuário, IP |
-| 2026-02-18 | Score de risco automático | Classificação baixo/médio/alto por critérios objetivos |
-| 2026-02-18 | Execução financeira como entidade | Acompanhamento de pagamentos e percentual executado |
-| 2026-02-18 | Motor de monitoramento via Scheduled Command (cron diário) | Verificação automática de vencimentos de contratos |
-| 2026-02-18 | 6 prazos de alerta configuráveis (120, 90, 60, 30, 15, 7 dias) | Cobertura ampla para ação preventiva |
-| 2026-02-18 | Notificações assíncronas via Queue (Redis) | Envio de email e notificação interna sem bloquear sistema |
-| 2026-02-18 | Log de notificação como tabela (log_notificacoes) | Rastreabilidade de cada envio de alerta |
-| 2026-02-18 | Bloqueio preventivo de contrato vencido (modo IRREGULAR) | Impedir aditivo retroativo sem justificativa |
-| 2026-02-18 | Prioridade automática por proximidade (>30d/≤30d/≤7d) | Classificação de urgência sem intervenção manual |
-| 2026-02-18 | Dados do dashboard pré-agregados em tabela dedicada (dashboard_agregados) | Performance <2s, cron noturno |
-| 2026-02-18 | Cache Redis para dashboard (TTL 24h) | Reduzir carga no banco |
-| 2026-02-18 | Score de gestão contratual (0-100) | Diferencial competitivo |
-| 2026-02-18 | Painel separado para contratos essenciais | Destaque para serviços vitais |
-| 2026-02-18 | DashboardService para lógica de agregação | Separação de responsabilidades |
-| 2026-02-18 | Agregação noturna via AgregarDashboardCommand | Processamento fora do horário comercial |
-| 2026-02-18 | TipoAditivo expandido para 7 valores (+ reequilibrio, alteracao_clausula, misto) | Cobertura completa dos tipos reais de aditamento municipal |
-| 2026-02-18 | Campos valor_acrescimo e valor_supressao substituem valor_aditivo | Clareza para tipos mistos e cálculo de percentual acumulado |
-| 2026-02-18 | Limites legais configuráveis em tabela configuracoes_limite_aditivo | Padrão 25% (serviços) e 50% (obras) — configurável pelo admin |
-| 2026-02-18 | Critérios de risco de aditivos integrados ao score_risco (não score separado) | RN-106, RN-107, RN-108 adicionados ao cálculo existente |
-| 2026-02-18 | Lógica de reequilíbrio em AditivoService.processarReequilibrio() | Sem novo Service — evita overengineering |
-| 2026-02-18 | historico_contrato descartada — usar historico_alteracoes existente | Consistente com ADR-009; sem retrabalho |
-| 2026-02-18 | TipoDocumentoContratual expandido de 7 para 12 valores | Cobertura completa dos tipos reais de documentação contratual municipal |
-| 2026-02-18 | Detalhamento do Módulo 5 — Central de Documentos | Pasta digital por contrato, versionamento, log de acesso, completude documental, validações automáticas, busca inteligente, dashboard, relatório TCE |
-| 2026-02-18 | Limite de upload aumentado de 10MB para 20MB | Documentos contratuais completos frequentemente ultrapassam 10MB |
-| 2026-02-18 | OCR e busca full-text classificados como Fase 2 | Não implementar em V1 — reduz complexidade do stack inicial |
-| 2026-02-18 | numero_sequencial gerado via MAX+1 por contrato na criação | Simples, sem dependência de sequence de banco |
-| 2026-02-18 | Score de risco expandido com 5 categorias — campo único no Contrato | Vencimento, financeiro, documental, jurídico, operacional — integrado ao score_risco existente |
-| 2026-02-18 | Painel de Risco como página dedicada `/painel-risco` + resumo no Dashboard | Grande diferencial estratégico merece visibilidade própria |
-| 2026-02-18 | PainelRiscoService dedicado (separado do RiscoService) | RiscoService calcula score unitário, PainelRiscoService agrega indicadores (SRP) |
-| 2026-02-18 | WhatsApp institucional como Fase 2 (não V1) | Similar ao OCR — reduz complexidade sem valor imediato |
-| 2026-02-18 | Detalhamento do Módulo 6 — Painel de Risco Administrativo | Score expandido, dashboard dedicado, mapa por secretaria, relatório TCE de risco, alertas inteligentes |
-| 2026-02-18 | **SaaS multi-tenant com banco isolado por prefeitura (ADR-042)** | Isolamento total de dados — cada prefeitura tem banco MySQL próprio. Banco master para gestão de tenants |
-| 2026-02-18 | **Armazenamento S3-compatible: MinIO dev / AWS S3 prod (ADR-043)** | Nunca filesystem direto. Bucket/pasta isolada por tenant |
-| 2026-02-18 | **Segurança: Argon2id + MFA opcional + lockout + logs de login (ADR-044 a ADR-049)** | Argon2id para senhas, TOTP para admin/gestor, bloqueio após 5 tentativas, tabela login_logs, sessão com expiração 120min |
-| 2026-02-18 | **Hash de integridade SHA-256 para documentos (ADR-047, RN-220)** | Hash calculado no upload, armazenado em hash_integridade, verificável a qualquer momento |
-| 2026-02-18 | **LGPD: base legal, retenção, anonimização (RN-210 a RN-213)** | Registro de base legal por tratamento, política de retenção configurável por tenant, anonimização sob solicitação |
-| 2026-02-18 | **Capacidade por tenant: 5k-20k contratos, 50k+ docs, 100 users** | Requisitos de performance e escalabilidade definidos |
-| 2026-02-18 | **Requisitos não-funcionais: responsivo, <2s, 24/7** | Interface simples, responsiva, disponível 24/7, manual online (Fase 2) |
-| 2026-02-18 | **RBAC com tabela `roles` dinâmica e 8 perfis padrão (ADR-050, substitui ADR-004)** | Segregação de função, controle interno, LGPD. Admin pode criar perfis customizados |
-| 2026-02-18 | **Permissões granulares via tabela `permissions` (ADR-051)** | Formato `recurso.acao`: contrato.editar, aditivo.aprovar |
-| 2026-02-18 | **Workflow de aprovação 5 etapas para aditivos (ADR-052)** | Gestor → Secretário → Jurídico → Controladoria → Homologação |
-| 2026-02-18 | **Permissões temporárias com `expires_at` (ADR-053)** | Substituições durante férias, revogação automática por job diário |
-| 2026-02-18 | **Permissão por secretaria via `user_secretarias` (ADR-054)** | Secretário/Gestor/Fiscal acessam apenas contratos de secretarias vinculadas |
-
----
-
 ## Agentes
 
 | # | Agente | Arquivo |
@@ -145,11 +89,25 @@
 | 5 | Engenheiro Executor | `memory/agents/05-engenheiro-executor.md` |
 | 6 | Auditor Técnico | `memory/agents/06-auditor-tecnico.md` |
 
-## Bases Detalhadas
+## Bases Detalhadas (Índices)
 
-| Base | Arquivo |
-|------|---------|
-| Governança Técnica | `memory/banco-de-regras.md` |
-| Estado do Projeto | `memory/banco-de-memoria.md` |
-| Domínio de Negócio | `memory/banco-de-conhecimento.md` |
-| Tema Visual / UI | `memory/banco-de-tema.md` |
+| Base | Índice | Pasta com arquivos |
+|------|--------|--------------------|
+| Governança Técnica | `memory/banco-de-regras.md` | `memory/regras/` (10 arquivos) |
+| Estado do Projeto | `memory/banco-de-memoria.md` | `memory/memoria/` (4 arquivos) |
+| Domínio de Negócio | `memory/banco-de-conhecimento.md` | `memory/conhecimento/` (11 arquivos) |
+| Tema Visual / UI | `memory/banco-de-tema.md` | `memory/tema/` (9 arquivos) |
+
+### Como carregar por contexto
+
+| Tarefa | Arquivos a carregar |
+|--------|---------------------|
+| **Qualquer implementação** | `regras/_core.md` + `memoria/_core.md` + `conhecimento/_core.md` |
+| **UI/Frontend** | + `tema/_core.md` + `tema/padroes-{modulo}.md` |
+| **Migration/Schema** | + `regras/banco-de-dados.md` + `conhecimento/entidades.md` |
+| **Novo módulo** | + `regras/classes-esperadas.md` + `regras/estrutura-diretorios.md` + `conhecimento/{modulo}.md` |
+| **Decisão arquitetural** | + `memoria/adrs.md` + `regras/arquitetura.md` |
+| **RBAC/Permissões** | + `regras/rbac.md` + `conhecimento/rbac.md` |
+| **Segurança/LGPD** | + `regras/seguranca.md` + `conhecimento/transversal.md` |
+| **Multi-tenant** | + `regras/multi-tenant.md` + `conhecimento/transversal.md` |
+| **Planejar trabalho** | + `memoria/pendencias.md` |
