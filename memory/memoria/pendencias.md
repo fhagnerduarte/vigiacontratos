@@ -156,7 +156,7 @@
 - [ ] DocumentosController: adicionar endpoint do dashboard de documentos
 
 **Autorização e Validação:**
-- [ ] Novo: DocumentoPolicy (view, create, download, delete — por perfil: admin, gestor, consulta — RN-130)
+- [ ] Novo: DocumentoPolicy (view, create, download, delete — por permissão RBAC: documento.visualizar, documento.criar, documento.download, documento.excluir — RN-130)
 - [ ] StoreDocumentoRequest: atualizar validação (max:20480 KB, tipos MIME, tipo_documento obrigatório com 12 valores)
 - [ ] DocumentoResource: atualizar (incluir versao, is_versao_atual, nome_original, nome_arquivo, tipo_documento label)
 

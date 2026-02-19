@@ -9,6 +9,7 @@
 | Stack | Laravel 12, PHP 8.2+, MySQL 8, Redis, S3-compatible |
 | Container | Docker / Laravel Sail |
 | Fase Atual | Fase 0 — Setup Inicial |
+| Cadeia de Fases | 0 → 1a → 1b → 1c → 2 → 3a → 3b → 3c → 4 → 5 → 6 |
 | Última Atualização | 2026-02-18 |
 
 ---
@@ -19,10 +20,10 @@
 |---|---|---|
 | Multi-Tenant | Em Detalhamento | Banco isolado por prefeitura, banco master para gestão de tenants, middleware SetTenantConnection, storage e cache isolados por tenant |
 | Dashboard Executivo | Em Detalhamento | Painel estratégico com 5 blocos (financeiro, risco, vencimentos, secretarias, essenciais), score de gestão 0-100, tendências, rankings, filtros inteligentes, agregação noturna, cache Redis |
-| Contratos | Planejado | Cadastro inteligente multi-etapa, score de risco, fiscais, execução financeira, audit trail |
+| Contratos | Em Detalhamento | Cadastro inteligente multi-etapa, score de risco, fiscais, execução financeira, audit trail |
 | Fornecedores | Planejado | Cadastro e gestão de empresas fornecedoras |
 | Aditivos | Em Detalhamento | 7 tipos (prazo, valor, prazo_e_valor, supressao, reequilibrio, alteracao_clausula, misto), controle de limite legal 25%/50% configurável, percentual acumulado, score de risco integrado, numero sequencial automático, reequilíbrio econômico-financeiro, dashboard de aditivos, timeline de histórico |
-| Alertas | Planejado | Motor de monitoramento diário, 6 prazos configuráveis, notificação multi-canal, dashboard de alertas, bloqueio preventivo |
+| Alertas | Em Detalhamento | Motor de monitoramento diário, 6 prazos configuráveis, notificação multi-canal, dashboard de alertas, bloqueio preventivo |
 | Documentos | Em Detalhamento | Central de Documentos: pasta digital por contrato, 12 tipos de documento, versionamento automático não-destrutivo, log de acesso e auditoria, completude documental (completo/parcial/incompleto), validações automáticas por evento contratual, busca inteligente, dashboard de indicadores, relatório para Tribunal de Contas, hash de integridade SHA-256, controle de acesso por perfil |
 | Painel de Risco | Em Detalhamento | Grande diferencial: score expandido com 5 categorias (vencimento, financeiro, documental, jurídico, operacional), dashboard dedicado com ranking e semáforo, mapa de risco por secretaria, relatório automatizado para TCE, alertas preventivos inteligentes, cache Redis |
 | Segurança | Em Detalhamento | Argon2id, MFA opcional (TOTP), lockout 5 tentativas, logs de login, sessão com expiração, HTTPS/TLS 1.2+, hash de integridade, LGPD |

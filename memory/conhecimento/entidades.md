@@ -37,8 +37,14 @@
 [Alerta] 1──N [LogNotificacao]
 
 [ConfiguracaoAlerta] (tabela de configuração — prazos de alerta)
+[ConfiguracaoLimiteAditivo] (tabela de configuração — limites legais de aditivos)
 
 [DashboardAgregado] (tabela de agregação — dados pré-calculados do painel executivo)
+
+[User] 1──N [LoginLog] (log de acessos ao sistema)
+
+--- Banco Master (Multi-Tenant) ---
+[Tenant] 1──N [TenantUser]
 
 [User] 1──N [Documento] (uploaded_by)
 [User] 1──N [ExecucaoFinanceira] (registrado_por)
@@ -242,6 +248,7 @@
 | versao | int | Sim | Versão do documento. Default: 1 (RN-120) |
 | is_versao_atual | boolean | Sim | Default: true. False para versões anteriores (RN-120) |
 | uploaded_by | bigint | Sim | FK → users (quem fez upload) (RN-042) |
+| hash_integridade | varchar(64) | Não | Hash SHA-256 do arquivo, calculado no upload (ADR-047, RN-220/RN-221) |
 | created_at | datetime | Sim | Automático |
 | updated_at | datetime | Sim | Automático |
 | deleted_at | datetime | Não | Soft delete — exclusão lógica (RN-134) |
@@ -514,5 +521,95 @@
 - 5 registros criados por aditivo solicitado (RN-335)
 - Registros são imutáveis após aprovação/reprovação (append-only para integridade)
 - Avanço sequencial obrigatório (RN-337)
+
+#### Entidade: LoginLog (Nova — Segurança Expandida)
+
+| Campo | Tipo | Obrigatório | Observação |
+|---|---|---|---|
+| id | bigint (auto) | Sim | PK |
+| user_id | bigint | Sim | FK → users |
+| ip_address | varchar(45) | Sim | IP do usuário (IPv4 ou IPv6) |
+| user_agent | varchar(500) | Não | User-Agent do navegador |
+| success | boolean | Sim | Se o login foi bem-sucedido |
+| created_at | datetime | Sim | Automático |
+
+**Relacionamentos:**
+- belongsTo: User
+
+**Regras:**
+- Tabela append-only — nunca editar ou deletar (ADR-048, RN-223)
+- Sem `updated_at` (registros imutáveis)
+- Registra toda tentativa de login (sucesso e falha)
+- Usado para relatório de logs exportável (RN-222) e controle de lockout (ADR-046)
+
+#### Entidade: ConfiguracaoLimiteAditivo (Nova — Módulo 4)
+
+| Campo | Tipo | Obrigatório | Observação |
+|---|---|---|---|
+| id | bigint (auto) | Sim | PK |
+| tipo_contrato | enum(TipoContrato) | Sim | servico, obra, compra, locacao |
+| percentual_limite | decimal(5,2) | Sim | Percentual máximo de acréscimo permitido (ex: 25.00, 50.00) |
+| is_bloqueante | boolean | Sim | Default: true. Se true, bloqueia aditivo acima do limite. Se false, apenas alerta (RN-102) |
+| is_ativo | boolean | Sim | Default: true |
+| created_at | datetime | Sim | Automático |
+| updated_at | datetime | Sim | Automático |
+
+**Relacionamentos:**
+- Nenhum (tabela de configuração)
+
+**Valores padrão (seeder):**
+
+| tipo_contrato | percentual_limite | is_bloqueante |
+|---|---|---|
+| servico | 25.00 | true |
+| obra | 50.00 | true |
+| compra | 25.00 | true |
+| locacao | 25.00 | true |
+
+**Regras:**
+- Consultada pelo AditivoService ao calcular percentual acumulado (RN-097 a RN-103)
+- Admin pode ajustar limites e modo bloqueante/alerta
+
+#### Entidade: Tenant (Banco Master — Multi-Tenant)
+
+| Campo | Tipo | Obrigatório | Observação |
+|---|---|---|---|
+| id | bigint (auto) | Sim | PK |
+| nome | varchar(100) | Sim | Nome da prefeitura-cliente |
+| slug | varchar(50) | Sim | Único. Usado para identificação (ex: `prefeitura-abc`) |
+| database_name | varchar(100) | Sim | Nome do banco de dados do tenant (ex: `vigiacontratos_prefeitura_abc`) |
+| database_host | varchar(100) | Não | Host do banco (null = mesmo servidor). Default: null |
+| is_ativo | boolean | Sim | Default: true. Permite suspender tenant sem deletar |
+| plano | varchar(50) | Não | Plano contratado (ex: `basico`, `profissional`, `enterprise`) |
+| created_at | datetime | Sim | Automático |
+| updated_at | datetime | Sim | Automático |
+
+**Relacionamentos:**
+- hasMany: TenantUser
+
+**Regras:**
+- Reside no banco master (não no banco do tenant) — ADR-042, RN-200
+- Slug é usado para resolver tenant via middleware SetTenantConnection (RN-201)
+- Comando `tenant:create` provisiona novo tenant: cria banco, aplica migrations, seeder admin
+- Comando `tenant:migrate` aplica migrations pendentes em todos os tenants ativos
+
+#### Entidade: TenantUser (Banco Master — Multi-Tenant)
+
+| Campo | Tipo | Obrigatório | Observação |
+|---|---|---|---|
+| id | bigint (auto) | Sim | PK |
+| user_id | bigint (unsigned) | Sim | ID do usuário (referência lógica — não FK real, pois user está no banco do tenant) |
+| tenant_id | bigint | Sim | FK → tenants |
+| role | varchar(50) | Não | Role no contexto SaaS (ex: `owner`, `member`). Diferente do role RBAC interno |
+| created_at | datetime | Sim | Automático |
+| updated_at | datetime | Sim | Automático |
+
+**Relacionamentos:**
+- belongsTo: Tenant
+
+**Regras:**
+- Reside no banco master — associa usuários a tenants (ADR-042)
+- user_id é referência lógica (não FK real), pois o User está no banco do tenant
+- Um usuário pode pertencer a múltiplos tenants
 
 ---

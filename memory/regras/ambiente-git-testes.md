@@ -80,7 +80,7 @@
 - Testar cálculo de completude documental por checklist (RN-128, RN-129)
 - Testar nomes padronizados de arquivo (contrato_{numero}_{tipo}_v{versao}.pdf)
 - Testar imutabilidade do log_acesso_documentos (append-only — RN-122)
-- Testar autorização por perfil via DocumentoPolicy (admin, gestor, consulta — RN-130)
+- Testar autorização por permissão RBAC via DocumentoPolicy (documento.visualizar, documento.criar, documento.download, documento.excluir — RN-130)
 - Testar geração de relatório TCE com lista de documentos (RN-133)
 - Testar soft delete de documento (exclusão lógica mantém no storage — RN-134)
 

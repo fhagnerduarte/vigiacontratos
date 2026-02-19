@@ -317,7 +317,7 @@
 </div>
 
 <!-- Botão Atualizar Dados (Admin) -->
-@if(auth()->user()->tipo === 'admin')
+@if(auth()->user()->hasPermission('dashboard.atualizar'))
 <div class="d-flex justify-content-end mt-24">
     <form action="{{ route('dashboard.atualizar') }}" method="POST">
         @csrf

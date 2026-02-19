@@ -19,18 +19,22 @@
 ### Cadeia de Fases
 
 ```
-[Fase 0: Setup] → [Fase 1: Infraestrutura] → [Fase 2: Cadastros Base + RBAC] → [Fase 3: Contratos] → [Fase 4: Alertas] → [Fase 5: Dashboard + Painel de Risco + Relatórios] → [Fase 6: Refinamento]
+[Fase 0: Setup] → [Fase 1a: Ambiente+MultiTenant] → [Fase 1b: Template+Auth] → [Fase 1c: Migrations Base] → [Fase 2: RBAC Base] → [Fase 3a: Contratos] → [Fase 3b: Documentos] → [Fase 3c: Aditivos+Workflow] → [Fase 4: Alertas] → [Fase 5: Dashboard+Risco] → [Fase 6: Refinamento]
      ▲ atual
 ```
 
 **Detalhamento das Fases:**
 - **Fase 0 — Setup Inicial:** Preencher bases de conhecimento, definir stack e convenções
-- **Fase 1 — Infraestrutura:** Criar projeto Laravel, configurar Docker/Sail, MySQL, Redis, integrar template WowDash, autenticação, migrations base
-- **Fase 2 — Cadastros Base + RBAC:** CRUD de Secretarias, Fornecedores + Módulo 7: Perfis de Usuário (RBAC com 8 roles, permissions, user_secretarias, workflow de aprovação)
-- **Fase 3 — Contratos (Cadastro Inteligente):** Wizard multi-etapa, CRUD completo de Contratos + Aditivos + Fiscais + Central de Documentos (Módulo 5: pasta digital, versionamento, completude, log de acesso, busca, dashboard, relatório TCE) + Execução Financeira + Score de Risco + Audit Trail
+- **Fase 1a — Ambiente + Multi-Tenant:** Laravel 12 via Sail, Docker (MySQL 8 + Redis), banco master (tenants, tenant_users), middleware SetTenantConnection, commands tenant:create e tenant:migrate, configuração S3-compatible
+- **Fase 1b — Template + Autenticação:** Integrar WowDash (assets, layout Blade, sidebar, navbar), autenticação (login, logout, forgot password), Argon2id, login logs (LoginLog), lockout após 5 tentativas
+- **Fase 1c — Migrations Base:** Tabela users (com role_id FK), secretarias, fornecedores, CRUD base de Secretarias e Fornecedores
+- **Fase 2 — RBAC Base:** roles, permissions, role_permissions, user_permissions, user_secretarias, middleware EnsureUserHasPermission, policies, seeder dos 8 perfis, UI de gestão de roles/permissões *(sem workflow de aprovação — movido para Fase 3c)*
+- **Fase 3a — Contratos:** Wizard multi-etapa, CRUD completo de Contratos + Fiscais (com histórico de trocas) + Execução Financeira + Score de Risco + Audit Trail (historico_alteracoes)
+- **Fase 3b — Documentos (Central de Documentos):** Pasta digital por contrato, 12 tipos de documento, versionamento automático não-destrutivo, completude documental, log de acesso, hash SHA-256, busca inteligente, dashboard de indicadores, relatório TCE
+- **Fase 3c — Aditivos + Workflow:** 7 tipos de aditivo (prazo, valor, prazo_e_valor, supressao, reequilibrio, alteracao_clausula, misto), limites legais configuráveis (ConfiguracaoLimiteAditivo), reequilíbrio econômico-financeiro, workflow de aprovação 5 etapas (WorkflowAprovacao)
 - **Fase 4 — Alertas (Motor de Monitoramento):** Command agendado (cron diário) + Queue (Redis) + Notifications (mail + database) + Dashboard de alertas + Configuração de prazos + Log de notificação + Bloqueio preventivo + Resolução automática
-- **Fase 5 — Dashboard Executivo, Painel de Risco e Relatórios:** Painel Executivo com 5 blocos estratégicos (financeiro, risco, vencimentos, secretarias, essenciais), score de gestão 0-100, tendências mensais, ranking de fornecedores, visão do controlador, agregação noturna, cache Redis + Painel de Risco Administrativo dedicado (score expandido com 5 categorias, ranking de risco, mapa por secretaria, relatório TCE de risco, alertas preventivos inteligentes) + relatórios gerenciais e exportação
-- **Fase 6 — Refinamento:** Testes, ajustes de UX, performance, segurança final
+- **Fase 5 — Dashboard Executivo + Painel de Risco:** Painel Executivo com 5 blocos estratégicos (financeiro, risco, vencimentos, secretarias, essenciais), score de gestão 0-100, tendências mensais, ranking de fornecedores, visão do controlador, agregação noturna, cache Redis + Painel de Risco Administrativo dedicado (score expandido com 5 categorias, ranking de risco, mapa por secretaria, relatório TCE de risco, alertas preventivos inteligentes)
+- **Fase 6 — Refinamento:** Testes end-to-end, ajustes de UX, performance, segurança expandida (MFA), relatórios gerenciais e exportação
 
 ---
 

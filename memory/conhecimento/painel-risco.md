@@ -23,7 +23,7 @@
 
 | ID | Regra | Detalhamento |
 |---|---|---|
-| RN-143 | O Painel de Risco é uma página dedicada acessível via menu lateral | Rota: `/painel-risco`. Acessível por todos os perfis (admin, gestor, consulta). Dashboard Executivo mantém Bloco 2 como resumo com link "Ver detalhes" (ADR-039) |
+| RN-143 | O Painel de Risco é uma página dedicada acessível via menu lateral | Rota: `/painel-risco`. Acessível por todos os perfis com permissão `painel-risco.visualizar`. Dashboard Executivo mantém Bloco 2 como resumo com link "Ver detalhes" (ADR-039) |
 | RN-144 | O dashboard de risco exibe 5 indicadores no topo | (1) Total contratos ativos, (2) % contratos com risco alto, (3) contratos vencendo em 30 dias, (4) aditivos acima de 20%, (5) contratos sem documentação obrigatória |
 | RN-145 | Os indicadores usam semáforo de cores | Verde = regular (score 0-29), Amarelo = atenção (score 30-59), Vermelho = crítico (score 60+) |
 | RN-146 | O ranking de risco é uma tabela automática ordenada por score DESC | Colunas: Contrato, Secretaria, Tipo(s) de Risco (categorias), Score, Urgência (cor) |
