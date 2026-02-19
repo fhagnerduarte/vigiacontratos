@@ -12,15 +12,15 @@
 |---|---|
 | Projeto | vigiacontratos |
 | Tipo | Sistema de gestão contratual municipal |
-| Fase Atual | Fase 0 — Setup Inicial |
-| Última Atualização | 2026-02-18 |
-| Próximo Passo | Fase 1 — Configurar projeto Laravel + banco + template WowDash |
+| Fase Atual | Fase 1a — Concluída |
+| Última Atualização | 2026-02-19 |
+| Próximo Passo | Fase 1b — Integrar template WowDash + Autenticação de Tenant |
 
 ### Cadeia de Fases
 
 ```
 [Fase 0: Setup] → [Fase 1a: Ambiente+MultiTenant] → [Fase 1b: Template+Auth] → [Fase 1c: Migrations Base] → [Fase 2: RBAC Base] → [Fase 3a: Contratos] → [Fase 3b: Documentos] → [Fase 3c: Aditivos+Workflow] → [Fase 4: Alertas] → [Fase 5: Dashboard+Risco] → [Fase 6: Refinamento]
-     ▲ atual
+        ✅ concluída                    ▲ próxima
 ```
 
 **Detalhamento das Fases:**
@@ -53,6 +53,7 @@
 | IMP-009 | 2026-02-18 | Detalhamento do Módulo 7 — Perfis de Usuário (RBAC): 8 perfis dinâmicos (tabela roles), permissões granulares por recurso.ação, escopo por secretaria, permissões temporárias com expires_at, workflow de aprovação 5 etapas para aditivos, logs de auditoria expandidos com perfil do usuário | memory/banco-de-conhecimento.md, memory/banco-de-regras.md, memory/banco-de-memoria.md, memory/MEMORY.md | Concluído |
 | IMP-010 | 2026-02-18 | Expansão do Módulo 7 — Perfis de Usuário: objetivos estratégicos do módulo (segregação, rastreabilidade, antifraude, controle formal), ocupantes típicos por perfil, matriz de permissões granulares completa (12 recursos × 8 perfis com indicação de escopo por secretaria), exemplo concreto de log de auditoria, regras de segurança de autenticação/sessão (MFA, JWT/Sanctum, lockout, TLS) | memory/banco-de-conhecimento.md, memory/banco-de-regras.md, memory/banco-de-memoria.md, memory/MEMORY.md | Concluído |
 | IMP-011 | 2026-02-19 | Remediação de segurança pré-implementação — auditoria completa identificou 20 lacunas de segurança nas bases de conhecimento. Correções: (1) resolução de tenant via subdomínio DNS (ADR-056), (2) estratégia de anonimização LGPD de dois planos (ADR-057), (3) política de senhas, (4) campo role_nome em HistoricoAlteracao, (5) campo tenant_id em LoginLog, (6) matriz de criptografia LGPD, (7) validação MIME real, (8) hasPermission() com verificação em tempo real de expires_at, (9) MFA obrigatório para admin/controladoria (ADR-055), (10) configuração CORS, (11) triggers MySQL de imutabilidade, (12) isolamento S3 V1/V2 (ADR-058), (13) fluxo de reset de senha, (14) Sanctum token abilities, (15) invalidação de sessão, (16) checklist de hardening, (17) rate limiting API, (18) limites do admin em tabelas imutáveis, (19) verificação automática de hash, (20) credenciais MinIO dev | memory/conhecimento/entidades.md, memory/regras/seguranca.md, memory/regras/multi-tenant.md, memory/regras/rbac.md, memory/regras/auditoria-performance.md, memory/regras/ambiente-git-testes.md, memory/conhecimento/rbac.md, memory/conhecimento/transversal.md, memory/memoria/adrs.md | Concluído |
+| IMP-012 | 2026-02-19 | Fase 1a completa — Scaffold Laravel 12 via Sail (PHP 8.5, MySQL 8.4, Redis, MinIO), configuração Argon2id (ADR-044), guard admin, connection tenant dinâmica, migrations master (tenants, admin_users, admin_login_logs), migrations tenant (users placeholder), Models (Tenant, AdminUser, AdminLoginLog append-only), Middleware SetTenantConnection (ADR-056) + EnsureAdminSaaS, commands tenant:create + tenant:migrate, TenantService, Admin SaaS (AuthController, TenantController, views Bootstrap, rotas /admin-saas/*), AdminUserSeeder, script MySQL grant-create-db | compose.yaml, .env.example, config/hashing.php, config/auth.php, config/database.php, config/app.php, bootstrap/app.php, app/Models/*.php, app/Http/Middleware/*.php, app/Console/Commands/*.php, app/Services/TenantService.php, app/Http/Controllers/AdminSaaS/*.php, routes/admin-saas.php, resources/views/admin-saas/**/*.blade.php, database/migrations/*.php, database/seeders/*.php | Concluído |
 
 ### Como registrar:
 1. Use ID sequencial (IMP-XXX)

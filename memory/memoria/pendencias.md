@@ -6,38 +6,38 @@
 ---
 
 ### Módulo: Infraestrutura
-- [ ] Criar projeto Laravel 12 via Sail
-- [ ] Configurar Docker (MySQL 8 + Redis)
+- [x] Criar projeto Laravel 12 via Sail *(IMP-012)*
+- [x] Configurar Docker (MySQL 8 + Redis + MinIO) *(IMP-012)*
 - [ ] Integrar template WowDash (assets, layout, componentes)
 - [ ] Configurar autenticação (login, logout, forgot password)
 - [ ] Criar migrations base (users, secretarias, fornecedores)
-- [ ] Configurar S3-compatible storage (MinIO para dev, AWS S3 para prod) — ADR-043
+- [x] Configurar S3-compatible storage (MinIO para dev, AWS S3 para prod) — ADR-043 *(IMP-012)*
 
 ### Módulo: Multi-Tenant (Database-per-Tenant)
-- [ ] Migration banco master: tabela `tenants` (nome, slug, database_name, database_host, is_ativo, plano)
-- [ ] Migration banco master: tabela `tenant_users` (user_id, tenant_id, role)
-- [ ] Model: Tenant (banco master)
-- [ ] Middleware: SetTenantConnection (resolve tenant e configura connection MySQL)
-- [ ] Comando artisan: `tenant:create` (provisionar novo tenant: criar banco, aplicar migrations, seeder admin)
-- [ ] Comando artisan: `tenant:migrate` (aplicar migrations pendentes em todos os tenants ativos)
-- [ ] Configuração dinâmica de connection MySQL em runtime
+- [x] Migration banco master: tabela `tenants` (nome, slug, database_name, database_host, is_ativo, plano) *(IMP-012)*
+- [ ] Migration banco master: tabela `tenant_users` (user_id, tenant_id, role) — *adiada: sem necessidade concreta na Fase 1a*
+- [x] Model: Tenant (banco master) *(IMP-012)*
+- [x] Middleware: SetTenantConnection (resolve tenant e configura connection MySQL) *(IMP-012)*
+- [x] Comando artisan: `tenant:create` (provisionar novo tenant: criar banco, aplicar migrations, seeder admin) *(IMP-012)*
+- [x] Comando artisan: `tenant:migrate` (aplicar migrations pendentes em todos os tenants ativos) *(IMP-012)*
+- [x] Configuração dinâmica de connection MySQL em runtime *(IMP-012)*
 - [ ] Configuração de storage isolado por tenant (prefixo S3 por slug)
-- [ ] Configuração de cache Redis com prefixo por tenant
+- [x] Configuração de cache Redis com prefixo por tenant *(IMP-012)*
 
 ### Módulo: Painel Administrativo SaaS (Gestão de Tenants)
-- [ ] Migration banco master: tabela `admin_users` (nome, email, password, is_ativo, mfa_secret, last_login_at)
-- [ ] Migration banco master: tabela `admin_login_logs` (admin_user_id, ip_address, user_agent, success, created_at — append-only)
-- [ ] Model: AdminUser (guard `admin`, banco master)
-- [ ] Guard `admin` em `config/auth.php` (separado do guard `web` dos tenants)
-- [ ] Middleware: EnsureAdminSaaS (verifica guard admin + is_ativo)
-- [ ] Rotas do painel: prefixo `/admin-saas` sem subdomínio de tenant
-- [ ] TenantController (painel admin): index (listar), create/store (provisionar), show (detalhes), ativar/desativar
-- [ ] Views: admin-saas/tenants/index.blade.php, create.blade.php, show.blade.php
-- [ ] Seeder: AdminUserSeeder (criar usuário root inicial)
+- [x] Migration banco master: tabela `admin_users` (nome, email, password, is_ativo, mfa_secret, last_login_at) *(IMP-012)*
+- [x] Migration banco master: tabela `admin_login_logs` (admin_user_id, ip_address, user_agent, success, created_at — append-only) *(IMP-012)*
+- [x] Model: AdminUser (guard `admin`, banco master) *(IMP-012)*
+- [x] Guard `admin` em `config/auth.php` (separado do guard `web` dos tenants) *(IMP-012)*
+- [x] Middleware: EnsureAdminSaaS (verifica guard admin + is_ativo) *(IMP-012)*
+- [x] Rotas do painel: prefixo `/admin-saas` sem subdomínio de tenant *(IMP-012)*
+- [x] TenantController (painel admin): index (listar), create/store (provisionar), show (detalhes), ativar/desativar *(IMP-012)*
+- [x] Views: admin-saas/tenants/index.blade.php, create.blade.php, show.blade.php *(IMP-012)*
+- [x] Seeder: AdminUserSeeder (criar usuário root inicial) *(IMP-012)*
 - [ ] MFA obrigatório para AdminUser (TOTP)
 
 ### Módulo: Segurança Expandida
-- [ ] Configurar hashing driver Argon2id (`config/hashing.php`) — ADR-044
+- [x] Configurar hashing driver Argon2id (`config/hashing.php`) — ADR-044 *(IMP-012)*
 - [ ] Migration banco tenant: tabela `login_logs` (user_id, ip_address, user_agent, success, created_at) — ADR-048
 - [ ] Model: LoginLog (append-only, sem update/delete)
 - [ ] Implementar MFA opcional via TOTP para admin/gestor — ADR-045
