@@ -33,7 +33,7 @@
 - Não é um portal de transparência pública (é sistema interno)
 
 ### Para quem:
-- **Admin SaaS** — Gestor da plataforma que gerencia tenants (prefeituras-clientes), provisiona novos municípios e monitora a saúde do sistema
+- **Admin SaaS (Root/Superadmin)** — Proprietário/operador da plataforma SaaS. Opera exclusivamente no banco master. Gerencia tenants (prefeituras-clientes), provisiona novos municípios, ativa/desativa clientes e monitora a saúde da plataforma. Acessa o sistema por rota administrativa dedicada, sem vínculo a subdomínio de tenant.
 - **Administrador Geral** — TI / Controladoria Central — configura o sistema, gerencia usuários e permissões, acessa todas as secretarias
 - **Controladoria Interna** — Visualização total, painel de risco, relatórios TCE, pareceres internos
 - **Secretário Municipal** — Acesso restrito à própria secretaria, aprovação de aditivos no workflow
@@ -136,7 +136,7 @@ Não existe sistema legado. O controle contratual era feito de forma informal (s
 | MFA (Autenticação Multi-Fator) | Mecanismo de segurança opcional que exige segundo fator (TOTP via app autenticador) além da senha para login | "Admin ativou MFA — login exige senha + código do Google Authenticator" |
 | Base Legal (LGPD) | Fundamento jurídico que autoriza o tratamento de dados pessoais (consentimento, execução contratual, obrigação legal, etc.) | "Base legal para CNPJ de fornecedores: execução contratual" |
 | Política de Retenção | Regra que define por quanto tempo dados pessoais e documentos devem ser mantidos antes de serem anonimizados ou excluídos | "Política de retenção: logs de acesso mantidos por 5 anos" |
-| Admin SaaS | Administrador da plataforma com acesso ao banco central/master, responsável por gerenciar prefeituras-clientes (tenants) | "Admin SaaS provisionou novo tenant para Prefeitura de Campinas" |
+| Admin SaaS (Root/Superadmin) | Usuário root da plataforma SaaS. Opera no banco master com acesso irrestrito. Responsável por gerenciar tenants (criar, ativar, desativar prefeituras-clientes), provisionamento de novos bancos e monitoramento da plataforma. Autenticado por guard dedicado (`admin`), sem vínculo a subdomínio de tenant. Distinto do `Administrador Geral` que opera dentro de um tenant específico. | "Admin SaaS provisionou novo tenant para Prefeitura de Campinas via painel administrativo" |
 | Log de Login | Registro de cada tentativa de acesso ao sistema (sucesso ou falha), com IP, user-agent e timestamp | "Log: login falho de IP 187.x.x.x — 3ª tentativa, conta bloqueada" |
 | RBAC (Role-Based Access Control) | Sistema de controle de acesso baseado em papéis (roles) atribuídos a usuários, com permissões granulares por recurso e ação | "Sistema opera com RBAC — permissões por role, secretaria e ação" |
 | Perfil de Usuário (Role) | Papel funcional dinâmico (tabela `roles`) que define permissões e restrições de acesso no sistema | "Usuário com perfil Gestor de Contrato — acesso operacional" |

@@ -104,9 +104,31 @@ Antes de cada deploy em ambiente de produção, verificar:
 - Tipos: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `style`
 
 ### Branches
+
+#### Nomenclatura
 - Features: `feature/nome-da-feature`
 - Correções: `fix/descricao-do-bug`
 - Refactoring: `refactor/descricao`
+
+#### Fluxo de Integração (obrigatório)
+
+Todo trabalho de implementação deve seguir este fluxo sequencial:
+
+```
+feature/* (ou fix/* ou refactor/*)
+       ↓  Pull Request
+    homolog  ← ambiente de homologação/validação
+       ↓  após validação aprovada
+      main   ← produção
+```
+
+**Regras do fluxo:**
+- Nunca fazer merge direto de feature/* para `main`
+- Branch `homolog` representa o ambiente de homologação/staging
+- Toda implementação passa por `homolog` antes de ir para `main`
+- Pull Request obrigatório para merge em `homolog`
+- Merge para `main` apenas após validação completa em `homolog`
+- Branch `main` deve sempre refletir o estado de produção estável
 
 ---
 

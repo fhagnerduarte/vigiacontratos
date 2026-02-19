@@ -24,6 +24,18 @@
 - [ ] Configuração de storage isolado por tenant (prefixo S3 por slug)
 - [ ] Configuração de cache Redis com prefixo por tenant
 
+### Módulo: Painel Administrativo SaaS (Gestão de Tenants)
+- [ ] Migration banco master: tabela `admin_users` (nome, email, password, is_ativo, mfa_secret, last_login_at)
+- [ ] Migration banco master: tabela `admin_login_logs` (admin_user_id, ip_address, user_agent, success, created_at — append-only)
+- [ ] Model: AdminUser (guard `admin`, banco master)
+- [ ] Guard `admin` em `config/auth.php` (separado do guard `web` dos tenants)
+- [ ] Middleware: EnsureAdminSaaS (verifica guard admin + is_ativo)
+- [ ] Rotas do painel: prefixo `/admin-saas` sem subdomínio de tenant
+- [ ] TenantController (painel admin): index (listar), create/store (provisionar), show (detalhes), ativar/desativar
+- [ ] Views: admin-saas/tenants/index.blade.php, create.blade.php, show.blade.php
+- [ ] Seeder: AdminUserSeeder (criar usuário root inicial)
+- [ ] MFA obrigatório para AdminUser (TOTP)
+
 ### Módulo: Segurança Expandida
 - [ ] Configurar hashing driver Argon2id (`config/hashing.php`) — ADR-044
 - [ ] Migration banco tenant: tabela `login_logs` (user_id, ip_address, user_agent, success, created_at) — ADR-048

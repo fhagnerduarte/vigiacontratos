@@ -103,3 +103,31 @@ app()->instance('tenant', $tenant);
 - Migrations devem ser versionadas e aplicáveis a todos os tenants
 - Comando artisan para provisionar novo tenant (criar banco, aplicar migrations, seeder inicial)
 - Comando artisan para aplicar migrations em todos os tenants
+
+### Usuário Root / Superadmin (Admin SaaS)
+
+**Definição:** Usuário com acesso irrestrito à plataforma, operando no banco master. É o operador do SaaS — distinto dos administradores de cada prefeitura-cliente.
+
+#### Diferença Admin SaaS vs Admin de Tenant
+
+| Característica | Admin SaaS (Root) | Administrador Geral (Tenant) |
+|---|---|---|
+| Banco de operação | Banco **master** | Banco do tenant |
+| Escopo | Toda a plataforma | Restrito ao tenant vinculado |
+| Autenticação | Rota dedicada sem subdomínio de tenant | Subdomínio do tenant |
+| Middleware | Não passa por `SetTenantConnection` | Passa por `SetTenantConnection` |
+| Função | Gestão de tenants, provisionamento, monitoramento | Gestão interna da prefeitura |
+
+#### Especificação técnica
+- **Tabela:** `admin_users` no banco master (separada de `users` dos tenants)
+- **Campos:** `id`, `nome`, `email`, `password`, `is_ativo`, `mfa_secret`, `last_login_at`, `timestamps`
+- **Guard:** dedicado (`admin`) em `config/auth.php` — separado do guard `web`
+- **Rota:** sem subdomínio de tenant (ex: `admin.vigiacontratos.com.br` ou `/admin-saas/login`)
+- **MFA:** obrigatório para root
+- **Middleware:** `EnsureAdminSaaS` — verifica guard `admin` + `is_ativo`
+
+#### Regras obrigatórias
+- Nunca criar usuário root em banco de tenant
+- Credenciais do root nunca transitam em contexto de tenant
+- Log de acesso em tabela própria no master (`admin_login_logs`)
+- Mínimo um root ativo na plataforma (validar ao desativar)

@@ -14,10 +14,12 @@
 | RN-200 | Cada prefeitura opera em banco de dados isolado (database-per-tenant) | Um banco MySQL dedicado por prefeitura-cliente. Sem compartilhamento de tabelas de negócio entre tenants (ADR-042) |
 | RN-201 | Dados de uma prefeitura nunca são acessíveis por outra | Isolamento total — nenhum mecanismo de query cross-tenant (sem UNION, sem JOIN entre connections). Middleware `SetTenantConnection` garante escopo |
 | RN-202 | Migrations devem ser aplicadas em todos os bancos tenant simultaneamente | Comando artisan dedicado percorre todos os tenants ativos e aplica migrations pendentes em cada banco |
-| RN-203 | Admin SaaS pode gerenciar tenants (criar, ativar, desativar) | Operações no banco master: provisionar novo banco, aplicar migrations, criar admin inicial, configurar storage. Desativação é soft (is_ativo = false) |
+| RN-203 | Admin SaaS pode gerenciar tenants (criar, ativar, desativar) via painel administrativo web ou comandos artisan | Operações no banco master: provisionar novo banco, aplicar migrations, criar admin inicial, configurar storage. Desativação é soft (is_ativo = false). O painel web é a interface principal; comandos artisan são alternativa programática |
 | RN-204 | Storage de arquivos isolado por tenant (bucket/pasta separada) | Estrutura S3: `{tenant_slug}/documentos/contratos/{contrato_id}/{tipo}/...`. Nunca misturar arquivos de tenants diferentes |
 | RN-205 | Cache Redis isolado por tenant (prefixo de chave) | Chaves Redis: `tenant_{id}:dashboard`, `tenant_{id}:painel_risco`. Evita colisão entre tenants |
 | RN-206 | Jobs/Queues devem carregar contexto do tenant | Todo job assíncrono recebe `tenant_id` no payload e configura connection antes de executar |
+| RN-207 | Painel Administrativo SaaS acessível exclusivamente pelo Admin SaaS (Root) | Módulo web para gestão de tenants: listar, criar, ativar, desativar, visualizar detalhes. Acesso restrito ao guard `admin` — usuários de tenant não acessam este painel |
+| RN-208 | Painel Administrativo não compartilha rota com o sistema tenant | Rota dedicada sem subdomínio de tenant (ex: `admin.vigiacontratos.com.br`). Middleware `EnsureAdminSaaS` protege todas as rotas do painel |
 
 ---
 

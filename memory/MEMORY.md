@@ -18,7 +18,8 @@
 
 | Módulo | Status | Observação |
 |---|---|---|
-| Multi-Tenant | Em Detalhamento | Banco isolado por prefeitura, banco master para gestão de tenants, middleware SetTenantConnection, storage e cache isolados por tenant |
+| Multi-Tenant | Em Detalhamento | Banco isolado por prefeitura, banco master para gestão de tenants, middleware SetTenantConnection, storage e cache isolados por tenant. Painel Administrativo SaaS separado para gestão de tenants pelo root |
+| Painel Administrativo SaaS | Planejado | Módulo exclusivo do Admin SaaS (root): listar, criar, ativar e desativar tenants via interface web. Guard `admin` dedicado, rota sem subdomínio de tenant |
 | Dashboard Executivo | Em Detalhamento | Painel estratégico com 5 blocos (financeiro, risco, vencimentos, secretarias, essenciais), score de gestão 0-100, tendências, rankings, filtros inteligentes, agregação noturna, cache Redis |
 | Contratos | Em Detalhamento | Cadastro inteligente multi-etapa, score de risco, fiscais, execução financeira, audit trail |
 | Fornecedores | Planejado | Cadastro e gestão de empresas fornecedoras |
