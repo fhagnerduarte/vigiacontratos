@@ -10,7 +10,7 @@
 - [x] Configurar Docker (MySQL 8 + Redis + MinIO) *(IMP-012)*
 - [x] Integrar template WowDash (assets, layout, componentes) *(IMP-013)*
 - [x] Configurar autenticação (login, logout, forgot password) *(IMP-013)*
-- [ ] Criar migrations base (users, secretarias, fornecedores)
+- [x] Criar migrations base (roles, secretarias, fornecedores, alter login_logs, alter users FK) *(IMP-014)*
 - [x] Configurar S3-compatible storage (MinIO para dev, AWS S3 para prod) — ADR-043 *(IMP-012)*
 
 ### Módulo: Multi-Tenant (Database-per-Tenant)
@@ -48,7 +48,7 @@
 - [ ] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220
 - [ ] Implementar verificação de integridade (recalcular hash e comparar) — RN-221
 - [ ] Implementar relatório de logs exportável (PDF/CSV) — RN-222
-- [ ] Criar seeders iniciais (admin user, secretarias)
+- [x] Criar seeders iniciais (AdminUserSeeder IMP-012, RoleSeeder IMP-014) — *SecretariaSeeder opcional para futuro*
 
 ### Módulo: Contratos (Cadastro Inteligente)
 - [ ] Migration da tabela contratos (campos expandidos: modalidade, score_risco, percentual_executado, etc.)
@@ -67,7 +67,7 @@
 - [ ] Registro de execuções financeiras
 - [ ] Upload múltiplo de documentos com classificação por tipo
 - [ ] Versionamento de documentos
-- [ ] Validação de CNPJ (dígito verificador)
+- [x] Validação de CNPJ (digito verificador — FornecedorService + CnpjValido Rule) *(IMP-014)*
 - [ ] Validações condicionais por modalidade (dispensa → fundamento legal, obra → resp. técnico)
 - [ ] Cálculo automático de score de risco
 - [ ] Cálculo automático de percentual executado
@@ -230,21 +230,21 @@
 ### Módulo: Perfis de Usuário (RBAC — Módulo 7)
 
 **Schema e Models:**
-- [ ] Migration: criar tabela `roles` (nome, descricao, is_padrao, is_ativo)
+- [x] Migration: criar tabela `roles` (nome, descricao, is_padrao, is_ativo) *(IMP-014)*
 - [ ] Migration: criar tabela `permissions` (nome, descricao, grupo)
 - [ ] Migration: criar tabela `role_permissions` (role_id, permission_id — pivot)
 - [ ] Migration: criar tabela `user_permissions` (user_id, permission_id, expires_at, concedido_por)
 - [ ] Migration: criar tabela `user_secretarias` (user_id, secretaria_id — pivot)
 - [ ] Migration: criar tabela `workflow_aprovacoes` (aprovavel_type/id, etapa, etapa_ordem, role_responsavel_id, user_id, status, parecer)
-- [ ] Migration: alterar tabela `users` (remover coluna `tipo`, adicionar `role_id` FK → roles)
+- [x] Migration: alterar tabela `users` (adicionar FK constraint `role_id` → roles com nullOnDelete) *(IMP-014)*
 - [ ] Novo enum: StatusAprovacao (pendente, aprovado, reprovado)
 - [ ] Novo enum: EtapaWorkflow (solicitacao, aprovacao_secretario, parecer_juridico, validacao_controladoria, homologacao)
-- [ ] Model: Role ($fillable, hasMany User, belongsToMany Permission)
+- [x] Model: Role ($fillable, hasMany User) *(IMP-014 — belongsToMany Permission sera adicionado na Fase 2)*
 - [ ] Model: Permission ($fillable, belongsToMany Role, belongsToMany User)
 - [ ] Model: UserPermission ($fillable, belongsTo User, belongsTo Permission)
 - [ ] Model: WorkflowAprovacao ($fillable, morphTo aprovavel, belongsTo Role, belongsTo User)
-- [ ] Atualizar Model User (remover tipo, adicionar role_id, belongsTo Role, belongsToMany Secretaria, belongsToMany Permission, hasPermission())
-- [ ] Seeder: RoleSeeder (8 perfis padrão com is_padrao=true)
+- [x] Atualizar Model User (adicionar belongsTo Role) *(IMP-014 — belongsToMany Secretaria/Permission e hasPermission() serao adicionados na Fase 2)*
+- [x] Seeder: RoleSeeder (8 perfis padrao com is_padrao=true, integrado em TenantService e TenantCreateCommand) *(IMP-014)*
 - [ ] Seeder: PermissionSeeder (permissões granulares por grupo)
 - [ ] Seeder: RolePermissionSeeder (associação padrão role ↔ permissions)
 - [ ] Índices: roles.nome (unique), permissions.nome (unique), user_secretarias (user_id + secretaria_id unique), workflow_aprovacoes (aprovavel_type + aprovavel_id + etapa unique)
