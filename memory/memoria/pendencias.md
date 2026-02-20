@@ -8,8 +8,8 @@
 ### Módulo: Infraestrutura
 - [x] Criar projeto Laravel 12 via Sail *(IMP-012)*
 - [x] Configurar Docker (MySQL 8 + Redis + MinIO) *(IMP-012)*
-- [ ] Integrar template WowDash (assets, layout, componentes)
-- [ ] Configurar autenticação (login, logout, forgot password)
+- [x] Integrar template WowDash (assets, layout, componentes) *(IMP-013)*
+- [x] Configurar autenticação (login, logout, forgot password) *(IMP-013)*
 - [ ] Criar migrations base (users, secretarias, fornecedores)
 - [x] Configurar S3-compatible storage (MinIO para dev, AWS S3 para prod) — ADR-043 *(IMP-012)*
 
@@ -38,11 +38,11 @@
 
 ### Módulo: Segurança Expandida
 - [x] Configurar hashing driver Argon2id (`config/hashing.php`) — ADR-044 *(IMP-012)*
-- [ ] Migration banco tenant: tabela `login_logs` (user_id, ip_address, user_agent, success, created_at) — ADR-048
-- [ ] Model: LoginLog (append-only, sem update/delete)
+- [x] Migration banco tenant: tabela `login_logs` (user_id, ip_address, user_agent, success, created_at) — ADR-048 *(IMP-013)*
+- [x] Model: LoginLog (append-only, sem update/delete) *(IMP-013)*
 - [ ] Implementar MFA opcional via TOTP para admin/gestor — ADR-045
-- [ ] Implementar bloqueio de login após 5 tentativas com cooldown 15min — ADR-046
-- [ ] Implementar expiração de sessão configurável (SESSION_LIFETIME) — ADR-049
+- [x] Implementar bloqueio de login após 5 tentativas com cooldown 15min — ADR-046 *(IMP-013)*
+- [x] Implementar expiração de sessão configurável (SESSION_LIFETIME) — ADR-049 *(IMP-013)*
 - [ ] Middleware ForceHttps para produção
 - [ ] Adicionar campo `hash_integridade` ao Model Documento — ADR-047
 - [ ] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220

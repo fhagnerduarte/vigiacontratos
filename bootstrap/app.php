@@ -21,7 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.saas' => \App\Http\Middleware\EnsureAdminSaaS::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn () => route('admin-saas.login'));
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('admin-saas/*')) {
+                return route('admin-saas.login');
+            }
+
+            return route('tenant.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
