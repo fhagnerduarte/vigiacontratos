@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Secretaria extends Model
 {
@@ -15,4 +16,9 @@ class Secretaria extends Model
         'email',
         'telefone',
     ];
+
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class);
+    }
 }

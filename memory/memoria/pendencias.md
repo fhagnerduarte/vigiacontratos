@@ -51,27 +51,27 @@
 - [x] Criar seeders iniciais (AdminUserSeeder IMP-012, RoleSeeder IMP-014) — *SecretariaSeeder opcional para futuro*
 
 ### Módulo: Contratos (Cadastro Inteligente)
-- [ ] Migration da tabela contratos (campos expandidos: modalidade, score_risco, percentual_executado, etc.)
-- [ ] Migration da tabela fiscais (com histórico de trocas)
-- [ ] Migration da tabela aditivos
-- [ ] Migration da tabela documentos (com tipo_documento e versao)
-- [ ] Migration da tabela execucoes_financeiras
-- [ ] Migration da tabela historico_alteracoes (polimórfica, imutável)
-- [ ] Enums: ModalidadeContratacao, TipoPagamento, CategoriaContrato, CategoriaServico, NivelRisco, TipoDocumentoContratual
-- [ ] Models: Fiscal, ExecucaoFinanceira, HistoricoAlteracao
-- [ ] Services: RiscoService (cálculo score), AuditoriaService (audit trail), FiscalService, ExecucaoFinanceiraService
-- [ ] Observer: ContratoObserver (audit trail + recálculo de score)
-- [ ] Formulário multi-etapa (wizard) para cadastro de contrato
-- [ ] Tela de detalhes do contrato com abas (dados, fiscal, financeiro, documentos, auditoria)
-- [ ] CRUD de fiscais (com troca e histórico)
-- [ ] Registro de execuções financeiras
-- [ ] Upload múltiplo de documentos com classificação por tipo
-- [ ] Versionamento de documentos
+- [x] Migration da tabela contratos (campos expandidos: modalidade, score_risco, percentual_executado, etc.) *(IMP-016)*
+- [x] Migration da tabela fiscais (com histórico de trocas) *(IMP-016)*
+- [ ] Migration da tabela aditivos — *movido para Fase 3c*
+- [x] Migration da tabela documentos (com tipo_documento e versao) *(IMP-016 — basico, expandido Fase 3b)*
+- [x] Migration da tabela execucoes_financeiras *(IMP-016)*
+- [x] Migration da tabela historico_alteracoes (polimórfica, imutável) *(IMP-016)*
+- [x] Enums: StatusContrato, TipoContrato, ModalidadeContratacao, TipoPagamento, CategoriaContrato, CategoriaServico, NivelRisco, TipoDocumentoContratual *(IMP-016)*
+- [x] Models: Contrato, Fiscal, ExecucaoFinanceira, HistoricoAlteracao, Documento *(IMP-016)*
+- [x] Services: ContratoService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService *(IMP-016)*
+- [ ] Observer: ContratoObserver (audit trail + recálculo de score) — *opcional, logica em ContratoService*
+- [x] Formulário multi-etapa (wizard) para cadastro de contrato *(IMP-016)*
+- [x] Tela de detalhes do contrato com abas (dados, fiscal, financeiro, documentos, auditoria) *(IMP-016)*
+- [x] CRUD de fiscais (com troca e histórico) *(IMP-016)*
+- [x] Registro de execuções financeiras *(IMP-016)*
+- [ ] Upload múltiplo de documentos com classificação por tipo — *movido para Fase 3b*
+- [ ] Versionamento de documentos — *movido para Fase 3b*
 - [x] Validação de CNPJ (digito verificador — FornecedorService + CnpjValido Rule) *(IMP-014)*
-- [ ] Validações condicionais por modalidade (dispensa → fundamento legal, obra → resp. técnico)
-- [ ] Cálculo automático de score de risco
-- [ ] Cálculo automático de percentual executado
-- [ ] Filtros inteligentes na listagem (secretaria, vencimento, risco, fornecedor, número)
+- [x] Validações condicionais por modalidade (dispensa → fundamento legal, obra → resp. técnico) *(IMP-016)*
+- [x] Cálculo automático de score de risco *(IMP-016)*
+- [x] Cálculo automático de percentual executado *(IMP-016)*
+- [x] Filtros inteligentes na listagem (status, secretaria, modalidade, nivel_risco) *(IMP-016)*
 
 ### Módulo: Aditivos (Gestão de Aditivos — Módulo 4)
 - [ ] Atualizar enum TipoAditivo (+ reequilibrio, alteracao_clausula, misto — 4→7 valores)

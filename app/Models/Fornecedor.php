@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fornecedor extends Model
@@ -26,4 +27,9 @@ class Fornecedor extends Model
         'cep',
         'observacoes',
     ];
+
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class);
+    }
 }

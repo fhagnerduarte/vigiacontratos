@@ -27,17 +27,24 @@
 
                 @if (auth()->user()->hasPermission('contrato.visualizar'))
                     <li class="dropdown">
-                        <a href="javascript:void(0)">
+                        <a href="javascript:void(0)"
+                           class="{{ request()->routeIs('tenant.contratos.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:document-bold" class="menu-icon"></iconify-icon>
                             <span>Contratos</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="#"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Todos os Contratos</a>
+                                <a href="{{ route('tenant.contratos.index') }}"
+                                   class="{{ request()->routeIs('tenant.contratos.index') || request()->routeIs('tenant.contratos.show') ? 'active-page' : '' }}">
+                                    <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Todos os Contratos
+                                </a>
                             </li>
                             @if (auth()->user()->hasPermission('contrato.criar'))
                                 <li>
-                                    <a href="#"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Novo Contrato</a>
+                                    <a href="{{ route('tenant.contratos.create') }}"
+                                       class="{{ request()->routeIs('tenant.contratos.create') ? 'active-page' : '' }}">
+                                        <i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Novo Contrato
+                                    </a>
                                 </li>
                             @endif
                         </ul>
