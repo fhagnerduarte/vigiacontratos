@@ -1,0 +1,86 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class PermissionSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $permissions = [
+            // Contrato
+            ['nome' => 'contrato.visualizar', 'descricao' => 'Visualizar contratos', 'grupo' => 'contrato'],
+            ['nome' => 'contrato.criar', 'descricao' => 'Criar contratos', 'grupo' => 'contrato'],
+            ['nome' => 'contrato.editar', 'descricao' => 'Editar contratos', 'grupo' => 'contrato'],
+            ['nome' => 'contrato.excluir', 'descricao' => 'Excluir contratos', 'grupo' => 'contrato'],
+
+            // Aditivo
+            ['nome' => 'aditivo.visualizar', 'descricao' => 'Visualizar aditivos', 'grupo' => 'aditivo'],
+            ['nome' => 'aditivo.criar', 'descricao' => 'Criar aditivos', 'grupo' => 'aditivo'],
+            ['nome' => 'aditivo.aprovar', 'descricao' => 'Aprovar aditivos no workflow', 'grupo' => 'aditivo'],
+
+            // Fornecedor
+            ['nome' => 'fornecedor.visualizar', 'descricao' => 'Visualizar fornecedores', 'grupo' => 'fornecedor'],
+            ['nome' => 'fornecedor.criar', 'descricao' => 'Criar fornecedores', 'grupo' => 'fornecedor'],
+            ['nome' => 'fornecedor.editar', 'descricao' => 'Editar fornecedores', 'grupo' => 'fornecedor'],
+            ['nome' => 'fornecedor.excluir', 'descricao' => 'Excluir fornecedores', 'grupo' => 'fornecedor'],
+
+            // Documento
+            ['nome' => 'documento.visualizar', 'descricao' => 'Visualizar documentos', 'grupo' => 'documento'],
+            ['nome' => 'documento.criar', 'descricao' => 'Criar/upload de documentos', 'grupo' => 'documento'],
+            ['nome' => 'documento.excluir', 'descricao' => 'Excluir documentos', 'grupo' => 'documento'],
+
+            // Financeiro
+            ['nome' => 'financeiro.visualizar', 'descricao' => 'Visualizar dados financeiros', 'grupo' => 'financeiro'],
+            ['nome' => 'financeiro.registrar_empenho', 'descricao' => 'Registrar empenhos e pagamentos', 'grupo' => 'financeiro'],
+
+            // Fiscal
+            ['nome' => 'fiscal.visualizar', 'descricao' => 'Visualizar fiscais', 'grupo' => 'fiscal'],
+            ['nome' => 'fiscal.criar', 'descricao' => 'Criar/designar fiscais', 'grupo' => 'fiscal'],
+            ['nome' => 'fiscal.editar', 'descricao' => 'Editar fiscais', 'grupo' => 'fiscal'],
+
+            // Relatorio
+            ['nome' => 'relatorio.visualizar', 'descricao' => 'Visualizar relatorios', 'grupo' => 'relatorio'],
+            ['nome' => 'relatorio.gerar', 'descricao' => 'Gerar relatorios', 'grupo' => 'relatorio'],
+
+            // Usuario
+            ['nome' => 'usuario.visualizar', 'descricao' => 'Visualizar usuarios', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.criar', 'descricao' => 'Criar usuarios', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.editar', 'descricao' => 'Editar usuarios', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.desativar', 'descricao' => 'Desativar usuarios', 'grupo' => 'usuario'],
+
+            // Configuracao
+            ['nome' => 'configuracao.visualizar', 'descricao' => 'Visualizar configuracoes', 'grupo' => 'configuracao'],
+            ['nome' => 'configuracao.editar', 'descricao' => 'Editar configuracoes do sistema', 'grupo' => 'configuracao'],
+
+            // Auditoria
+            ['nome' => 'auditoria.visualizar', 'descricao' => 'Visualizar logs de auditoria', 'grupo' => 'auditoria'],
+
+            // Parecer
+            ['nome' => 'parecer.visualizar', 'descricao' => 'Visualizar pareceres', 'grupo' => 'parecer'],
+            ['nome' => 'parecer.emitir', 'descricao' => 'Emitir pareceres', 'grupo' => 'parecer'],
+
+            // Workflow
+            ['nome' => 'workflow.visualizar', 'descricao' => 'Visualizar workflows de aprovacao', 'grupo' => 'workflow'],
+            ['nome' => 'workflow.aprovar', 'descricao' => 'Aprovar etapas de workflow', 'grupo' => 'workflow'],
+
+            // Secretaria
+            ['nome' => 'secretaria.visualizar', 'descricao' => 'Visualizar secretarias', 'grupo' => 'secretaria'],
+            ['nome' => 'secretaria.criar', 'descricao' => 'Criar secretarias', 'grupo' => 'secretaria'],
+            ['nome' => 'secretaria.editar', 'descricao' => 'Editar secretarias', 'grupo' => 'secretaria'],
+            ['nome' => 'secretaria.excluir', 'descricao' => 'Excluir secretarias', 'grupo' => 'secretaria'],
+        ];
+
+        foreach ($permissions as $permission) {
+            DB::connection('tenant')->table('permissions')->updateOrInsert(
+                ['nome' => $permission['nome']],
+                array_merge($permission, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
+        }
+    }
+}

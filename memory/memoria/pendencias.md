@@ -231,51 +231,50 @@
 
 **Schema e Models:**
 - [x] Migration: criar tabela `roles` (nome, descricao, is_padrao, is_ativo) *(IMP-014)*
-- [ ] Migration: criar tabela `permissions` (nome, descricao, grupo)
-- [ ] Migration: criar tabela `role_permissions` (role_id, permission_id — pivot)
-- [ ] Migration: criar tabela `user_permissions` (user_id, permission_id, expires_at, concedido_por)
-- [ ] Migration: criar tabela `user_secretarias` (user_id, secretaria_id — pivot)
-- [ ] Migration: criar tabela `workflow_aprovacoes` (aprovavel_type/id, etapa, etapa_ordem, role_responsavel_id, user_id, status, parecer)
+- [x] Migration: criar tabela `permissions` (nome, descricao, grupo) *(IMP-015)*
+- [x] Migration: criar tabela `role_permissions` (role_id, permission_id — pivot) *(IMP-015)*
+- [x] Migration: criar tabela `user_permissions` (user_id, permission_id, expires_at, concedido_por) *(IMP-015)*
+- [x] Migration: criar tabela `user_secretarias` (user_id, secretaria_id — pivot) *(IMP-015)*
+- [ ] Migration: criar tabela `workflow_aprovacoes` (aprovavel_type/id, etapa, etapa_ordem, role_responsavel_id, user_id, status, parecer) — *movido para Fase 3c*
 - [x] Migration: alterar tabela `users` (adicionar FK constraint `role_id` → roles com nullOnDelete) *(IMP-014)*
-- [ ] Novo enum: StatusAprovacao (pendente, aprovado, reprovado)
-- [ ] Novo enum: EtapaWorkflow (solicitacao, aprovacao_secretario, parecer_juridico, validacao_controladoria, homologacao)
-- [x] Model: Role ($fillable, hasMany User) *(IMP-014 — belongsToMany Permission sera adicionado na Fase 2)*
-- [ ] Model: Permission ($fillable, belongsToMany Role, belongsToMany User)
-- [ ] Model: UserPermission ($fillable, belongsTo User, belongsTo Permission)
-- [ ] Model: WorkflowAprovacao ($fillable, morphTo aprovavel, belongsTo Role, belongsTo User)
-- [x] Atualizar Model User (adicionar belongsTo Role) *(IMP-014 — belongsToMany Secretaria/Permission e hasPermission() serao adicionados na Fase 2)*
+- [ ] Novo enum: StatusAprovacao (pendente, aprovado, reprovado) — *movido para Fase 3c*
+- [ ] Novo enum: EtapaWorkflow (solicitacao, aprovacao_secretario, parecer_juridico, validacao_controladoria, homologacao) — *movido para Fase 3c*
+- [x] Model: Role ($fillable, hasMany User, belongsToMany Permission) *(IMP-014 + IMP-015)*
+- [x] Model: Permission ($fillable, belongsToMany Role, belongsToMany User) *(IMP-015)*
+- [ ] Model: WorkflowAprovacao ($fillable, morphTo aprovavel, belongsTo Role, belongsTo User) — *movido para Fase 3c*
+- [x] Atualizar Model User (belongsTo Role, belongsToMany Secretaria/Permission, hasPermission(), hasRole(), isPerfilEstrategico()) *(IMP-014 + IMP-015)*
 - [x] Seeder: RoleSeeder (8 perfis padrao com is_padrao=true, integrado em TenantService e TenantCreateCommand) *(IMP-014)*
-- [ ] Seeder: PermissionSeeder (permissões granulares por grupo)
-- [ ] Seeder: RolePermissionSeeder (associação padrão role ↔ permissions)
-- [ ] Índices: roles.nome (unique), permissions.nome (unique), user_secretarias (user_id + secretaria_id unique), workflow_aprovacoes (aprovavel_type + aprovavel_id + etapa unique)
+- [x] Seeder: PermissionSeeder (36 permissões granulares em 13 grupos) *(IMP-015)*
+- [x] Seeder: RolePermissionSeeder (associação padrão role ↔ permissions, matriz 8 perfis) *(IMP-015)*
+- [x] Índices: roles.nome (unique), permissions.nome (unique), user_secretarias (user_id + secretaria_id primary) *(IMP-014 + IMP-015)*
 
 **Middleware e Autorização:**
-- [ ] Middleware: EnsureUserHasPermission (substitui EnsureUserIsAdmin + EnsureUserIsGestor)
+- [x] Middleware: EnsureUserHasPermission (route parameter `permission:recurso.acao`) *(IMP-015)*
 - [ ] Atualizar todas as Policies para verificar role + permission + secretaria
-- [ ] Helper $user->hasPermission('recurso.acao') no Model User
+- [x] Helper $user->hasPermission('recurso.acao') no Model User (verificacao real-time expires_at) *(IMP-015)*
 - [ ] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326)
 
 **Service e Controller:**
-- [ ] PermissaoService: verificação, atribuição, revogação, verificação de expiração
-- [ ] WorkflowService: criação de fluxo, avanço de etapas, reprovação, notificações
-- [ ] RolesController: CRUD de perfis (index, create, store, edit, update)
-- [ ] PermissoesController: gestão de permissões por role
-- [ ] Atualizar UsersController: atribuição de role + secretarias + permissões individuais
-- [ ] VerificarPermissoesExpiradasCommand (`permissoes:verificar-expiradas` — cron diário)
+- [x] PermissaoService: verificação, atribuição, revogação, sincronização *(IMP-015)*
+- [ ] WorkflowService: criação de fluxo, avanço de etapas, reprovação, notificações — *movido para Fase 3c*
+- [x] RolesController: CRUD de perfis (index, create, store, edit, update, destroy) *(IMP-015)*
+- [x] PermissoesController: gestão de permissões por role (index, update) *(IMP-015)*
+- [x] UsersController: CRUD com atribuição de role + secretarias *(IMP-015)*
+- [x] VerificarPermissoesExpiradasCommand (`permissoes:verificar-expiradas`) *(IMP-015)*
 - [ ] Scheduler: registrar VerificarPermissoesExpiradasCommand no schedule()
 
 **Views:**
-- [ ] roles/index.blade.php, create.blade.php, edit.blade.php
-- [ ] permissoes/index.blade.php (gestão por role — tabela de checkboxes por permissão)
-- [ ] Atualizar users/create.blade.php e edit.blade.php (seleção de role + secretarias)
-- [ ] Atualizar sidebar (menu dinâmico por permissão do usuário logado)
+- [x] roles/index.blade.php, create.blade.php, edit.blade.php *(IMP-015)*
+- [x] permissoes/index.blade.php (gestão por role — cards de checkboxes agrupados por grupo) *(IMP-015)*
+- [x] users/index.blade.php, create.blade.php, edit.blade.php (com role + secretarias) *(IMP-015)*
+- [x] Sidebar dinâmico (menu condicional por permissão do usuário logado) *(IMP-015)*
 
 **Testes:**
 - [ ] PermissaoServiceTest (verificação por role, por user, expiração automática)
-- [ ] WorkflowServiceTest (criação de fluxo, avanço, reprovação, notificação)
+- [ ] WorkflowServiceTest (criação de fluxo, avanço, reprovação, notificação) — *movido para Fase 3c*
 - [ ] PerfilUsuarioTest (acesso por perfil a recursos protegidos)
 - [ ] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job)
-- [ ] WorkflowAprovacaoTest (fluxo completo de aditivo com 5 etapas)
+- [ ] WorkflowAprovacaoTest (fluxo completo de aditivo com 5 etapas) — *movido para Fase 3c*
 - [ ] Testar perfis padrão não deletáveis (is_padrao = true)
 - [ ] Testar escopo por secretaria (queries filtradas automaticamente)
 

@@ -4,7 +4,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\FornecedoresController;
+use App\Http\Controllers\Tenant\PermissoesController;
+use App\Http\Controllers\Tenant\RolesController;
 use App\Http\Controllers\Tenant\SecretariasController;
+use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,12 +32,38 @@ Route::middleware(['tenant', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('tenant.logout');
 
+    // Cadastros
     Route::resource('secretarias', SecretariasController::class)
         ->except(['show'])
-        ->names('tenant.secretarias');
+        ->names('tenant.secretarias')
+        ->middleware('permission:secretaria.visualizar');
 
     Route::resource('fornecedores', FornecedoresController::class)
         ->except(['show'])
         ->names('tenant.fornecedores')
-        ->parameters(['fornecedores' => 'fornecedor']);
+        ->parameters(['fornecedores' => 'fornecedor'])
+        ->middleware('permission:fornecedor.visualizar');
+
+    // Administracao — Usuarios
+    Route::resource('usuarios', UsersController::class)
+        ->except(['show'])
+        ->names('tenant.users')
+        ->parameters(['usuarios' => 'user'])
+        ->middleware('permission:usuario.visualizar');
+
+    // Administracao — Perfis
+    Route::resource('perfis', RolesController::class)
+        ->except(['show'])
+        ->names('tenant.roles')
+        ->parameters(['perfis' => 'role'])
+        ->middleware('permission:configuracao.visualizar');
+
+    // Administracao — Permissoes por Perfil
+    Route::get('perfis/{role}/permissoes', [PermissoesController::class, 'index'])
+        ->name('tenant.permissoes.index')
+        ->middleware('permission:configuracao.editar');
+
+    Route::put('perfis/{role}/permissoes', [PermissoesController::class, 'update'])
+        ->name('tenant.permissoes.update')
+        ->middleware('permission:configuracao.editar');
 });

@@ -14,103 +14,153 @@
 
             {{-- Dashboard --}}
             <li>
-                <a href="{{ route('tenant.dashboard') }}">
+                <a href="{{ route('tenant.dashboard') }}"
+                   class="{{ request()->routeIs('tenant.dashboard') ? 'active-page' : '' }}">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
                     <span>Dashboard</span>
                 </a>
             </li>
 
-            {{-- GESTÃO CONTRATUAL --}}
-            <li class="sidebar-menu-group-title">Gestão Contratual</li>
+            {{-- GESTAO CONTRATUAL --}}
+            @if (auth()->user()->hasPermission('contrato.visualizar') || auth()->user()->hasPermission('aditivo.visualizar') || auth()->user()->hasPermission('documento.visualizar'))
+                <li class="sidebar-menu-group-title">Gestao Contratual</li>
 
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="solar:document-bold" class="menu-icon"></iconify-icon>
-                    <span>Contratos</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="#"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Todos os Contratos</a>
+                @if (auth()->user()->hasPermission('contrato.visualizar'))
+                    <li class="dropdown">
+                        <a href="javascript:void(0)">
+                            <iconify-icon icon="solar:document-bold" class="menu-icon"></iconify-icon>
+                            <span>Contratos</span>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li>
+                                <a href="#"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Todos os Contratos</a>
+                            </li>
+                            @if (auth()->user()->hasPermission('contrato.criar'))
+                                <li>
+                                    <a href="#"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Novo Contrato</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
+                @endif
+
+                @if (auth()->user()->hasPermission('aditivo.visualizar'))
                     <li>
-                        <a href="#"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Novo Contrato</a>
+                        <a href="#">
+                            <iconify-icon icon="solar:add-circle-bold" class="menu-icon"></iconify-icon>
+                            <span>Aditivos</span>
+                        </a>
                     </li>
-                </ul>
-            </li>
+                @endif
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:add-circle-bold" class="menu-icon"></iconify-icon>
-                    <span>Aditivos</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:folder-bold" class="menu-icon"></iconify-icon>
-                    <span>Documentos</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('documento.visualizar'))
+                    <li>
+                        <a href="#">
+                            <iconify-icon icon="solar:folder-bold" class="menu-icon"></iconify-icon>
+                            <span>Documentos</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
 
             {{-- CADASTROS --}}
-            <li class="sidebar-menu-group-title">Cadastros</li>
+            @if (auth()->user()->hasPermission('fornecedor.visualizar') || auth()->user()->hasPermission('secretaria.visualizar'))
+                <li class="sidebar-menu-group-title">Cadastros</li>
 
-            <li>
-                <a href="{{ route('tenant.fornecedores.index') }}"
-                   class="{{ request()->routeIs('tenant.fornecedores.*') ? 'active-page' : '' }}">
-                    <iconify-icon icon="solar:buildings-bold" class="menu-icon"></iconify-icon>
-                    <span>Fornecedores</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('fornecedor.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.fornecedores.index') }}"
+                           class="{{ request()->routeIs('tenant.fornecedores.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:buildings-bold" class="menu-icon"></iconify-icon>
+                            <span>Fornecedores</span>
+                        </a>
+                    </li>
+                @endif
 
-            <li>
-                <a href="{{ route('tenant.secretarias.index') }}"
-                   class="{{ request()->routeIs('tenant.secretarias.*') ? 'active-page' : '' }}">
-                    <iconify-icon icon="solar:case-round-bold" class="menu-icon"></iconify-icon>
-                    <span>Secretarias</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('secretaria.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.secretarias.index') }}"
+                           class="{{ request()->routeIs('tenant.secretarias.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:case-round-bold" class="menu-icon"></iconify-icon>
+                            <span>Secretarias</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
 
             {{-- MONITORAMENTO --}}
-            <li class="sidebar-menu-group-title">Monitoramento</li>
+            @if (auth()->user()->hasPermission('contrato.visualizar') || auth()->user()->hasPermission('relatorio.visualizar'))
+                <li class="sidebar-menu-group-title">Monitoramento</li>
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:bell-bold" class="menu-icon"></iconify-icon>
-                    <span>Alertas</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('contrato.visualizar'))
+                    <li>
+                        <a href="#">
+                            <iconify-icon icon="solar:bell-bold" class="menu-icon"></iconify-icon>
+                            <span>Alertas</span>
+                        </a>
+                    </li>
+                @endif
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:chart-bold" class="menu-icon"></iconify-icon>
-                    <span>Relatórios</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('relatorio.visualizar'))
+                    <li>
+                        <a href="#">
+                            <iconify-icon icon="solar:chart-bold" class="menu-icon"></iconify-icon>
+                            <span>Relatorios</span>
+                        </a>
+                    </li>
+                @endif
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:shield-warning-bold" class="menu-icon"></iconify-icon>
-                    <span>Painel de Risco</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('contrato.visualizar'))
+                    <li>
+                        <a href="#">
+                            <iconify-icon icon="solar:shield-warning-bold" class="menu-icon"></iconify-icon>
+                            <span>Painel de Risco</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
 
-            {{-- ADMINISTRAÇÃO --}}
-            <li class="sidebar-menu-group-title">Administração</li>
+            {{-- ADMINISTRACAO --}}
+            @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar'))
+                <li class="sidebar-menu-group-title">Administracao</li>
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:users-group-two-rounded-bold" class="menu-icon"></iconify-icon>
-                    <span>Usuários</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('usuario.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.users.index') }}"
+                           class="{{ request()->routeIs('tenant.users.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold" class="menu-icon"></iconify-icon>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                @endif
 
-            <li>
-                <a href="#">
-                    <iconify-icon icon="solar:settings-bold" class="menu-icon"></iconify-icon>
-                    <span>Configurações</span>
-                </a>
-            </li>
+                @if (auth()->user()->hasPermission('configuracao.visualizar'))
+                    <li class="dropdown">
+                        <a href="javascript:void(0)"
+                           class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:settings-bold" class="menu-icon"></iconify-icon>
+                            <span>Configuracoes</span>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li>
+                                <a href="{{ route('tenant.roles.index') }}"
+                                   class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') ? 'active-page' : '' }}">
+                                    <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Perfis e Permissoes
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
+                @if (auth()->user()->hasPermission('auditoria.visualizar'))
+                    <li>
+                        <a href="#">
+                            <iconify-icon icon="solar:clipboard-list-bold" class="menu-icon"></iconify-icon>
+                            <span>Auditoria</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
 
         </ul>
     </div>

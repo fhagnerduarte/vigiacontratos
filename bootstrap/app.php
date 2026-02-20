@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'tenant' => \App\Http\Middleware\SetTenantConnection::class,
             'admin.saas' => \App\Http\Middleware\EnsureAdminSaaS::class,
+            'permission' => \App\Http\Middleware\EnsureUserHasPermission::class,
         ]);
 
         $middleware->priority([

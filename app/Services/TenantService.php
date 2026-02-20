@@ -35,7 +35,14 @@ class TenantService
             '--force' => true,
         ]);
 
-        $seeders = ['RoleSeeder', 'TenantUserSeeder', 'SecretariaSeeder', 'FornecedorSeeder'];
+        $seeders = [
+            'RoleSeeder',
+            'PermissionSeeder',
+            'RolePermissionSeeder',
+            'TenantUserSeeder',
+            'SecretariaSeeder',
+            'FornecedorSeeder',
+        ];
 
         foreach ($seeders as $seeder) {
             Artisan::call('db:seed', [
