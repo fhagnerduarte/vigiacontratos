@@ -56,14 +56,16 @@
             <li class="sidebar-menu-group-title">Cadastros</li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('tenant.fornecedores.index') }}"
+                   class="{{ request()->routeIs('tenant.fornecedores.*') ? 'active-page' : '' }}">
                     <iconify-icon icon="solar:buildings-bold" class="menu-icon"></iconify-icon>
                     <span>Fornecedores</span>
                 </a>
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('tenant.secretarias.index') }}"
+                   class="{{ request()->routeIs('tenant.secretarias.*') ? 'active-page' : '' }}">
                     <iconify-icon icon="solar:case-round-bold" class="menu-icon"></iconify-icon>
                     <span>Secretarias</span>
                 </a>

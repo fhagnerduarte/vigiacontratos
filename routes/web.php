@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\FornecedoresController;
+use App\Http\Controllers\Tenant\SecretariasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,4 +28,13 @@ Route::middleware(['tenant', 'guest'])->group(function () {
 Route::middleware(['tenant', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('tenant.logout');
+
+    Route::resource('secretarias', SecretariasController::class)
+        ->except(['show'])
+        ->names('tenant.secretarias');
+
+    Route::resource('fornecedores', FornecedoresController::class)
+        ->except(['show'])
+        ->names('tenant.fornecedores')
+        ->parameters(['fornecedores' => 'fornecedor']);
 });

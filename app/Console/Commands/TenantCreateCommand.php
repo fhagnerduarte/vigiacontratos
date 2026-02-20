@@ -59,6 +59,19 @@ class TenantCreateCommand extends Command
 
         $this->info($this->laravel->make('Illuminate\Contracts\Console\Kernel')->output() ?: '    Migrations aplicadas.');
 
+        $this->info("  Aplicando seeders no banco do tenant...");
+
+        $seeders = ['RoleSeeder', 'TenantUserSeeder', 'SecretariaSeeder', 'FornecedorSeeder'];
+
+        foreach ($seeders as $seeder) {
+            Artisan::call('db:seed', [
+                '--class' => $seeder,
+                '--database' => 'tenant',
+                '--force' => true,
+            ]);
+            $this->info("    {$seeder} aplicado.");
+        }
+
         $this->info("Tenant '{$nome}' criado com sucesso!");
         $this->info("  Slug: {$slug}");
         $this->info("  Banco: {$databaseName}");

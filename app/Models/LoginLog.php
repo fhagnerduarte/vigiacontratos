@@ -13,6 +13,7 @@ class LoginLog extends Model
 
     protected $fillable = [
         'user_id',
+        'tenant_id',
         'ip_address',
         'user_agent',
         'success',

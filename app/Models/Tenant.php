@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tenant extends Model
 {
@@ -16,12 +15,10 @@ class Tenant extends Model
         'plano',
     ];
 
-    protected $casts = [
-        'is_ativo' => 'boolean',
-    ];
-
-    public function tenantUsers(): HasMany
+    protected function casts(): array
     {
-        return $this->hasMany(TenantUser::class);
+        return [
+            'is_ativo' => 'boolean',
+        ];
     }
 }

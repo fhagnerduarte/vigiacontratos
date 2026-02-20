@@ -46,6 +46,7 @@ class LoginRequest extends FormRequest
             if ($user) {
                 LoginLog::create([
                     'user_id' => $user->id,
+                    'tenant_id' => app('tenant')?->id,
                     'ip_address' => $this->ip(),
                     'user_agent' => $this->userAgent(),
                     'success' => false,
@@ -61,6 +62,7 @@ class LoginRequest extends FormRequest
 
         LoginLog::create([
             'user_id' => $user->id,
+            'tenant_id' => app('tenant')?->id,
             'ip_address' => $this->ip(),
             'user_agent' => $this->userAgent(),
             'success' => true,

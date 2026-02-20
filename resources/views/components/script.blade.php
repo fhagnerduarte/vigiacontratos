@@ -25,6 +25,8 @@
     <script src="{{ asset('assets/js/lib/audioplayer.js') }}"></script>
     <!-- main js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <!-- input masks -->
+    <script src="{{ asset('assets/js/input-masks.js') }}"></script>
 
     {!! isset($script) ? $script : '' !!}
     @stack('scripts')
