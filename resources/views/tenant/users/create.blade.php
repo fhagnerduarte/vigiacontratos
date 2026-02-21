@@ -67,7 +67,7 @@
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
                         Perfil <span class="text-danger-main">*</span>
                     </label>
-                    <select name="role_id" class="form-control radius-8 @error('role_id') is-invalid @enderror" required>
+                    <select name="role_id" class="form-control radius-8 form-select select2 @error('role_id') is-invalid @enderror" required>
                         <option value="">Selecione um perfil</option>
                         @foreach ($roles as $role)
                             <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
@@ -82,7 +82,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Status</label>
-                    <select name="is_ativo" class="form-control radius-8">
+                    <select name="is_ativo" class="form-control radius-8 form-select select2">
                         <option value="1" {{ old('is_ativo', '1') == '1' ? 'selected' : '' }}>Ativo</option>
                         <option value="0" {{ old('is_ativo') === '0' ? 'selected' : '' }}>Inativo</option>
                     </select>

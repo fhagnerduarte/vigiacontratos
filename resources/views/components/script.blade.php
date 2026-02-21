@@ -23,10 +23,15 @@
     <script src="{{ asset('assets/js/lib/file-upload.js') }}"></script>
     <!-- audioplayer js -->
     <script src="{{ asset('assets/js/lib/audioplayer.js') }}"></script>
+    <!-- Select2 js -->
+    <script src="{{ asset('assets/js/lib/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/lib/select2-pt-BR.js') }}"></script>
     <!-- main js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <!-- input masks -->
     <script src="{{ asset('assets/js/input-masks.js') }}"></script>
+    <!-- Select2 init -->
+    <script src="{{ asset('assets/js/select2-init.js') }}"></script>
 
     {!! isset($script) ? $script : '' !!}
     @stack('scripts')

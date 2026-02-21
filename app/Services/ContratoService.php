@@ -66,7 +66,7 @@ class ContratoService
             $contrato = Contrato::create($dados);
 
             // Designa fiscal se dados fornecidos (RN-024)
-            if ($dadosFiscal && ! empty($dadosFiscal['fiscal_nome'])) {
+            if ($dadosFiscal && ! empty($dadosFiscal['servidor_id'])) {
                 FiscalService::designar($contrato, $dadosFiscal);
             }
 

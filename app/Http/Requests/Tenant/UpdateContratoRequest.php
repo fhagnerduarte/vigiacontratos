@@ -58,7 +58,7 @@ class UpdateContratoRequest extends FormRequest
             'responsavel_tecnico' => ['nullable', 'required_if:tipo,obra', 'string', 'max:255'],
 
             // Outros
-            'gestor_nome' => ['nullable', 'string', 'max:255'],
+            'servidor_id' => ['nullable', Rule::exists('tenant.servidores', 'id')],
             'observacoes' => ['nullable', 'string'],
         ];
     }

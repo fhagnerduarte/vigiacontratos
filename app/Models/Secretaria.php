@@ -21,4 +21,9 @@ class Secretaria extends Model
     {
         return $this->hasMany(Contrato::class);
     }
+
+    public function servidores(): HasMany
+    {
+        return $this->hasMany(Servidor::class);
+    }
 }

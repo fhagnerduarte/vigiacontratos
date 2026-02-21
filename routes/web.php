@@ -4,12 +4,14 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\ContratosController;
+use App\Http\Controllers\Tenant\DocumentosController;
 use App\Http\Controllers\Tenant\ExecucoesFinanceirasController;
 use App\Http\Controllers\Tenant\FiscaisController;
 use App\Http\Controllers\Tenant\FornecedoresController;
 use App\Http\Controllers\Tenant\PermissoesController;
 use App\Http\Controllers\Tenant\RolesController;
 use App\Http\Controllers\Tenant\SecretariasController;
+use App\Http\Controllers\Tenant\ServidoresController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +53,23 @@ Route::middleware(['tenant', 'auth'])->group(function () {
         ->name('tenant.contratos.execucoes.store')
         ->middleware('permission:financeiro.registrar_empenho');
 
+    // Gestao Contratual — Documentos
+    Route::get('documentos', [DocumentosController::class, 'index'])
+        ->name('tenant.documentos.index')
+        ->middleware('permission:documento.visualizar');
+
+    Route::post('contratos/{contrato}/documentos', [DocumentosController::class, 'store'])
+        ->name('tenant.contratos.documentos.store')
+        ->middleware('permission:documento.criar');
+
+    Route::get('documentos/{documento}/download', [DocumentosController::class, 'download'])
+        ->name('tenant.documentos.download')
+        ->middleware('permission:documento.visualizar');
+
+    Route::delete('documentos/{documento}', [DocumentosController::class, 'destroy'])
+        ->name('tenant.documentos.destroy')
+        ->middleware('permission:documento.excluir');
+
     // Cadastros
     Route::resource('secretarias', SecretariasController::class)
         ->except(['show'])
@@ -62,6 +81,12 @@ Route::middleware(['tenant', 'auth'])->group(function () {
         ->names('tenant.fornecedores')
         ->parameters(['fornecedores' => 'fornecedor'])
         ->middleware('permission:fornecedor.visualizar');
+
+    Route::resource('servidores', ServidoresController::class)
+        ->except(['show'])
+        ->names('tenant.servidores')
+        ->parameters(['servidores' => 'servidor'])
+        ->middleware('permission:servidor.visualizar');
 
     // Administracao — Usuarios
     Route::resource('usuarios', UsersController::class)

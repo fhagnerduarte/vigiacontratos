@@ -62,7 +62,8 @@
 
                 @if (auth()->user()->hasPermission('documento.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.documentos.index') }}"
+                           class="{{ request()->routeIs('tenant.documentos.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:folder-bold" class="menu-icon"></iconify-icon>
                             <span>Documentos</span>
                         </a>
@@ -71,7 +72,7 @@
             @endif
 
             {{-- CADASTROS --}}
-            @if (auth()->user()->hasPermission('fornecedor.visualizar') || auth()->user()->hasPermission('secretaria.visualizar'))
+            @if (auth()->user()->hasPermission('fornecedor.visualizar') || auth()->user()->hasPermission('secretaria.visualizar') || auth()->user()->hasPermission('servidor.visualizar'))
                 <li class="sidebar-menu-group-title">Cadastros</li>
 
                 @if (auth()->user()->hasPermission('fornecedor.visualizar'))
@@ -90,6 +91,16 @@
                            class="{{ request()->routeIs('tenant.secretarias.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:case-round-bold" class="menu-icon"></iconify-icon>
                             <span>Secretarias</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (auth()->user()->hasPermission('servidor.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.servidores.index') }}"
+                           class="{{ request()->routeIs('tenant.servidores.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:user-id-bold" class="menu-icon"></iconify-icon>
+                            <span>Servidores</span>
                         </a>
                     </li>
                 @endif

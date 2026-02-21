@@ -17,13 +17,14 @@ class FiscaisController extends Controller
 
         // Verifica se ja existe fiscal atual — se sim, e troca (RN-034)
         if ($contrato->fiscalAtual) {
+            $fiscalAnterior = $contrato->fiscalAtual->nome;
             $novoFiscal = FiscalService::trocar($contrato, $dados);
 
             // Auditoria da troca de fiscal (RN-036)
             AuditoriaService::registrar(
                 $contrato,
                 'fiscal_atual',
-                $contrato->fiscalAtual?->nome ?? 'nenhum',
+                $fiscalAnterior,
                 $novoFiscal->nome,
                 $request->user(),
                 $request->ip()
@@ -34,12 +35,7 @@ class FiscaisController extends Controller
         }
 
         // Primeira designacao
-        FiscalService::designar($contrato, [
-            'fiscal_nome' => $dados['nome'],
-            'fiscal_matricula' => $dados['matricula'],
-            'fiscal_cargo' => $dados['cargo'],
-            'fiscal_email' => $dados['email'] ?? null,
-        ]);
+        FiscalService::designar($contrato, $dados);
 
         return redirect()->route('tenant.contratos.show', $contrato)
             ->with('success', 'Fiscal designado com sucesso.');

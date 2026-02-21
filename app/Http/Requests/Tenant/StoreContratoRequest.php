@@ -52,13 +52,10 @@ class StoreContratoRequest extends FormRequest
             'responsavel_tecnico' => ['nullable', 'required_if:tipo,obra', 'string', 'max:255'],
 
             // Fiscal
-            'fiscal_nome' => ['required', 'string', 'max:255'],
-            'fiscal_matricula' => ['required', 'string', 'max:50'],
-            'fiscal_cargo' => ['required', 'string', 'max:255'],
-            'fiscal_email' => ['nullable', 'string', 'email', 'max:255'],
+            'fiscal_servidor_id' => ['required', Rule::exists('tenant.servidores', 'id')],
 
             // Outros
-            'gestor_nome' => ['nullable', 'string', 'max:255'],
+            'servidor_id' => ['nullable', Rule::exists('tenant.servidores', 'id')],
             'observacoes' => ['nullable', 'string'],
         ];
     }
@@ -81,9 +78,8 @@ class StoreContratoRequest extends FormRequest
             'data_fim.after_or_equal' => 'A data de fim deve ser igual ou posterior a data de inicio (RN-003).',
             'fundamento_legal.required_if' => 'O fundamento legal e obrigatorio para esta modalidade (RN-025/RN-026).',
             'responsavel_tecnico.required_if' => 'O responsavel tecnico e obrigatorio para contratos de obra (RN-028).',
-            'fiscal_nome.required' => 'O nome do fiscal e obrigatorio (RN-024).',
-            'fiscal_matricula.required' => 'A matricula do fiscal e obrigatoria.',
-            'fiscal_cargo.required' => 'O cargo do fiscal e obrigatorio.',
+            'fiscal_servidor_id.required' => 'Selecione o servidor que sera o fiscal do contrato (RN-024).',
+            'fiscal_servidor_id.exists' => 'O servidor selecionado nao existe.',
             'ano.required' => 'O ano e obrigatorio.',
             'ano.size' => 'O ano deve ter 4 digitos.',
         ];

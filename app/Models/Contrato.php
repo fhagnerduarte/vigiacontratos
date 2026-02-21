@@ -6,8 +6,10 @@ use App\Enums\CategoriaContrato;
 use App\Enums\CategoriaServico;
 use App\Enums\ModalidadeContratacao;
 use App\Enums\NivelRisco;
+use App\Enums\StatusCompletudeDocumental;
 use App\Enums\StatusContrato;
 use App\Enums\TipoContrato;
+use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoPagamento;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +52,7 @@ class Contrato extends Model
         'categoria_servico',
         'responsavel_tecnico',
         'gestor_nome',
+        'servidor_id',
         'score_risco',
         'nivel_risco',
         'percentual_executado',
@@ -87,6 +90,11 @@ class Contrato extends Model
         return $this->belongsTo(Secretaria::class);
     }
 
+    public function gestor(): BelongsTo
+    {
+        return $this->belongsTo(Servidor::class, 'servidor_id');
+    }
+
     public function fiscais(): HasMany
     {
         return $this->hasMany(Fiscal::class);
@@ -112,10 +120,51 @@ class Contrato extends Model
         return $this->morphMany(Documento::class, 'documentable');
     }
 
+    public function documentosVersaoAtual(): MorphMany
+    {
+        return $this->documentos()->versaoAtual();
+    }
+
     // Accessors
 
     public function getDiasParaVencimentoAttribute(): int
     {
         return (int) now()->startOfDay()->diffInDays($this->data_fim->startOfDay(), false);
+    }
+
+    /**
+     * Calcula a completude documental do contrato (RN-128).
+     *
+     * Checklist obrigatorio padrao: contrato_original, publicacao_oficial, parecer_juridico, nota_empenho (RN-129).
+     */
+    public function getStatusCompletudeAttribute(): StatusCompletudeDocumental
+    {
+        $checklistObrigatorio = [
+            TipoDocumentoContratual::ContratoOriginal,
+            TipoDocumentoContratual::PublicacaoOficial,
+            TipoDocumentoContratual::ParecerJuridico,
+            TipoDocumentoContratual::NotaEmpenho,
+        ];
+
+        $tiposPresentes = $this->documentos
+            ->where('is_versao_atual', true)
+            ->whereNull('deleted_at')
+            ->pluck('tipo_documento')
+            ->unique()
+            ->values();
+
+        $tiposObrigatoriosPresentes = collect($checklistObrigatorio)->filter(
+            fn (TipoDocumentoContratual $tipo) => $tiposPresentes->contains($tipo)
+        );
+
+        if ($tiposObrigatoriosPresentes->count() === count($checklistObrigatorio)) {
+            return StatusCompletudeDocumental::Completo;
+        }
+
+        if ($tiposPresentes->contains(TipoDocumentoContratual::ContratoOriginal)) {
+            return StatusCompletudeDocumental::Parcial;
+        }
+
+        return StatusCompletudeDocumental::Incompleto;
     }
 }

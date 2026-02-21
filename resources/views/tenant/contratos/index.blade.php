@@ -23,7 +23,7 @@
         <form method="GET" action="{{ route('tenant.contratos.index') }}" class="row g-12 align-items-end">
             <div class="col-md-3">
                 <label class="form-label fw-semibold text-primary-light text-sm mb-4">Status</label>
-                <select name="status" class="form-control radius-8 form-select">
+                <select name="status" class="form-control radius-8 form-select select2">
                     <option value="">Todos</option>
                     @foreach (\App\Enums\StatusContrato::cases() as $status)
                         <option value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>{{ $status->label() }}</option>
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold text-primary-light text-sm mb-4">Secretaria</label>
-                <select name="secretaria_id" class="form-control radius-8 form-select">
+                <select name="secretaria_id" class="form-control radius-8 form-select select2">
                     <option value="">Todas</option>
                     @foreach ($secretarias as $sec)
                         <option value="{{ $sec->id }}" {{ request('secretaria_id') == $sec->id ? 'selected' : '' }}>{{ $sec->nome }}</option>
@@ -41,7 +41,7 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold text-primary-light text-sm mb-4">Nivel de Risco</label>
-                <select name="nivel_risco" class="form-control radius-8 form-select">
+                <select name="nivel_risco" class="form-control radius-8 form-select select2">
                     <option value="">Todos</option>
                     @foreach (\App\Enums\NivelRisco::cases() as $risco)
                         <option value="{{ $risco->value }}" {{ request('nivel_risco') === $risco->value ? 'selected' : '' }}>{{ $risco->label() }}</option>

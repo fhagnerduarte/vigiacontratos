@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/lib/prism.css') }}">
     <!-- file upload css -->
     <link rel="stylesheet" href="{{ asset('assets/css/lib/file-upload.css') }}">
+    <!-- Select2 css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/select2-bootstrap-5-theme.min.css') }}">
     <!-- audioplayer css -->
     <link rel="stylesheet" href="{{ asset('assets/css/lib/audioplayer.css') }}">
     <!-- main css -->

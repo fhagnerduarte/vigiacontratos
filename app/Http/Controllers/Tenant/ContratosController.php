@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Enums\ModalidadeContratacao;
 use App\Enums\StatusContrato;
 use App\Enums\TipoContrato;
+use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoPagamento;
 use App\Enums\CategoriaContrato;
 use App\Enums\CategoriaServico;
@@ -15,7 +16,9 @@ use App\Http\Requests\Tenant\UpdateContratoRequest;
 use App\Models\Contrato;
 use App\Models\Fornecedor;
 use App\Models\Secretaria;
+use App\Models\Servidor;
 use App\Services\ContratoService;
+use App\Services\DocumentoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,10 +57,12 @@ class ContratosController extends Controller
     {
         $fornecedores = Fornecedor::orderBy('razao_social')->get();
         $secretarias = Secretaria::orderBy('nome')->get();
+        $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
 
         return view('tenant.contratos.create', compact(
             'fornecedores',
             'secretarias',
+            'servidores',
         ));
     }
 
@@ -67,12 +72,9 @@ class ContratosController extends Controller
 
         // Separa dados do fiscal
         $dadosFiscal = [
-            'fiscal_nome' => $dados['fiscal_nome'] ?? null,
-            'fiscal_matricula' => $dados['fiscal_matricula'] ?? null,
-            'fiscal_cargo' => $dados['fiscal_cargo'] ?? null,
-            'fiscal_email' => $dados['fiscal_email'] ?? null,
+            'servidor_id' => $dados['fiscal_servidor_id'] ?? null,
         ];
-        unset($dados['fiscal_nome'], $dados['fiscal_matricula'], $dados['fiscal_cargo'], $dados['fiscal_email']);
+        unset($dados['fiscal_servidor_id']);
 
         // Checkbox prorrogacao_automatica
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
@@ -88,16 +90,36 @@ class ContratosController extends Controller
         $contrato->load([
             'fornecedor',
             'secretaria',
-            'fiscalAtual',
+            'gestor',
+            'fiscalAtual.servidor',
             'fiscais' => fn ($q) => $q->orderBy('data_inicio', 'desc'),
             'execucoesFinanceiras' => fn ($q) => $q->orderBy('data_execucao', 'desc'),
             'execucoesFinanceiras.registrador',
-            'documentos',
+            'documentos' => fn ($q) => $q->orderBy('tipo_documento')->orderBy('versao', 'desc'),
+            'documentos.uploader',
             'historicoAlteracoes' => fn ($q) => $q->orderBy('created_at', 'desc'),
             'historicoAlteracoes.user',
         ]);
 
-        return view('tenant.contratos.show', compact('contrato'));
+        // Dados para aba Documentos (Modulo 5)
+        $checklistObrigatorio = DocumentoService::verificarChecklist($contrato);
+        $tiposDocumento = TipoDocumentoContratual::cases();
+
+        // Agrupar documentos por tipo (label) para exibicao
+        $documentosPorTipo = $contrato->documentos->groupBy(
+            fn ($doc) => $doc->tipo_documento->label()
+        );
+
+        // Servidores ativos para form de designar/trocar fiscal
+        $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
+
+        return view('tenant.contratos.show', compact(
+            'contrato',
+            'checklistObrigatorio',
+            'tiposDocumento',
+            'documentosPorTipo',
+            'servidores',
+        ));
     }
 
     public function edit(Contrato $contrato): View|RedirectResponse
@@ -108,11 +130,12 @@ class ContratosController extends Controller
                 ->with('error', 'Contrato vencido nao pode ser editado (RN-006). Para alterar, crie um aditivo ou novo contrato.');
         }
 
-        $contrato->load('fornecedor', 'secretaria');
+        $contrato->load('fornecedor', 'secretaria', 'gestor');
         $fornecedores = Fornecedor::orderBy('razao_social')->get();
         $secretarias = Secretaria::orderBy('nome')->get();
+        $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
 
-        return view('tenant.contratos.edit', compact('contrato', 'fornecedores', 'secretarias'));
+        return view('tenant.contratos.edit', compact('contrato', 'fornecedores', 'secretarias', 'servidores'));
     }
 
     public function update(UpdateContratoRequest $request, Contrato $contrato): RedirectResponse

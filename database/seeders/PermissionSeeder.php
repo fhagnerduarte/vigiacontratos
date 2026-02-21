@@ -30,6 +30,7 @@ class PermissionSeeder extends Seeder
             // Documento
             ['nome' => 'documento.visualizar', 'descricao' => 'Visualizar documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.criar', 'descricao' => 'Criar/upload de documentos', 'grupo' => 'documento'],
+            ['nome' => 'documento.download', 'descricao' => 'Download de documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.excluir', 'descricao' => 'Excluir documentos', 'grupo' => 'documento'],
 
             // Financeiro
@@ -65,6 +66,12 @@ class PermissionSeeder extends Seeder
             // Workflow
             ['nome' => 'workflow.visualizar', 'descricao' => 'Visualizar workflows de aprovacao', 'grupo' => 'workflow'],
             ['nome' => 'workflow.aprovar', 'descricao' => 'Aprovar etapas de workflow', 'grupo' => 'workflow'],
+
+            // Servidor
+            ['nome' => 'servidor.visualizar', 'descricao' => 'Visualizar servidores', 'grupo' => 'servidor'],
+            ['nome' => 'servidor.criar', 'descricao' => 'Criar servidores', 'grupo' => 'servidor'],
+            ['nome' => 'servidor.editar', 'descricao' => 'Editar servidores', 'grupo' => 'servidor'],
+            ['nome' => 'servidor.excluir', 'descricao' => 'Excluir servidores', 'grupo' => 'servidor'],
 
             // Secretaria
             ['nome' => 'secretaria.visualizar', 'descricao' => 'Visualizar secretarias', 'grupo' => 'secretaria'],

@@ -44,8 +44,8 @@
 - [x] Implementar bloqueio de login após 5 tentativas com cooldown 15min — ADR-046 *(IMP-013)*
 - [x] Implementar expiração de sessão configurável (SESSION_LIFETIME) — ADR-049 *(IMP-013)*
 - [ ] Middleware ForceHttps para produção
-- [ ] Adicionar campo `hash_integridade` ao Model Documento — ADR-047
-- [ ] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220
+- [x] Adicionar campo `hash_integridade` ao Model Documento — ADR-047 *(IMP-016 campo na migration, IMP-017 calculo no upload)*
+- [x] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220 *(IMP-017)*
 - [ ] Implementar verificação de integridade (recalcular hash e comparar) — RN-221
 - [ ] Implementar relatório de logs exportável (PDF/CSV) — RN-222
 - [x] Criar seeders iniciais (AdminUserSeeder IMP-012, RoleSeeder IMP-014) — *SecretariaSeeder opcional para futuro*
@@ -147,42 +147,41 @@
 ### Módulo: Documentos (Central de Documentos — Módulo 5)
 
 **Schema e Models:**
-- [ ] Atualizar enum TipoDocumentoContratual (7 → 12 valores: + nota_empenho, nota_fiscal, relatorio_medicao, relatorio_fiscalizacao, justificativa; renomear `outros` → `documento_complementar`)
-- [ ] Novo enum: StatusCompletudeDocumental (completo, parcial, incompleto)
-- [ ] Novo enum: AcaoLogDocumento (upload, download, substituicao, exclusao, visualizacao)
-- [ ] Migration: alterar tabela `documentos` (adicionar: nome_original, nome_arquivo, is_versao_atual, deleted_at; renomear `nome` → `nome_original`; ajustar enum tipo_documento para 12 valores)
-- [ ] Migration: criar tabela `log_acesso_documentos` (documento_id, user_id, acao, ip_address, created_at — append-only)
-- [ ] Índices em `documentos`: composto (documentable_type + documentable_id), tipo_documento, is_versao_atual
-- [ ] Índices em `log_acesso_documentos`: documento_id, user_id
-- [ ] Model: atualizar Documento ($fillable, SoftDeletes, is_versao_atual, nome_original, nome_arquivo, relacionamento hasMany LogAcessoDocumento)
-- [ ] Model: LogAcessoDocumento (novo — $fillable, belongsTo Documento e User, sem SoftDeletes, sem updated_at)
+- [x] Atualizar enum TipoDocumentoContratual (7 → 12 valores) *(ja estava com 12 valores desde IMP-016)*
+- [x] Novo enum: StatusCompletudeDocumental (completo, parcial, incompleto) *(IMP-017)*
+- [x] Novo enum: AcaoLogDocumento (upload, download, substituicao, exclusao, visualizacao) *(IMP-017)*
+- [x] Migration: alterar tabela `documentos` (adicionar: nome_arquivo, descricao, versao, is_versao_atual; renomear path→caminho, tamanho_bytes→tamanho; hash_integridade nullable) *(IMP-017)*
+- [x] Migration: criar tabela `log_acesso_documentos` (documento_id, user_id, acao, ip_address, created_at — append-only) *(IMP-017)*
+- [x] Índices em `documentos`: composto (documentable_type + documentable_id) *(IMP-016)*, tipo_documento, is_versao_atual *(IMP-017)*
+- [x] Índices em `log_acesso_documentos`: documento_id, user_id *(IMP-017)*
+- [x] Model: atualizar Documento ($fillable, SoftDeletes, is_versao_atual, nome_original, nome_arquivo, scopeVersaoAtual, relacionamento hasMany LogAcessoDocumento) *(IMP-017)*
+- [x] Model: LogAcessoDocumento (novo — $fillable, belongsTo Documento e User, sem SoftDeletes, sem updated_at, append-only) *(IMP-017)*
 
 **Controller e Service:**
-- [ ] DocumentoService: método upload() com geração de nome padronizado (RN-121), versionamento automático (RN-120), registro em storage por contrato/tipo (ADR-033), log de acesso (RN-122)
-- [ ] DocumentoService: método download() com verificação de autorização (DocumentoPolicy) e registro de log de acesso
-- [ ] DocumentoService: método calcularCompletude(Contrato) — retorna StatusCompletudeDocumental (RN-128)
-- [ ] DocumentoService: método verificarPendenciasDocumentais(Contrato) — retorna array de tipos pendentes do checklist (RN-129)
-- [ ] DocumentoService: método gerarIndicadoresDashboard() — retorna os 4 indicadores (RN-132)
-- [ ] DocumentosController: atualizar upload múltiplo; adicionar download autenticado; adicionar versões; adicionar soft delete
-- [ ] DocumentosController: adicionar endpoint de busca inteligente com filtros combinados (RN-131)
-- [ ] DocumentosController: adicionar endpoint do dashboard de documentos
+- [x] DocumentoService: método upload() com geração de nome padronizado (RN-121), versionamento automático (RN-120), registro em storage por contrato/tipo (ADR-033), hash SHA-256 (ADR-047), validação magic bytes PDF, log de acesso (RN-122) *(IMP-017)*
+- [x] DocumentoService: método download() com registro de log de acesso *(IMP-017)*
+- [x] DocumentoService: método calcularCompletude(Contrato) — retorna StatusCompletudeDocumental (RN-128) *(IMP-017 — via accessor no Model Contrato)*
+- [x] DocumentoService: método verificarChecklist(Contrato) — retorna array de tipos pendentes do checklist (RN-129) *(IMP-017)*
+- [x] DocumentoService: método gerarIndicadoresDashboard() — retorna os 4 indicadores (RN-132) *(IMP-017)*
+- [x] DocumentosController: upload, download autenticado, soft delete *(IMP-017)*
+- [x] DocumentosController: Central de Documentos com busca inteligente e filtros combinados (RN-131) *(IMP-017)*
 
 **Autorização e Validação:**
-- [ ] Novo: DocumentoPolicy (view, create, download, delete — por permissão RBAC: documento.visualizar, documento.criar, documento.download, documento.excluir — RN-130)
-- [ ] StoreDocumentoRequest: atualizar validação (max:20480 KB, tipos MIME, tipo_documento obrigatório com 12 valores)
-- [ ] DocumentoResource: atualizar (incluir versao, is_versao_atual, nome_original, nome_arquivo, tipo_documento label)
+- [ ] Novo: DocumentoPolicy (view, create, download, delete) — *autorização feita via middleware permission + hasPermission no controller; Policy formal pendente*
+- [x] StoreDocumentoRequest: validação (mimes:pdf, max:20480 KB, tipo_documento Enum) *(IMP-017)*
+- [ ] DocumentoResource: atualizar (incluir versao, is_versao_atual, nome_original, nome_arquivo, tipo_documento label) — *pendente para API*
 
 **Observer:**
-- [ ] DocumentoObserver (novo): ao criar/excluir documento → recalcular completude do contrato (ADR-036); registrar log de acesso
+- [ ] DocumentoObserver (novo): ao criar/excluir documento → recalcular completude do contrato (ADR-036) — *completude calculada via accessor; Observer opcional para cache*
 
 **Relatório:**
 - [ ] RelatorioService: método gerarRelatorioTCEContrato(Contrato) — lista documentos com tipo, nome, versão, data upload, responsável, status (RN-133). Exportar em PDF
 
 **Views:**
-- [ ] `documentos/index.blade.php`: Central de Documentos standalone (4 cards indicadores + busca + filtros + listagem com completude)
-- [ ] Atualizar `contratos/show.blade.php` (aba Documentos): exibir completude, checklist obrigatório, lista agrupada por tipo com versões, botão download, botão substituir, modal upload
-- [ ] Atualizar wizard step 6 (contratos/create.blade.php): zona de upload com seleção de tipo, feedback de completude
-- [ ] `documentos/dashboard.blade.php`: 4 indicadores de completude + ranking secretarias + tabela de pendências
+- [x] `documentos/index.blade.php`: Central de Documentos standalone (4 cards indicadores + busca + filtros + listagem com completude) *(IMP-017)*
+- [x] Atualizar `contratos/show.blade.php` (aba Documentos): exibir completude, checklist obrigatório, lista agrupada por tipo com versões, botão download, botão excluir, modal upload *(IMP-017)*
+- [ ] Atualizar wizard step 6 (contratos/create.blade.php): zona de upload com seleção de tipo, feedback de completude — *upload disponível após salvar na tela de detalhes*
+- [ ] `documentos/dashboard.blade.php`: dashboard dedicado de documentos — *indicadores integrados na Central de Documentos*
 
 **Testes:**
 - [ ] DocumentoFactory (novo) — para testes

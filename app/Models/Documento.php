@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\TipoDocumentoContratual;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,12 +21,16 @@ class Documento extends Model
     protected $fillable = [
         'documentable_type',
         'documentable_id',
-        'nome_original',
-        'path',
-        'mime_type',
-        'tamanho_bytes',
         'tipo_documento',
+        'nome_original',
+        'nome_arquivo',
+        'descricao',
+        'caminho',
+        'tamanho',
+        'mime_type',
         'hash_integridade',
+        'versao',
+        'is_versao_atual',
         'uploaded_by',
     ];
 
@@ -32,8 +38,20 @@ class Documento extends Model
     {
         return [
             'tipo_documento' => TipoDocumentoContratual::class,
+            'is_versao_atual' => 'boolean',
+            'versao' => 'integer',
+            'tamanho' => 'integer',
         ];
     }
+
+    // Scopes
+
+    public function scopeVersaoAtual(Builder $query): Builder
+    {
+        return $query->where('is_versao_atual', true);
+    }
+
+    // Relacionamentos
 
     public function documentable(): MorphTo
     {
@@ -43,5 +61,10 @@ class Documento extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function logsAcesso(): HasMany
+    {
+        return $this->hasMany(LogAcessoDocumento::class);
     }
 }

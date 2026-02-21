@@ -42,7 +42,9 @@ class TenantService
             'TenantUserSeeder',
             'SecretariaSeeder',
             'FornecedorSeeder',
+            'ServidorSeeder',
             'ContratoSeeder',
+            'DocumentoSeeder',
         ];
 
         foreach ($seeders as $seeder) {

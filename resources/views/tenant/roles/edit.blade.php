@@ -56,7 +56,7 @@
                 @if (! $role->is_padrao)
                     <div class="col-md-6">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8">Status</label>
-                        <select name="is_ativo" class="form-control radius-8">
+                        <select name="is_ativo" class="form-control radius-8 form-select select2">
                             <option value="1" {{ old('is_ativo', $role->is_ativo) ? 'selected' : '' }}>Ativo</option>
                             <option value="0" {{ ! old('is_ativo', $role->is_ativo) ? 'selected' : '' }}>Inativo</option>
                         </select>

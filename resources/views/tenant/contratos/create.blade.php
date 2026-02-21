@@ -91,7 +91,7 @@
                         Modalidade de Contratacao <span class="text-danger-main">*</span>
                     </label>
                     <select name="modalidade_contratacao" id="modalidade_contratacao"
-                            class="form-control radius-8 form-select @error('modalidade_contratacao') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('modalidade_contratacao') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\ModalidadeContratacao::cases() as $mod)
                             <option value="{{ $mod->value }}" {{ old('modalidade_contratacao') === $mod->value ? 'selected' : '' }}>{{ $mod->label() }}</option>
@@ -107,7 +107,7 @@
                         Tipo de Contrato <span class="text-danger-main">*</span>
                     </label>
                     <select name="tipo" id="tipo_contrato"
-                            class="form-control radius-8 form-select @error('tipo') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('tipo') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\TipoContrato::cases() as $tipo)
                             <option value="{{ $tipo->value }}" {{ old('tipo') === $tipo->value ? 'selected' : '' }}>{{ $tipo->label() }}</option>
@@ -123,7 +123,7 @@
                         Secretaria <span class="text-danger-main">*</span>
                     </label>
                     <select name="secretaria_id"
-                            class="form-control radius-8 form-select @error('secretaria_id') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('secretaria_id') is-invalid @enderror" required>
                         <option value="">Selecione...</option>
                         @foreach ($secretarias as $sec)
                             <option value="{{ $sec->id }}" {{ old('secretaria_id') == $sec->id ? 'selected' : '' }}>{{ $sec->nome }}</option>
@@ -183,12 +183,22 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Gestor do Contrato</label>
-                    <input type="text" name="gestor_nome" value="{{ old('gestor_nome') }}"
-                           class="form-control radius-8 @error('gestor_nome') is-invalid @enderror"
-                           placeholder="Nome do gestor responsavel">
-                    @error('gestor_nome')
+                    <select name="servidor_id"
+                            class="form-control radius-8 form-select select2 @error('servidor_id') is-invalid @enderror">
+                        <option value="">Selecione um servidor...</option>
+                        @foreach ($servidores as $serv)
+                            <option value="{{ $serv->id }}" {{ old('servidor_id') == $serv->id ? 'selected' : '' }}>
+                                {{ $serv->nome }} — Mat: {{ $serv->matricula }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('servidor_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <small class="text-secondary-light mt-4 d-block">
+                        Nao encontrou o servidor?
+                        <a href="{{ route('tenant.servidores.create') }}" target="_blank">Cadastrar novo servidor</a>
+                    </small>
                 </div>
             </div>
         </div>
@@ -204,7 +214,7 @@
                         Selecionar Fornecedor <span class="text-danger-main">*</span>
                     </label>
                     <select name="fornecedor_id"
-                            class="form-control radius-8 form-select @error('fornecedor_id') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('fornecedor_id') is-invalid @enderror" required>
                         <option value="">Selecione um fornecedor...</option>
                         @foreach ($fornecedores as $forn)
                             <option value="{{ $forn->id }}" {{ old('fornecedor_id') == $forn->id ? 'selected' : '' }}>
@@ -254,7 +264,7 @@
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Tipo de Pagamento</label>
                     <select name="tipo_pagamento"
-                            class="form-control radius-8 form-select @error('tipo_pagamento') is-invalid @enderror">
+                            class="form-control radius-8 form-select select2 @error('tipo_pagamento') is-invalid @enderror">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\TipoPagamento::cases() as $tp)
                             <option value="{{ $tp->value }}" {{ old('tipo_pagamento') === $tp->value ? 'selected' : '' }}>{{ $tp->label() }}</option>
@@ -295,7 +305,7 @@
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria</label>
                     <select name="categoria"
-                            class="form-control radius-8 form-select @error('categoria') is-invalid @enderror">
+                            class="form-control radius-8 form-select select2 @error('categoria') is-invalid @enderror">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\CategoriaContrato::cases() as $cat)
                             <option value="{{ $cat->value }}" {{ old('categoria') === $cat->value ? 'selected' : '' }}>{{ $cat->label() }}</option>
@@ -309,7 +319,7 @@
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria de Servico</label>
                     <select name="categoria_servico"
-                            class="form-control radius-8 form-select @error('categoria_servico') is-invalid @enderror">
+                            class="form-control radius-8 form-select select2 @error('categoria_servico') is-invalid @enderror">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\CategoriaServico::cases() as $cs)
                             <option value="{{ $cs->value }}" {{ old('categoria_servico') === $cs->value ? 'selected' : '' }}>{{ $cs->label() }}</option>
@@ -380,50 +390,29 @@
             <h6 class="fw-semibold mb-24">Etapa 5: Fiscal do Contrato</h6>
             <p class="text-secondary-light mb-16">O fiscal e obrigatorio para contratos ativos (RN-024).</p>
             <div class="row gy-3">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Nome do Fiscal <span class="text-danger-main">*</span>
+                        Servidor Fiscal <span class="text-danger-main">*</span>
                     </label>
-                    <input type="text" name="fiscal_nome" value="{{ old('fiscal_nome') }}"
-                           class="form-control radius-8 @error('fiscal_nome') is-invalid @enderror"
-                           placeholder="Nome completo" required>
-                    @error('fiscal_nome')
+                    <select name="fiscal_servidor_id"
+                            class="form-control radius-8 form-select select2 @error('fiscal_servidor_id') is-invalid @enderror"
+                            data-placeholder="Selecione o servidor fiscal..." required>
+                        <option value=""></option>
+                        @foreach ($servidores as $serv)
+                            <option value="{{ $serv->id }}" {{ old('fiscal_servidor_id') == $serv->id ? 'selected' : '' }}>
+                                {{ $serv->nome }} — Mat: {{ $serv->matricula }} — {{ $serv->cargo }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('fiscal_servidor_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Matricula <span class="text-danger-main">*</span>
-                    </label>
-                    <input type="text" name="fiscal_matricula" value="{{ old('fiscal_matricula') }}"
-                           class="form-control radius-8 @error('fiscal_matricula') is-invalid @enderror"
-                           placeholder="Nro. matricula" required>
-                    @error('fiscal_matricula')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Cargo <span class="text-danger-main">*</span>
-                    </label>
-                    <input type="text" name="fiscal_cargo" value="{{ old('fiscal_cargo') }}"
-                           class="form-control radius-8 @error('fiscal_cargo') is-invalid @enderror"
-                           placeholder="Cargo do fiscal" required>
-                    @error('fiscal_cargo')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">E-mail Institucional</label>
-                    <input type="email" name="fiscal_email" value="{{ old('fiscal_email') }}"
-                           class="form-control radius-8 @error('fiscal_email') is-invalid @enderror"
-                           placeholder="fiscal@prefeitura.gov.br">
-                    @error('fiscal_email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="col-md-4 d-flex align-items-end">
+                    <a href="{{ route('tenant.servidores.create') }}" target="_blank"
+                       class="btn btn-outline-primary text-sm btn-sm px-16 py-10 radius-8 w-100">
+                        <iconify-icon icon="lucide:plus" class="me-4"></iconify-icon> Cadastrar novo servidor
+                    </a>
                 </div>
             </div>
         </div>

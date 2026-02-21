@@ -4,20 +4,25 @@ namespace App\Services;
 
 use App\Models\Contrato;
 use App\Models\Fiscal;
+use App\Models\Servidor;
 
 class FiscalService
 {
     /**
      * Designa o primeiro fiscal para um contrato (RN-024).
+     * Busca o servidor pelo ID e cria snapshot dos dados.
      */
     public static function designar(Contrato $contrato, array $dados): Fiscal
     {
+        $servidor = Servidor::findOrFail($dados['servidor_id']);
+
         return Fiscal::create([
             'contrato_id' => $contrato->id,
-            'nome' => $dados['fiscal_nome'],
-            'matricula' => $dados['fiscal_matricula'],
-            'cargo' => $dados['fiscal_cargo'],
-            'email' => $dados['fiscal_email'] ?? null,
+            'servidor_id' => $servidor->id,
+            'nome' => $servidor->nome,
+            'matricula' => $servidor->matricula,
+            'cargo' => $servidor->cargo,
+            'email' => $servidor->email,
             'data_inicio' => now()->toDateString(),
             'is_atual' => true,
         ]);
@@ -38,13 +43,16 @@ class FiscalService
             ]);
         }
 
-        // Cria o novo fiscal
+        // Cria o novo fiscal a partir do servidor
+        $servidor = Servidor::findOrFail($dadosNovoFiscal['servidor_id']);
+
         return Fiscal::create([
             'contrato_id' => $contrato->id,
-            'nome' => $dadosNovoFiscal['nome'],
-            'matricula' => $dadosNovoFiscal['matricula'],
-            'cargo' => $dadosNovoFiscal['cargo'],
-            'email' => $dadosNovoFiscal['email'] ?? null,
+            'servidor_id' => $servidor->id,
+            'nome' => $servidor->nome,
+            'matricula' => $servidor->matricula,
+            'cargo' => $servidor->cargo,
+            'email' => $servidor->email,
             'data_inicio' => now()->toDateString(),
             'is_atual' => true,
         ]);

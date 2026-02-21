@@ -41,7 +41,7 @@
 
                     <div class="mb-20">
                         <label for="plano" class="form-label fw-semibold text-primary-light text-sm mb-8">Plano</label>
-                        <select class="form-select radius-8" id="plano" name="plano">
+                        <select class="form-select radius-8 select2" id="plano" name="plano">
                             <option value="basico" {{ old('plano') === 'basico' ? 'selected' : '' }}>Básico</option>
                             <option value="profissional" {{ old('plano') === 'profissional' ? 'selected' : '' }}>Profissional</option>
                             <option value="enterprise" {{ old('plano') === 'enterprise' ? 'selected' : '' }}>Enterprise</option>

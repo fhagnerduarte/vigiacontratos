@@ -122,7 +122,14 @@
                             <dd class="col-sm-7">{{ $contrato->categoria?->label() ?? '-' }}</dd>
 
                             <dt class="col-sm-5 text-secondary-light">Gestor:</dt>
-                            <dd class="col-sm-7">{{ $contrato->gestor_nome ?? '-' }}</dd>
+                            <dd class="col-sm-7">
+                                @if ($contrato->gestor)
+                                    {{ $contrato->gestor->nome }} — Mat: {{ $contrato->gestor->matricula }}
+                                    <br><small class="text-secondary-light">{{ $contrato->gestor->cargo }}</small>
+                                @else
+                                    {{ $contrato->gestor_nome ?? '-' }}
+                                @endif
+                            </dd>
 
                             @if ($contrato->fundamento_legal)
                                 <dt class="col-sm-5 text-secondary-light">Fund. Legal:</dt>
@@ -206,23 +213,27 @@
                     <form action="{{ route('tenant.contratos.fiscais.store', $contrato) }}" method="POST">
                         @csrf
                         <div class="row gy-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Nome <span class="text-danger-main">*</span></label>
-                                <input type="text" name="nome" class="form-control radius-8" required>
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Servidor <span class="text-danger-main">*</span></label>
+                                <select name="servidor_id"
+                                        class="form-control radius-8 form-select select2 @error('servidor_id') is-invalid @enderror"
+                                        data-placeholder="Selecione o servidor fiscal..." required>
+                                    <option value=""></option>
+                                    @foreach ($servidores as $serv)
+                                        <option value="{{ $serv->id }}">
+                                            {{ $serv->nome }} — Mat: {{ $serv->matricula }} — {{ $serv->cargo }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('servidor_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Matricula <span class="text-danger-main">*</span></label>
-                                <input type="text" name="matricula" class="form-control radius-8" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Cargo <span class="text-danger-main">*</span></label>
-                                <input type="text" name="cargo" class="form-control radius-8" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">E-mail</label>
-                                <input type="email" name="email" class="form-control radius-8">
-                            </div>
-                            <div class="col-12">
+                            <div class="col-md-4 d-flex align-items-end gap-2">
+                                <a href="{{ route('tenant.servidores.create') }}" target="_blank"
+                                   class="btn btn-outline-primary text-sm btn-sm px-16 py-10 radius-8">
+                                    <iconify-icon icon="lucide:plus" class="me-4"></iconify-icon> Novo servidor
+                                </a>
                                 <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
                                     {{ $contrato->fiscalAtual ? 'Trocar Fiscal' : 'Designar Fiscal' }}
                                 </button>
@@ -315,35 +326,146 @@
                 @endif
             </div>
 
-            {{-- ABA: Documentos --}}
+            {{-- ABA: Documentos (Expandida — Modulo 5) --}}
             <div class="tab-pane fade" id="tab-documentos">
-                @if ($contrato->documentos->count() > 0)
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th class="px-16 py-12">Documento</th>
-                                <th class="px-16 py-12">Tipo</th>
-                                <th class="px-16 py-12">Tamanho</th>
-                                <th class="px-16 py-12">Upload em</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($contrato->documentos as $doc)
-                                <tr>
-                                    <td class="px-16 py-12">{{ $doc->nome_original }}</td>
-                                    <td class="px-16 py-12">{{ $doc->tipo_documento->label() }}</td>
-                                    <td class="px-16 py-12">{{ number_format($doc->tamanho_bytes / 1024, 0) }} KB</td>
-                                    <td class="px-16 py-12">{{ $doc->created_at->format('d/m/Y H:i') }}</td>
-                                </tr>
+
+                {{-- Barra de Completude Documental (RN-128) --}}
+                @php $completude = $contrato->status_completude; @endphp
+                <div class="d-flex align-items-center justify-content-between mb-20 p-16 border rounded
+                    bg-{{ $completude->cor() }}-focus">
+                    <div class="d-flex align-items-center gap-12">
+                        <iconify-icon icon="{{ $completude->icone() }}" class="text-{{ $completude->cor() }}-main text-2xl"></iconify-icon>
+                        <span class="fw-semibold text-{{ $completude->cor() }}-main">{{ $completude->descricao() }}</span>
+                    </div>
+                    @if (auth()->user()->hasPermission('documento.criar') && $contrato->status !== \App\Enums\StatusContrato::Vencido)
+                        <button class="btn btn-primary-600 btn-sm radius-8" data-bs-toggle="modal" data-bs-target="#modalUploadDocumento">
+                            <iconify-icon icon="solar:upload-bold" class="icon"></iconify-icon> Adicionar Documento
+                        </button>
+                    @endif
+                </div>
+
+                {{-- Checklist de Documentos Obrigatorios (RN-129) --}}
+                <div class="mb-24">
+                    <h6 class="fw-semibold mb-12">Checklist de Documentos Obrigatorios</h6>
+                    <div class="row gy-2">
+                        @foreach ($checklistObrigatorio as $item)
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-8 p-12 border rounded">
+                                    @if ($item['presente'])
+                                        <iconify-icon icon="ic:baseline-check-circle" class="text-success-main text-xl flex-shrink-0"></iconify-icon>
+                                    @else
+                                        <iconify-icon icon="ic:baseline-cancel" class="text-danger-main text-xl flex-shrink-0"></iconify-icon>
+                                    @endif
+                                    <span class="text-sm {{ $item['presente'] ? 'text-neutral-700' : 'text-danger-main fw-medium' }}">
+                                        {{ $item['label'] }}
+                                    </span>
+                                    @if ($item['presente'])
+                                        <span class="badge bg-neutral-100 text-neutral-600 ms-auto text-xs">v{{ $item['versao'] }}</span>
+                                    @else
+                                        <span class="badge bg-danger-focus text-danger-main ms-auto text-xs">Pendente</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Documentos Agrupados por Tipo --}}
+                @if ($documentosPorTipo->count() > 0)
+                    @foreach ($documentosPorTipo as $tipoLabel => $docs)
+                        <div class="mb-20">
+                            <h6 class="fw-semibold text-neutral-700 mb-12 d-flex align-items-center gap-8">
+                                <iconify-icon icon="solar:folder-bold" class="text-primary-600"></iconify-icon>
+                                {{ $tipoLabel }}
+                                <span class="badge bg-neutral-200 text-neutral-600 ms-2">{{ $docs->count() }}</span>
+                            </h6>
+                            @foreach ($docs as $doc)
+                                <div class="d-flex align-items-center gap-12 p-12 border rounded mb-8
+                                    {{ $doc->is_versao_atual ? '' : 'opacity-75 bg-neutral-50' }}">
+                                    <iconify-icon icon="solar:file-bold" class="text-primary-600 text-xl flex-shrink-0"></iconify-icon>
+                                    <div class="flex-grow-1">
+                                        <p class="fw-medium mb-0 text-sm">{{ $doc->nome_original }}</p>
+                                        <p class="text-neutral-400 text-xs mb-0">
+                                            v{{ $doc->versao }}
+                                            — {{ number_format($doc->tamanho / 1024 / 1024, 2) }} MB
+                                            — {{ $doc->created_at->format('d/m/Y H:i') }}
+                                            — por {{ $doc->uploader->nome ?? '-' }}
+                                            @if (!$doc->is_versao_atual)
+                                                <span class="badge bg-neutral-200 text-neutral-600 ms-2">Versao anterior</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="d-flex gap-8 flex-shrink-0">
+                                        @if (auth()->user()->hasPermission('documento.visualizar'))
+                                            <a href="{{ route('tenant.documentos.download', $doc) }}"
+                                               class="w-32-px h-32-px bg-primary-focus text-primary-main rounded-circle d-inline-flex align-items-center justify-content-center"
+                                               title="Download">
+                                                <iconify-icon icon="solar:download-bold"></iconify-icon>
+                                            </a>
+                                        @endif
+                                        @if (auth()->user()->hasPermission('documento.excluir') && $doc->is_versao_atual)
+                                            <form action="{{ route('tenant.documentos.destroy', $doc) }}" method="POST" class="d-inline">
+                                                @csrf @method('DELETE')
+                                                <button type="submit"
+                                                   class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0"
+                                                   onclick="return confirm('Excluir este documento?')"
+                                                   title="Excluir">
+                                                    <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </div>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </div>
+                    @endforeach
                 @else
                     <div class="text-center text-secondary-light py-24">
                         <iconify-icon icon="solar:folder-bold" class="text-4xl mb-8 d-block"></iconify-icon>
-                        Nenhum documento anexado. A gestao de documentos sera expandida na Fase 3b.
+                        Nenhum documento anexado a este contrato.
                     </div>
                 @endif
+            </div>
+
+            {{-- Modal de Upload de Documento --}}
+            <div class="modal fade" id="modalUploadDocumento" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Documento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="{{ route('tenant.contratos.documentos.store', $contrato) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="mb-16">
+                                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Tipo de Documento <span class="text-danger-main">*</span></label>
+                                    <select class="form-select radius-8 select2" name="tipo_documento" required>
+                                        <option value="">Selecione o tipo...</option>
+                                        @foreach ($tiposDocumento as $tipo)
+                                            <option value="{{ $tipo->value }}">{{ $tipo->label() }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="mb-16">
+                                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Arquivo PDF <span class="text-danger-main">*</span></label>
+                                    <input type="file" class="form-control radius-8" name="arquivo" accept=".pdf" required>
+                                    <small class="text-neutral-400">Apenas PDF. Tamanho maximo: 20MB</small>
+                                </div>
+                                <div class="mb-16">
+                                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao</label>
+                                    <input type="text" class="form-control radius-8" name="descricao" placeholder="Descricao opcional">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary-600 radius-8" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary-600 radius-8">
+                                    <iconify-icon icon="solar:upload-bold" class="icon"></iconify-icon> Enviar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             {{-- ABA: Aditivos --}}

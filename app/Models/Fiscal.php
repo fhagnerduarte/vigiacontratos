@@ -13,6 +13,7 @@ class Fiscal extends Model
 
     protected $fillable = [
         'contrato_id',
+        'servidor_id',
         'nome',
         'matricula',
         'cargo',
@@ -34,5 +35,10 @@ class Fiscal extends Model
     public function contrato(): BelongsTo
     {
         return $this->belongsTo(Contrato::class);
+    }
+
+    public function servidor(): BelongsTo
+    {
+        return $this->belongsTo(Servidor::class);
     }
 }

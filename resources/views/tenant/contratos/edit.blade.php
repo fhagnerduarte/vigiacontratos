@@ -58,7 +58,7 @@
                         Modalidade de Contratacao <span class="text-danger-main">*</span>
                     </label>
                     <select name="modalidade_contratacao" id="modalidade_contratacao"
-                            class="form-control radius-8 form-select @error('modalidade_contratacao') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('modalidade_contratacao') is-invalid @enderror" required>
                         @foreach (\App\Enums\ModalidadeContratacao::cases() as $mod)
                             <option value="{{ $mod->value }}" {{ old('modalidade_contratacao', $contrato->modalidade_contratacao->value) === $mod->value ? 'selected' : '' }}>{{ $mod->label() }}</option>
                         @endforeach
@@ -73,7 +73,7 @@
                         Tipo de Contrato <span class="text-danger-main">*</span>
                     </label>
                     <select name="tipo" id="tipo_contrato"
-                            class="form-control radius-8 form-select @error('tipo') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('tipo') is-invalid @enderror" required>
                         @foreach (\App\Enums\TipoContrato::cases() as $tipo)
                             <option value="{{ $tipo->value }}" {{ old('tipo', $contrato->tipo->value) === $tipo->value ? 'selected' : '' }}>{{ $tipo->label() }}</option>
                         @endforeach
@@ -88,7 +88,7 @@
                         Secretaria <span class="text-danger-main">*</span>
                     </label>
                     <select name="secretaria_id"
-                            class="form-control radius-8 form-select @error('secretaria_id') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('secretaria_id') is-invalid @enderror" required>
                         @foreach ($secretarias as $sec)
                             <option value="{{ $sec->id }}" {{ old('secretaria_id', $contrato->secretaria_id) == $sec->id ? 'selected' : '' }}>{{ $sec->nome }}</option>
                         @endforeach
@@ -144,11 +144,22 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Gestor do Contrato</label>
-                    <input type="text" name="gestor_nome" value="{{ old('gestor_nome', $contrato->gestor_nome) }}"
-                           class="form-control radius-8 @error('gestor_nome') is-invalid @enderror">
-                    @error('gestor_nome')
+                    <select name="servidor_id"
+                            class="form-control radius-8 form-select select2 @error('servidor_id') is-invalid @enderror">
+                        <option value="">Selecione um servidor...</option>
+                        @foreach ($servidores as $serv)
+                            <option value="{{ $serv->id }}" {{ old('servidor_id', $contrato->servidor_id) == $serv->id ? 'selected' : '' }}>
+                                {{ $serv->nome }} — Mat: {{ $serv->matricula }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('servidor_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <small class="text-secondary-light mt-4 d-block">
+                        Nao encontrou o servidor?
+                        <a href="{{ route('tenant.servidores.create') }}" target="_blank">Cadastrar novo servidor</a>
+                    </small>
                 </div>
             </div>
 
@@ -162,7 +173,7 @@
                         Fornecedor <span class="text-danger-main">*</span>
                     </label>
                     <select name="fornecedor_id"
-                            class="form-control radius-8 form-select @error('fornecedor_id') is-invalid @enderror" required>
+                            class="form-control radius-8 form-select select2 @error('fornecedor_id') is-invalid @enderror" required>
                         @foreach ($fornecedores as $forn)
                             <option value="{{ $forn->id }}" {{ old('fornecedor_id', $contrato->fornecedor_id) == $forn->id ? 'selected' : '' }}>
                                 {{ $forn->razao_social }} — {{ $forn->cnpj }}
@@ -205,7 +216,7 @@
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Tipo de Pagamento</label>
                     <select name="tipo_pagamento"
-                            class="form-control radius-8 form-select @error('tipo_pagamento') is-invalid @enderror">
+                            class="form-control radius-8 form-select select2 @error('tipo_pagamento') is-invalid @enderror">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\TipoPagamento::cases() as $tp)
                             <option value="{{ $tp->value }}" {{ old('tipo_pagamento', $contrato->tipo_pagamento?->value) === $tp->value ? 'selected' : '' }}>{{ $tp->label() }}</option>
@@ -236,7 +247,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria</label>
-                    <select name="categoria" class="form-control radius-8 form-select">
+                    <select name="categoria" class="form-control radius-8 form-select select2">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\CategoriaContrato::cases() as $cat)
                             <option value="{{ $cat->value }}" {{ old('categoria', $contrato->categoria?->value) === $cat->value ? 'selected' : '' }}>{{ $cat->label() }}</option>
@@ -246,7 +257,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria de Servico</label>
-                    <select name="categoria_servico" class="form-control radius-8 form-select">
+                    <select name="categoria_servico" class="form-control radius-8 form-select select2">
                         <option value="">Selecione...</option>
                         @foreach (\App\Enums\CategoriaServico::cases() as $cs)
                             <option value="{{ $cs->value }}" {{ old('categoria_servico', $contrato->categoria_servico?->value) === $cs->value ? 'selected' : '' }}>{{ $cs->label() }}</option>
