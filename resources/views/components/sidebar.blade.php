@@ -108,7 +108,7 @@
             @endif
 
             {{-- MONITORAMENTO --}}
-            @if (auth()->user()->hasPermission('alerta.visualizar') || auth()->user()->hasPermission('relatorio.visualizar') || auth()->user()->hasPermission('contrato.visualizar'))
+            @if (auth()->user()->hasPermission('alerta.visualizar') || auth()->user()->hasPermission('relatorio.visualizar') || auth()->user()->hasPermission('painel-risco.visualizar'))
                 <li class="sidebar-menu-group-title">Monitoramento</li>
 
                 @if (auth()->user()->hasPermission('alerta.visualizar'))
@@ -130,9 +130,10 @@
                     </li>
                 @endif
 
-                @if (auth()->user()->hasPermission('contrato.visualizar'))
+                @if (auth()->user()->hasPermission('painel-risco.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.painel-risco.index') }}"
+                           class="{{ request()->routeIs('tenant.painel-risco.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:shield-warning-bold" class="menu-icon"></iconify-icon>
                             <span>Painel de Risco</span>
                         </a>

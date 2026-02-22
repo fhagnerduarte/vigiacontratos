@@ -36,6 +36,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar', 'servidor.criar', 'servidor.editar', 'servidor.excluir',
                 'secretaria.visualizar', 'secretaria.criar', 'secretaria.editar', 'secretaria.excluir',
                 'alerta.visualizar', 'alerta.resolver',
+                'dashboard.visualizar', 'dashboard.atualizar',
+                'painel-risco.visualizar', 'painel-risco.exportar',
             ],
             'controladoria' => [
                 'contrato.visualizar',
@@ -51,6 +53,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'alerta.visualizar', 'alerta.resolver',
+                'dashboard.visualizar', 'dashboard.atualizar',
+                'painel-risco.visualizar', 'painel-risco.exportar',
             ],
             'secretario' => [
                 'contrato.visualizar',
@@ -63,6 +67,8 @@ class RolePermissionSeeder extends Seeder
                 'secretaria.visualizar',
                 'workflow.visualizar',
                 'alerta.visualizar',
+                'dashboard.visualizar',
+                'painel-risco.visualizar',
             ],
             'gestor_contrato' => [
                 'contrato.visualizar', 'contrato.criar', 'contrato.editar',
@@ -75,6 +81,8 @@ class RolePermissionSeeder extends Seeder
                 'secretaria.visualizar',
                 'workflow.visualizar',
                 'alerta.visualizar', 'alerta.resolver',
+                'dashboard.visualizar',
+                'painel-risco.visualizar', 'painel-risco.exportar',
             ],
             'fiscal_contrato' => [
                 'contrato.visualizar',
@@ -85,6 +93,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'alerta.visualizar',
+                'dashboard.visualizar',
+                'painel-risco.visualizar',
             ],
             'financeiro' => [
                 'contrato.visualizar',
@@ -95,6 +105,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'alerta.visualizar',
+                'dashboard.visualizar',
+                'painel-risco.visualizar',
             ],
             'procuradoria' => [
                 'contrato.visualizar',
@@ -106,6 +118,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'alerta.visualizar',
+                'dashboard.visualizar',
+                'painel-risco.visualizar',
             ],
             'gabinete' => [
                 'contrato.visualizar',
@@ -116,6 +130,8 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'alerta.visualizar',
+                'dashboard.visualizar',
+                'painel-risco.visualizar',
             ],
         ];
 

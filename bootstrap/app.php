@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('dashboard:agregar')
+            ->dailyAt('05:30')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/dashboard-agregacao.log'));
+
         $schedule->command('alertas:verificar-vencimentos')
             ->dailyAt('06:00')
             ->withoutOverlapping()

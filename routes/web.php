@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\PainelRiscoController;
 use App\Http\Controllers\Tenant\AditivosController;
 use App\Http\Controllers\Tenant\ContratosController;
 use App\Http\Controllers\Tenant\DocumentosController;
@@ -37,7 +38,19 @@ Route::middleware(['tenant', 'guest'])->group(function () {
 // Rotas protegidas (autenticado)
 Route::middleware(['tenant', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('tenant.dashboard');
+    Route::post('dashboard/atualizar', [DashboardController::class, 'atualizar'])
+        ->name('tenant.dashboard.atualizar')
+        ->middleware('permission:dashboard.atualizar');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('tenant.logout');
+
+    // Monitoramento — Painel de Risco (RN-143)
+    Route::get('painel-risco', [PainelRiscoController::class, 'index'])
+        ->name('tenant.painel-risco.index')
+        ->middleware('permission:painel-risco.visualizar');
+
+    Route::get('painel-risco/exportar-tce', [PainelRiscoController::class, 'exportarRelatorioTCE'])
+        ->name('tenant.painel-risco.exportar-tce')
+        ->middleware('permission:painel-risco.exportar');
 
     // Gestao Contratual — Contratos
     Route::resource('contratos', ContratosController::class)

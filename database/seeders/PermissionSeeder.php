@@ -82,6 +82,14 @@ class PermissionSeeder extends Seeder
             // Alerta
             ['nome' => 'alerta.visualizar', 'descricao' => 'Visualizar alertas de vencimento', 'grupo' => 'alerta'],
             ['nome' => 'alerta.resolver', 'descricao' => 'Resolver/fechar alertas manualmente', 'grupo' => 'alerta'],
+
+            // Dashboard
+            ['nome' => 'dashboard.visualizar', 'descricao' => 'Visualizar dashboard executivo', 'grupo' => 'dashboard'],
+            ['nome' => 'dashboard.atualizar', 'descricao' => 'Atualizar dados do dashboard manualmente', 'grupo' => 'dashboard'],
+
+            // Painel de Risco
+            ['nome' => 'painel-risco.visualizar', 'descricao' => 'Visualizar painel de risco', 'grupo' => 'painel-risco'],
+            ['nome' => 'painel-risco.exportar', 'descricao' => 'Exportar relatorio de risco TCE', 'grupo' => 'painel-risco'],
         ];
 
         foreach ($permissions as $permission) {
