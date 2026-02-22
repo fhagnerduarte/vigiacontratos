@@ -52,6 +52,39 @@ class RiscoService
             $score += 5;
         }
 
+        // --- Criterios de Aditivos (RN-106, RN-107, RN-108) ---
+
+        // Percentual acumulado de acrescimos > 20%: +10 (RN-106)
+        if ($contrato->relationLoaded('aditivos') || $contrato->aditivos()->exists()) {
+            $valorOriginal = AditivoService::obterValorOriginal($contrato);
+            if ($valorOriginal > 0) {
+                $somaAcrescimos = (float) $contrato->aditivosVigentes()->sum('valor_acrescimo');
+                $percentualAcumulado = ($somaAcrescimos / $valorOriginal) * 100;
+                if ($percentualAcumulado > 20) {
+                    $score += 10;
+                }
+            }
+
+            // 3+ aditivos em ultimos 12 meses: +10 (RN-107)
+            $aditivosRecentes = $contrato->aditivos()
+                ->where('data_assinatura', '>=', now()->subYear())
+                ->count();
+            if ($aditivosRecentes >= 3) {
+                $score += 10;
+            }
+
+            // Aditivo registrado ≤30 dias antes do vencimento: +5 (RN-108)
+            $ultimoAditivo = $contrato->aditivos()
+                ->orderByDesc('data_assinatura')
+                ->first();
+            if ($ultimoAditivo && $contrato->data_fim) {
+                $diasAntes = $ultimoAditivo->data_assinatura->diffInDays($contrato->data_fim, false);
+                if ($diasAntes >= 0 && $diasAntes <= 30) {
+                    $score += 5;
+                }
+            }
+        }
+
         // Classificacao: 0-29=baixo, 30-59=medio, 60+=alto
         $nivel = match (true) {
             $score >= 60 => NivelRisco::Alto,

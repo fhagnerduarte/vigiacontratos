@@ -53,7 +53,8 @@
 
                 @if (auth()->user()->hasPermission('aditivo.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.aditivos.index') }}"
+                           class="{{ request()->routeIs('tenant.aditivos.*') || request()->routeIs('tenant.contratos.aditivos.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:add-circle-bold" class="menu-icon"></iconify-icon>
                             <span>Aditivos</span>
                         </a>

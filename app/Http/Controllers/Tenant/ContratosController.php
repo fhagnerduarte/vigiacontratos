@@ -99,6 +99,7 @@ class ContratosController extends Controller
             'documentos.uploader',
             'historicoAlteracoes' => fn ($q) => $q->orderBy('created_at', 'desc'),
             'historicoAlteracoes.user',
+            'aditivos' => fn ($q) => $q->orderBy('numero_sequencial'),
         ]);
 
         // Dados para aba Documentos (Modulo 5)

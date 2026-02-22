@@ -53,7 +53,7 @@
 ### Módulo: Contratos (Cadastro Inteligente)
 - [x] Migration da tabela contratos (campos expandidos: modalidade, score_risco, percentual_executado, etc.) *(IMP-016)*
 - [x] Migration da tabela fiscais (com histórico de trocas) *(IMP-016)*
-- [ ] Migration da tabela aditivos — *movido para Fase 3c*
+- [x] Migration da tabela aditivos *(IMP-020 — Fase 3c)*
 - [x] Migration da tabela documentos (com tipo_documento e versao) *(IMP-016 — basico, expandido Fase 3b)*
 - [x] Migration da tabela execucoes_financeiras *(IMP-016)*
 - [x] Migration da tabela historico_alteracoes (polimórfica, imutável) *(IMP-016)*
@@ -74,26 +74,31 @@
 - [x] Filtros inteligentes na listagem (status, secretaria, modalidade, nivel_risco) *(IMP-016)*
 
 ### Módulo: Aditivos (Gestão de Aditivos — Módulo 4)
-- [ ] Atualizar enum TipoAditivo (+ reequilibrio, alteracao_clausula, misto — 4→7 valores)
-- [ ] Migration de alteração da tabela aditivos (novos campos: numero_sequencial, data_inicio_vigencia, valor_acrescimo, valor_supressao, percentual_acumulado, fundamentacao_legal, justificativa_tecnica, justificativa_excesso_limite, parecer_juridico_obrigatorio, campos de reequilíbrio)
-- [ ] Migration da tabela configuracoes_limite_aditivo (tipo_contrato, percentual_limite, is_bloqueante, is_ativo)
-- [ ] Seeder: ConfiguracaoLimiteAditivoSeeder (servico=25%, obra=50%)
-- [ ] Model: ConfiguracaoLimiteAditivo
-- [ ] Atualizar Model Aditivo ($fillable + relacionamentos + novos campos)
-- [ ] Atualizar StoreAditivoRequest / UpdateAditivoRequest (validações condicionais por tipo, limites legais)
-- [ ] Atualizar AditivoService (geração numero_sequencial, cálculo percentual_acumulado, verificação limite legal, atualização contrato pai, processarReequilibrio())
-- [ ] Atualizar RiscoService (novos critérios: RN-106, RN-107, RN-108)
-- [ ] Atualizar AditivoResource (novos campos)
-- [ ] Formulário de criação de aditivo com campos condicionais por tipo
-- [ ] Exibição em tempo real de percentual acumulado e limite legal no formulário
-- [ ] Alerta visual de limite legal ultrapassado (is_bloqueante e modo alerta)
-- [ ] Página de detalhes/timeline do aditivo (aditivos/show.blade.php)
-- [ ] Dashboard de aditivos (indicadores anuais — RN-109 a RN-114)
+- [x] Atualizar enum TipoAditivo (+ reequilibrio, alteracao_clausula, misto — 4→7 valores) *(IMP-020)*
+- [x] Migration da tabela aditivos (campos: numero_sequencial, data_inicio_vigencia, valor_acrescimo, valor_supressao, percentual_acumulado, fundamentacao_legal, justificativa_tecnica, justificativa_excesso_limite, parecer_juridico_obrigatorio, campos de reequilíbrio, SoftDeletes) *(IMP-020)*
+- [x] Migration da tabela configuracoes_limite_aditivo (tipo_contrato, percentual_limite, is_bloqueante, is_ativo) *(IMP-020)*
+- [x] Migration da tabela workflow_aprovacoes (polimórfica, etapa, status, parecer, decided_at) *(IMP-020)*
+- [x] Seeder: ConfiguracaoLimiteAditivoSeeder (servico=25%, obra=50%, compra=25%, locacao=25%) *(IMP-020)*
+- [x] Seeder: AditivoSeeder (4 aditivos exemplo com workflows variados) *(IMP-020)*
+- [x] Model: ConfiguracaoLimiteAditivo *(IMP-020)*
+- [x] Model: Aditivo ($fillable, SoftDeletes, casts enums/dates/decimals, relationships, accessors workflow) *(IMP-020)*
+- [x] Model: WorkflowAprovacao (append-only, booted imutabilidade, decided_at) *(IMP-020)*
+- [x] StoreAditivoRequest (validações condicionais por tipo, limites legais, nova_data_fim after data_fim atual RN-010) *(IMP-020)*
+- [x] AditivoService (geração numero_sequencial, cálculo percentual_acumulado, verificação limite legal, atualização contrato pai, cancelar, processarReequilibrio) *(IMP-020)*
+- [x] WorkflowService (criarFluxo 5 etapas, aprovar sequencial, reprovar com parecer, decided_at) *(IMP-020)*
+- [x] RiscoService expandido (novos critérios: RN-106, RN-107, RN-108) *(IMP-020)*
+- [ ] Atualizar AditivoResource (novos campos) — *pendente para API*
+- [x] Formulário de criação de aditivo com campos condicionais por tipo + Select2 + máscaras *(IMP-020)*
+- [x] Exibição em tempo real de percentual acumulado e limite legal no formulário *(IMP-020)*
+- [x] Alerta visual de limite legal ultrapassado (is_bloqueante e modo alerta) *(IMP-020)*
+- [x] Página de detalhes/timeline do aditivo (aditivos/show.blade.php) com workflow stepper *(IMP-020)*
+- [x] Dashboard de aditivos (indicadores anuais — RN-109 a RN-114) *(IMP-020)*
+- [x] Cancelamento de aditivo (RN-116 — apenas admin) com recálculo do contrato *(IMP-020)*
 - [ ] AditivoFactory para testes
 - [ ] Testes: AditivoServiceTest (limites legais, percentual, reequilíbrio)
 - [ ] Testes: AditivoTest (fluxo completo)
 - [ ] Testes: LimiteLegalAditivoTest (bloqueio e alerta)
-- [ ] Índices em aditivos (contrato_id, composto contrato_id+data_assinatura)
+- [x] Índices em aditivos (contrato_id, composto contrato_id+data_assinatura) *(IMP-020)*
 
 ### Módulo: Alertas (Motor de Monitoramento)
 - [ ] Migration da tabela alertas (expandida: tipo_evento, dias_antecedencia_config, data_disparo, tentativas_envio)
@@ -234,13 +239,13 @@
 - [x] Migration: criar tabela `role_permissions` (role_id, permission_id — pivot) *(IMP-015)*
 - [x] Migration: criar tabela `user_permissions` (user_id, permission_id, expires_at, concedido_por) *(IMP-015)*
 - [x] Migration: criar tabela `user_secretarias` (user_id, secretaria_id — pivot) *(IMP-015)*
-- [ ] Migration: criar tabela `workflow_aprovacoes` (aprovavel_type/id, etapa, etapa_ordem, role_responsavel_id, user_id, status, parecer) — *movido para Fase 3c*
+- [x] Migration: criar tabela `workflow_aprovacoes` (aprovavel_type/id, etapa, etapa_ordem, role_responsavel_id, user_id, status, parecer, decided_at) *(IMP-020 — Fase 3c)*
 - [x] Migration: alterar tabela `users` (adicionar FK constraint `role_id` → roles com nullOnDelete) *(IMP-014)*
-- [ ] Novo enum: StatusAprovacao (pendente, aprovado, reprovado) — *movido para Fase 3c*
-- [ ] Novo enum: EtapaWorkflow (solicitacao, aprovacao_secretario, parecer_juridico, validacao_controladoria, homologacao) — *movido para Fase 3c*
+- [x] Novo enum: StatusAprovacao (pendente, aprovado, reprovado) *(IMP-020 — Fase 3c)*
+- [x] Novo enum: EtapaWorkflow (solicitacao, aprovacao_secretario, parecer_juridico, validacao_controladoria, homologacao) *(IMP-020 — Fase 3c)*
 - [x] Model: Role ($fillable, hasMany User, belongsToMany Permission) *(IMP-014 + IMP-015)*
 - [x] Model: Permission ($fillable, belongsToMany Role, belongsToMany User) *(IMP-015)*
-- [ ] Model: WorkflowAprovacao ($fillable, morphTo aprovavel, belongsTo Role, belongsTo User) — *movido para Fase 3c*
+- [x] Model: WorkflowAprovacao ($fillable, morphTo aprovavel, belongsTo Role, belongsTo User, booted imutabilidade) *(IMP-020 — Fase 3c)*
 - [x] Atualizar Model User (belongsTo Role, belongsToMany Secretaria/Permission, hasPermission(), hasRole(), isPerfilEstrategico()) *(IMP-014 + IMP-015)*
 - [x] Seeder: RoleSeeder (8 perfis padrao com is_padrao=true, integrado em TenantService e TenantCreateCommand) *(IMP-014)*
 - [x] Seeder: PermissionSeeder (36 permissões granulares em 13 grupos) *(IMP-015)*
@@ -255,7 +260,7 @@
 
 **Service e Controller:**
 - [x] PermissaoService: verificação, atribuição, revogação, sincronização *(IMP-015)*
-- [ ] WorkflowService: criação de fluxo, avanço de etapas, reprovação, notificações — *movido para Fase 3c*
+- [x] WorkflowService: criação de fluxo 5 etapas, avanço sequencial, reprovação com parecer obrigatório *(IMP-020 — Fase 3c)*
 - [x] RolesController: CRUD de perfis (index, create, store, edit, update, destroy) *(IMP-015)*
 - [x] PermissoesController: gestão de permissões por role (index, update) *(IMP-015)*
 - [x] UsersController: CRUD com atribuição de role + secretarias *(IMP-015)*
@@ -270,10 +275,10 @@
 
 **Testes:**
 - [ ] PermissaoServiceTest (verificação por role, por user, expiração automática)
-- [ ] WorkflowServiceTest (criação de fluxo, avanço, reprovação, notificação) — *movido para Fase 3c*
+- [ ] WorkflowServiceTest (criação de fluxo, avanço, reprovação, notificação)
 - [ ] PerfilUsuarioTest (acesso por perfil a recursos protegidos)
 - [ ] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job)
-- [ ] WorkflowAprovacaoTest (fluxo completo de aditivo com 5 etapas) — *movido para Fase 3c*
+- [ ] WorkflowAprovacaoTest (fluxo completo de aditivo com 5 etapas)
 - [ ] Testar perfis padrão não deletáveis (is_padrao = true)
 - [ ] Testar escopo por secretaria (queries filtradas automaticamente)
 

@@ -105,6 +105,16 @@ class Contrato extends Model
         return $this->hasOne(Fiscal::class)->where('is_atual', true);
     }
 
+    public function aditivos(): HasMany
+    {
+        return $this->hasMany(Aditivo::class);
+    }
+
+    public function aditivosVigentes(): HasMany
+    {
+        return $this->hasMany(Aditivo::class)->where('status', 'vigente');
+    }
+
     public function execucoesFinanceiras(): HasMany
     {
         return $this->hasMany(ExecucaoFinanceira::class);

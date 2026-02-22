@@ -470,10 +470,130 @@
 
             {{-- ABA: Aditivos --}}
             <div class="tab-pane fade" id="tab-aditivos">
-                <div class="text-center text-secondary-light py-24">
-                    <iconify-icon icon="solar:add-circle-bold" class="text-4xl mb-8 d-block"></iconify-icon>
-                    Modulo de aditivos disponivel na Fase 3c.
-                </div>
+
+                {{-- Resumo de Aditivos --}}
+                @php
+                    $aditivosVigentes = $contrato->aditivos->where('status.value', 'vigente');
+                    $somaAcrescimos = $aditivosVigentes->sum('valor_acrescimo');
+                    $somaSupressoes = $aditivosVigentes->sum('valor_supressao');
+                    $valorOriginal = \App\Services\AditivoService::obterValorOriginal($contrato);
+                    $percentualAcumulado = $valorOriginal > 0 ? round(($somaAcrescimos / $valorOriginal) * 100, 2) : 0;
+                    $limiteLegalContrato = \App\Services\AditivoService::verificarLimiteLegal($contrato, $percentualAcumulado);
+                @endphp
+
+                @if ($contrato->aditivos->count() > 0)
+                    {{-- Cards de Resumo --}}
+                    <div class="row gy-4 mb-24">
+                        <div class="col-md-3">
+                            <div class="p-16 border rounded text-center">
+                                <p class="text-secondary-light text-sm mb-4">Total Aditivos</p>
+                                <h5 class="mb-0">{{ $contrato->aditivos->count() }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-16 border rounded text-center">
+                                <p class="text-secondary-light text-sm mb-4">Acrescimos</p>
+                                <h6 class="mb-0 text-success-main">+ R$ {{ number_format($somaAcrescimos, 2, ',', '.') }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-16 border rounded text-center">
+                                <p class="text-secondary-light text-sm mb-4">Supressoes</p>
+                                <h6 class="mb-0 text-danger-main">- R$ {{ number_format($somaSupressoes, 2, ',', '.') }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-16 border rounded text-center">
+                                <p class="text-secondary-light text-sm mb-4">% Acumulado</p>
+                                <h6 class="mb-0 text-{{ $percentualAcumulado > $limiteLegalContrato['limite'] ? 'danger' : ($percentualAcumulado > $limiteLegalContrato['limite'] * 0.8 ? 'warning' : 'success') }}-main">
+                                    {{ number_format($percentualAcumulado, 2, ',', '.') }}%
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Barra de Limite Legal --}}
+                    <div class="mb-24">
+                        <div class="d-flex justify-content-between mb-8">
+                            <span class="text-sm fw-medium">Limite Legal: {{ number_format($limiteLegalContrato['limite'], 0) }}%</span>
+                            <span class="text-sm text-{{ !$limiteLegalContrato['dentro_limite'] ? 'danger' : 'success' }}-main fw-bold">
+                                {{ number_format($percentualAcumulado, 2, ',', '.') }}% / {{ number_format($limiteLegalContrato['limite'], 0) }}%
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-{{ !$limiteLegalContrato['dentro_limite'] ? 'danger' : ($percentualAcumulado > $limiteLegalContrato['limite'] * 0.8 ? 'warning' : 'success') }}"
+                                 style="width: {{ min(100, ($percentualAcumulado / max(1, $limiteLegalContrato['limite'])) * 100) }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tabela de Aditivos --}}
+                    <table class="table table-hover mb-24">
+                        <thead>
+                            <tr>
+                                <th class="px-16 py-12">#</th>
+                                <th class="px-16 py-12">Tipo</th>
+                                <th class="px-16 py-12">Data Assinatura</th>
+                                <th class="px-16 py-12">Acrescimo</th>
+                                <th class="px-16 py-12">Supressao</th>
+                                <th class="px-16 py-12">% Acumulado</th>
+                                <th class="px-16 py-12 text-center">Status</th>
+                                <th class="px-16 py-12 text-center">Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($contrato->aditivos->sortBy('numero_sequencial') as $adit)
+                                <tr>
+                                    <td class="px-16 py-12 fw-medium">{{ $adit->numero_sequencial }}o</td>
+                                    <td class="px-16 py-12">
+                                        <span class="badge bg-{{ $adit->tipo->cor() }}-focus text-{{ $adit->tipo->cor() }}-main px-12 py-4 radius-4">
+                                            {{ $adit->tipo->label() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-16 py-12">{{ $adit->data_assinatura->format('d/m/Y') }}</td>
+                                    <td class="px-16 py-12 text-success-main">
+                                        {{ $adit->valor_acrescimo ? '+ R$ ' . number_format($adit->valor_acrescimo, 2, ',', '.') : '-' }}
+                                    </td>
+                                    <td class="px-16 py-12 text-danger-main">
+                                        {{ $adit->valor_supressao ? '- R$ ' . number_format($adit->valor_supressao, 2, ',', '.') : '-' }}
+                                    </td>
+                                    <td class="px-16 py-12">
+                                        <span class="badge bg-{{ $adit->percentual_acumulado > 20 ? 'warning' : 'success' }}-focus text-{{ $adit->percentual_acumulado > 20 ? 'warning' : 'success' }}-main px-8 py-4 radius-4">
+                                            {{ number_format($adit->percentual_acumulado, 2, ',', '.') }}%
+                                        </span>
+                                    </td>
+                                    <td class="px-16 py-12 text-center">
+                                        <span class="badge bg-{{ $adit->status->cor() }}-focus text-{{ $adit->status->cor() }}-main px-12 py-4 radius-4">
+                                            {{ $adit->status->label() }}
+                                        </span>
+                                    </td>
+                                    <td class="px-16 py-12 text-center">
+                                        <a href="{{ route('tenant.aditivos.show', $adit) }}"
+                                           class="w-32-px h-32-px bg-primary-focus text-primary-main rounded-circle d-inline-flex align-items-center justify-content-center"
+                                           title="Detalhes">
+                                            <iconify-icon icon="solar:eye-bold"></iconify-icon>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="text-center text-secondary-light py-24">
+                        <iconify-icon icon="solar:add-circle-bold" class="text-4xl mb-8 d-block"></iconify-icon>
+                        Nenhum aditivo registrado para este contrato.
+                    </div>
+                @endif
+
+                {{-- Botao para adicionar aditivo --}}
+                @if (auth()->user()->hasPermission('aditivo.criar') && $contrato->status === \App\Enums\StatusContrato::Vigente)
+                    <div class="text-center mt-16">
+                        <a href="{{ route('tenant.contratos.aditivos.create', $contrato) }}"
+                           class="btn btn-primary-600 radius-8">
+                            <iconify-icon icon="solar:add-circle-bold" class="icon"></iconify-icon> Adicionar Aditivo
+                        </a>
+                    </div>
+                @endif
             </div>
 
             {{-- ABA: Auditoria --}}

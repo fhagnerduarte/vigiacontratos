@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\AditivosController;
 use App\Http\Controllers\Tenant\ContratosController;
 use App\Http\Controllers\Tenant\DocumentosController;
 use App\Http\Controllers\Tenant\ExecucoesFinanceirasController;
@@ -52,6 +53,35 @@ Route::middleware(['tenant', 'auth'])->group(function () {
     Route::post('contratos/{contrato}/execucoes', [ExecucoesFinanceirasController::class, 'store'])
         ->name('tenant.contratos.execucoes.store')
         ->middleware('permission:financeiro.registrar_empenho');
+
+    // Gestao Contratual — Aditivos
+    Route::get('aditivos', [AditivosController::class, 'index'])
+        ->name('tenant.aditivos.index')
+        ->middleware('permission:aditivo.visualizar');
+
+    Route::get('contratos/{contrato}/aditivos/create', [AditivosController::class, 'create'])
+        ->name('tenant.contratos.aditivos.create')
+        ->middleware('permission:aditivo.criar');
+
+    Route::post('contratos/{contrato}/aditivos', [AditivosController::class, 'store'])
+        ->name('tenant.contratos.aditivos.store')
+        ->middleware('permission:aditivo.criar');
+
+    Route::get('aditivos/{aditivo}', [AditivosController::class, 'show'])
+        ->name('tenant.aditivos.show')
+        ->middleware('permission:aditivo.visualizar');
+
+    Route::post('aditivos/{aditivo}/aprovar', [AditivosController::class, 'aprovar'])
+        ->name('tenant.aditivos.aprovar')
+        ->middleware('permission:aditivo.aprovar');
+
+    Route::post('aditivos/{aditivo}/reprovar', [AditivosController::class, 'reprovar'])
+        ->name('tenant.aditivos.reprovar')
+        ->middleware('permission:aditivo.aprovar');
+
+    Route::post('aditivos/{aditivo}/cancelar', [AditivosController::class, 'cancelar'])
+        ->name('tenant.aditivos.cancelar')
+        ->middleware('permission:aditivo.aprovar');
 
     // Gestao Contratual — Documentos
     Route::get('documentos', [DocumentosController::class, 'index'])
