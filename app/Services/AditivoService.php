@@ -175,6 +175,9 @@ class AditivoService
                 $contrato->data_inicio->toDateString(),
                 $maxDataFim instanceof \Carbon\Carbon ? $maxDataFim->toDateString() : $maxDataFim
             );
+
+            // Resolver alertas pendentes automaticamente (RN-017)
+            AlertaService::resolverAlertasPorContrato($contrato);
         }
 
         $contrato->updateQuietly($dadosUpdate);

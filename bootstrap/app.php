@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +16,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/admin-saas.php'));
         },
     )
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('alertas:verificar-vencimentos')
+            ->dailyAt('06:00')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/alertas-verificacao.log'));
+
+        $schedule->command('permissoes:verificar-expiradas')
+            ->dailyAt('01:00')
+            ->withoutOverlapping();
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'tenant' => \App\Http\Middleware\SetTenantConnection::class,

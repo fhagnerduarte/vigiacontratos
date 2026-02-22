@@ -13,6 +13,7 @@ use App\Http\Controllers\Tenant\PermissoesController;
 use App\Http\Controllers\Tenant\RolesController;
 use App\Http\Controllers\Tenant\SecretariasController;
 use App\Http\Controllers\Tenant\ServidoresController;
+use App\Http\Controllers\Tenant\AlertasController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +100,34 @@ Route::middleware(['tenant', 'auth'])->group(function () {
     Route::delete('documentos/{documento}', [DocumentosController::class, 'destroy'])
         ->name('tenant.documentos.destroy')
         ->middleware('permission:documento.excluir');
+
+    // Monitoramento — Alertas
+    // IMPORTANTE: rotas estaticas antes de {alerta} para evitar conflito
+    Route::get('alertas/configuracoes', [AlertasController::class, 'configuracoes'])
+        ->name('tenant.alertas.configuracoes')
+        ->middleware('permission:configuracao.editar');
+
+    Route::post('alertas/configuracoes', [AlertasController::class, 'salvarConfiguracoes'])
+        ->name('tenant.alertas.salvar-configuracoes')
+        ->middleware('permission:configuracao.editar');
+
+    Route::get('alertas', [AlertasController::class, 'index'])
+        ->name('tenant.alertas.index')
+        ->middleware('permission:alerta.visualizar');
+
+    Route::get('alertas/{alerta}', [AlertasController::class, 'show'])
+        ->name('tenant.alertas.show')
+        ->middleware('permission:alerta.visualizar');
+
+    Route::post('alertas/{alerta}/resolver', [AlertasController::class, 'resolver'])
+        ->name('tenant.alertas.resolver')
+        ->middleware('permission:alerta.resolver');
+
+    // Notificacoes — Marcar como lida (AJAX)
+    Route::post('notificacoes/{notification}/marcar-lida', function (\Illuminate\Http\Request $request, string $notification) {
+        $request->user()->notifications()->where('id', $notification)->update(['read_at' => now()]);
+        return response()->json(['ok' => true]);
+    })->name('tenant.notificacoes.marcar-lida');
 
     // Cadastros
     Route::resource('secretarias', SecretariasController::class)

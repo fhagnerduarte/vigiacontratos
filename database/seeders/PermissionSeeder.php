@@ -78,6 +78,10 @@ class PermissionSeeder extends Seeder
             ['nome' => 'secretaria.criar', 'descricao' => 'Criar secretarias', 'grupo' => 'secretaria'],
             ['nome' => 'secretaria.editar', 'descricao' => 'Editar secretarias', 'grupo' => 'secretaria'],
             ['nome' => 'secretaria.excluir', 'descricao' => 'Excluir secretarias', 'grupo' => 'secretaria'],
+
+            // Alerta
+            ['nome' => 'alerta.visualizar', 'descricao' => 'Visualizar alertas de vencimento', 'grupo' => 'alerta'],
+            ['nome' => 'alerta.resolver', 'descricao' => 'Resolver/fechar alertas manualmente', 'grupo' => 'alerta'],
         ];
 
         foreach ($permissions as $permission) {

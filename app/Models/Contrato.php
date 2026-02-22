@@ -135,6 +135,16 @@ class Contrato extends Model
         return $this->documentos()->versaoAtual();
     }
 
+    public function alertas(): HasMany
+    {
+        return $this->hasMany(Alerta::class);
+    }
+
+    public function alertasPendentes(): HasMany
+    {
+        return $this->hasMany(Alerta::class)->whereIn('status', ['pendente', 'enviado', 'visualizado']);
+    }
+
     // Accessors
 
     public function getDiasParaVencimentoAttribute(): int

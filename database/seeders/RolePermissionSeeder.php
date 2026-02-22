@@ -35,6 +35,7 @@ class RolePermissionSeeder extends Seeder
                 'workflow.visualizar', 'workflow.aprovar',
                 'servidor.visualizar', 'servidor.criar', 'servidor.editar', 'servidor.excluir',
                 'secretaria.visualizar', 'secretaria.criar', 'secretaria.editar', 'secretaria.excluir',
+                'alerta.visualizar', 'alerta.resolver',
             ],
             'controladoria' => [
                 'contrato.visualizar',
@@ -49,6 +50,7 @@ class RolePermissionSeeder extends Seeder
                 'workflow.visualizar', 'workflow.aprovar',
                 'servidor.visualizar',
                 'secretaria.visualizar',
+                'alerta.visualizar', 'alerta.resolver',
             ],
             'secretario' => [
                 'contrato.visualizar',
@@ -60,6 +62,7 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar',
                 'secretaria.visualizar',
                 'workflow.visualizar',
+                'alerta.visualizar',
             ],
             'gestor_contrato' => [
                 'contrato.visualizar', 'contrato.criar', 'contrato.editar',
@@ -71,6 +74,7 @@ class RolePermissionSeeder extends Seeder
                 'servidor.visualizar', 'servidor.criar', 'servidor.editar',
                 'secretaria.visualizar',
                 'workflow.visualizar',
+                'alerta.visualizar', 'alerta.resolver',
             ],
             'fiscal_contrato' => [
                 'contrato.visualizar',
@@ -80,6 +84,7 @@ class RolePermissionSeeder extends Seeder
                 'fiscal.visualizar',
                 'servidor.visualizar',
                 'secretaria.visualizar',
+                'alerta.visualizar',
             ],
             'financeiro' => [
                 'contrato.visualizar',
@@ -89,6 +94,7 @@ class RolePermissionSeeder extends Seeder
                 'relatorio.visualizar', 'relatorio.gerar',
                 'servidor.visualizar',
                 'secretaria.visualizar',
+                'alerta.visualizar',
             ],
             'procuradoria' => [
                 'contrato.visualizar',
@@ -99,6 +105,7 @@ class RolePermissionSeeder extends Seeder
                 'workflow.visualizar', 'workflow.aprovar',
                 'servidor.visualizar',
                 'secretaria.visualizar',
+                'alerta.visualizar',
             ],
             'gabinete' => [
                 'contrato.visualizar',
@@ -108,6 +115,7 @@ class RolePermissionSeeder extends Seeder
                 'relatorio.visualizar',
                 'servidor.visualizar',
                 'secretaria.visualizar',
+                'alerta.visualizar',
             ],
         ];
 

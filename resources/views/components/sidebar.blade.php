@@ -108,12 +108,13 @@
             @endif
 
             {{-- MONITORAMENTO --}}
-            @if (auth()->user()->hasPermission('contrato.visualizar') || auth()->user()->hasPermission('relatorio.visualizar'))
+            @if (auth()->user()->hasPermission('alerta.visualizar') || auth()->user()->hasPermission('relatorio.visualizar') || auth()->user()->hasPermission('contrato.visualizar'))
                 <li class="sidebar-menu-group-title">Monitoramento</li>
 
-                @if (auth()->user()->hasPermission('contrato.visualizar'))
+                @if (auth()->user()->hasPermission('alerta.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.alertas.index') }}"
+                           class="{{ request()->routeIs('tenant.alertas.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:bell-bold" class="menu-icon"></iconify-icon>
                             <span>Alertas</span>
                         </a>
