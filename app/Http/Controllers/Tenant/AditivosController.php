@@ -25,28 +25,42 @@ class AditivosController extends Controller
         $anoAtual = date('Y');
         $conn = \Illuminate\Support\Facades\DB::connection('tenant');
 
+        // Scope por secretaria para raw queries (RN-326)
+        $secretariaIds = null;
+        if (auth()->check() && ! auth()->user()->isPerfilEstrategico()) {
+            $secretariaIds = auth()->user()->secretarias()->pluck('secretarias.id')->toArray();
+        }
+
         // Indicadores anuais (RN-110, RN-111, RN-112)
-        $totalAditivosAno = $conn->table('aditivos')
-            ->whereNull('deleted_at')
-            ->whereYear('data_assinatura', $anoAtual)
-            ->count();
-
-        $valorTotalAcrescido = (float) $conn->table('aditivos')
-            ->whereNull('deleted_at')
-            ->whereYear('data_assinatura', $anoAtual)
-            ->sum('valor_acrescimo');
-
-        $percentualMedioAcrescimo = round((float) $conn->table('aditivos')
-            ->whereNull('deleted_at')
-            ->whereYear('data_assinatura', $anoAtual)
-            ->where('percentual_acumulado', '>', 0)
-            ->avg('percentual_acumulado'), 2);
-
-        // Ranking contratos mais alterados — Top 10 (RN-113)
-        $rankingContratosMaisAlterados = $conn->table('aditivos')
+        $baseIndicadores = $conn->table('aditivos')
             ->join('contratos', 'aditivos.contrato_id', '=', 'contratos.id')
             ->whereNull('aditivos.deleted_at')
             ->whereNull('contratos.deleted_at')
+            ->whereYear('aditivos.data_assinatura', $anoAtual);
+
+        if ($secretariaIds !== null) {
+            $baseIndicadores->whereIn('contratos.secretaria_id', $secretariaIds);
+        }
+
+        $totalAditivosAno = (clone $baseIndicadores)->count();
+
+        $valorTotalAcrescido = (float) (clone $baseIndicadores)->sum('aditivos.valor_acrescimo');
+
+        $percentualMedioAcrescimo = round((float) (clone $baseIndicadores)
+            ->where('aditivos.percentual_acumulado', '>', 0)
+            ->avg('aditivos.percentual_acumulado'), 2);
+
+        // Ranking contratos mais alterados — Top 10 (RN-113)
+        $queryRanking = $conn->table('aditivos')
+            ->join('contratos', 'aditivos.contrato_id', '=', 'contratos.id')
+            ->whereNull('aditivos.deleted_at')
+            ->whereNull('contratos.deleted_at');
+
+        if ($secretariaIds !== null) {
+            $queryRanking->whereIn('contratos.secretaria_id', $secretariaIds);
+        }
+
+        $rankingContratosMaisAlterados = $queryRanking
             ->select(
                 'contratos.id as contrato_id',
                 'contratos.numero',
@@ -59,11 +73,17 @@ class AditivosController extends Controller
             ->get();
 
         // Ranking secretarias com mais aditivos — Top 5 (RN-114)
-        $rankingSecretarias = $conn->table('aditivos')
+        $querySecretarias = $conn->table('aditivos')
             ->join('contratos', 'aditivos.contrato_id', '=', 'contratos.id')
             ->join('secretarias', 'contratos.secretaria_id', '=', 'secretarias.id')
             ->whereNull('aditivos.deleted_at')
-            ->whereNull('contratos.deleted_at')
+            ->whereNull('contratos.deleted_at');
+
+        if ($secretariaIds !== null) {
+            $querySecretarias->whereIn('contratos.secretaria_id', $secretariaIds);
+        }
+
+        $rankingSecretarias = $querySecretarias
             ->select(
                 'secretarias.nome',
                 $conn->raw('COUNT(aditivos.id) as total_aditivos')

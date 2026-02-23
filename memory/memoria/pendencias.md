@@ -254,7 +254,7 @@
 - [x] Middleware: EnsureUserHasPermission (route parameter `permission:recurso.acao`) *(IMP-015)*
 - [ ] Atualizar todas as Policies para verificar role + permission + secretaria
 - [x] Helper $user->hasPermission('recurso.acao') no Model User (verificacao real-time expires_at) *(IMP-015)*
-- [ ] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326)
+- [x] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326) *(IMP-038)*
 
 **Service e Controller:**
 - [x] PermissaoService: verificação, atribuição, revogação, sincronização *(IMP-015)*
@@ -278,7 +278,7 @@
 - [ ] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job)
 - [x] WorkflowAprovacaoTest (imutabilidade) *(IMP-028)*
 - [ ] Testar perfis padrão não deletáveis (is_padrao = true)
-- [ ] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326)
+- [x] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326) *(IMP-038)*
 
 ### Módulo: Relatórios
 - [x] Relatórios gerenciais (exportação PDF/Excel) *(IMP-029)*

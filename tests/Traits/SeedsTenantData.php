@@ -4,6 +4,7 @@ namespace Tests\Traits;
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Secretaria;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RolePermissionSeeder;
@@ -49,6 +50,17 @@ trait SeedsTenantData
             'role_id' => $role->id,
             'is_ativo' => true,
         ], $overrides));
+    }
+
+    /**
+     * Cria um usuario com role especifica vinculado a uma secretaria (RN-326).
+     */
+    protected function createUserWithSecretaria(string $roleName, Secretaria $secretaria, array $overrides = []): User
+    {
+        $user = $this->createUserWithRole($roleName, $overrides);
+        $user->secretarias()->attach($secretaria->id);
+
+        return $user;
     }
 
     /**

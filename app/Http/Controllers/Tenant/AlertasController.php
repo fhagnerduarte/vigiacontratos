@@ -30,6 +30,13 @@ class AlertasController extends Controller
             ->orderByRaw("FIELD(prioridade, 'urgente', 'atencao', 'informativo')")
             ->orderBy('data_vencimento');
 
+        // Scope por secretaria: usuarios nao-estrategicos veem apenas alertas
+        // de contratos vinculados as suas secretarias (RN-326).
+        // O SecretariaScope do Contrato propaga-se automaticamente via whereHas.
+        if (auth()->check() && ! auth()->user()->isPerfilEstrategico()) {
+            $query->whereHas('contrato');
+        }
+
         // Filtro: status
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));

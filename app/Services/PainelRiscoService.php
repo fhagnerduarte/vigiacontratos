@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\NivelRisco;
 use App\Enums\StatusContrato;
 use App\Models\Contrato;
+use App\Models\Scopes\SecretariaScope;
 use App\Models\Secretaria;
 use App\Models\Tenant;
 
@@ -129,7 +130,9 @@ class PainelRiscoService
     {
         $tenant = Tenant::where('is_ativo', true)->first();
 
-        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+        // Relatorio TCE e documento global de compliance — desativa scope por secretaria
+        $contratos = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('status', StatusContrato::Vigente->value)
             ->with(['secretaria:id,nome,sigla', 'fornecedor:id,razao_social,cnpj', 'fiscalAtual', 'documentos', 'aditivos'])
             ->orderByDesc('score_risco')
             ->get()

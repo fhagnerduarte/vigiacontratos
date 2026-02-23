@@ -25,6 +25,11 @@ class Contrato extends Model
 
     protected $connection = 'tenant';
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new Scopes\SecretariaScope());
+    }
+
     protected $table = 'contratos';
 
     protected $fillable = [
