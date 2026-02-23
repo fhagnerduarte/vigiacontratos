@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Enums\PrioridadeAlerta;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ConfiguracaoAlerta extends Model
 {
+    use HasFactory;
+
     protected $connection = 'tenant';
 
     protected $table = 'configuracoes_alerta';

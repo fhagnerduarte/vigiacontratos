@@ -46,7 +46,7 @@ class WorkflowAprovacao extends Model
     {
         static::updating(function (WorkflowAprovacao $modelo) {
             // Permite atualizar apenas se status atual e pendente (para registrar decisao)
-            if ($modelo->getOriginal('status') !== 'pendente') {
+            if ($modelo->getRawOriginal('status') !== 'pendente') {
                 throw new \RuntimeException('Registros de workflow aprovados/reprovados sao imutaveis (RN-336).');
             }
         });

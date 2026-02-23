@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\StatusAditivo;
 use App\Enums\TipoAditivo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Aditivo extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $connection = 'tenant';
 

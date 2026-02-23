@@ -5,12 +5,15 @@ namespace App\Models;
 use App\Enums\PrioridadeAlerta;
 use App\Enums\StatusAlerta;
 use App\Enums\TipoEventoAlerta;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Alerta extends Model
 {
+    use HasFactory;
+
     protected $connection = 'tenant';
 
     protected $table = 'alertas';

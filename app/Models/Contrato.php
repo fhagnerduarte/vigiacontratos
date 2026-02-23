@@ -11,6 +11,7 @@ use App\Enums\StatusContrato;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoPagamento;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contrato extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $connection = 'tenant';
 

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExecucaoFinanceira extends Model
 {
+    use HasFactory;
+
     protected $connection = 'tenant';
 
     protected $table = 'execucoes_financeiras';

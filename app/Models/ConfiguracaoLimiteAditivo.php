@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Enums\TipoContrato;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ConfiguracaoLimiteAditivo extends Model
 {
+    use HasFactory;
+
     protected $connection = 'tenant';
 
     protected $table = 'configuracoes_limite_aditivo';
