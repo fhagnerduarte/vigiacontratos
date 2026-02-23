@@ -42,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.saas' => \App\Http\Middleware\EnsureAdminSaaS::class,
             'permission' => \App\Http\Middleware\EnsureUserHasPermission::class,
             'mfa.verified' => \App\Http\Middleware\EnsureMfaVerified::class,
+            'force.https' => \App\Http\Middleware\ForceHttps::class,
         ]);
 
         $middleware->priority([

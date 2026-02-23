@@ -43,7 +43,7 @@
 - [x] Implementar MFA via TOTP (obrigatório admin_geral/controladoria, opcional demais perfis) — ADR-045/ADR-055 *(IMP-030)*
 - [x] Implementar bloqueio de login após 5 tentativas com cooldown 15min — ADR-046 *(IMP-013)*
 - [x] Implementar expiração de sessão configurável (SESSION_LIFETIME) — ADR-049 *(IMP-013)*
-- [ ] Middleware ForceHttps para produção
+- [x] Middleware ForceHttps para produção *(IMP-037)*
 - [x] Adicionar campo `hash_integridade` ao Model Documento — ADR-047 *(IMP-016 campo na migration, IMP-017 calculo no upload)*
 - [x] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220 *(IMP-017)*
 - [x] Implementar verificação de integridade (recalcular hash e comparar) — RN-221 *(IMP-034)*
