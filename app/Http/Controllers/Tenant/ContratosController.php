@@ -141,6 +141,12 @@ class ContratosController extends Controller
 
     public function update(UpdateContratoRequest $request, Contrato $contrato): RedirectResponse
     {
+        // RN-006: Defesa em profundidade (authorize() ja bloqueia, mas reforcar aqui)
+        if ($contrato->status === StatusContrato::Vencido) {
+            return redirect()->route('tenant.contratos.show', $contrato)
+                ->with('error', 'Contrato vencido nao pode ser editado (RN-006). Para alterar, crie um aditivo retroativo ou encerre formalmente.');
+        }
+
         $dados = $request->validated();
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
 

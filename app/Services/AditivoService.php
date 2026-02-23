@@ -92,9 +92,14 @@ class AditivoService
     public static function criar(array $dados, Contrato $contrato, User $user, string $ip): Aditivo
     {
         return DB::connection('tenant')->transaction(function () use ($dados, $contrato, $user, $ip) {
-            // Valida contrato vigente (RN-009)
-            if ($contrato->status !== StatusContrato::Vigente) {
-                throw new \RuntimeException('Aditivo so pode ser vinculado a contrato vigente (RN-009).');
+            // Valida contrato vigente ou vencido (RN-009/RN-052)
+            if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
+                throw new \RuntimeException('Aditivo so pode ser vinculado a contrato vigente ou vencido (RN-009/RN-052).');
+            }
+
+            // RN-052: Se contrato vencido, exige justificativa retroativa
+            if ($contrato->status === StatusContrato::Vencido && empty($dados['justificativa_retroativa'])) {
+                throw new \RuntimeException('Aditivo retroativo em contrato vencido exige justificativa formal (RN-052).');
             }
 
             // Gera numero sequencial (RN-091)
@@ -142,6 +147,17 @@ class AditivoService
 
             // Cria workflow de aprovacao 5 etapas (RN-335)
             WorkflowService::criarFluxo($aditivo, $user, $ip);
+
+            // RN-046: Se aditivo de prazo em contrato vencido com data futura, regularizar
+            if (
+                $contrato->status === StatusContrato::Vencido
+                && $aditivo->nova_data_fim
+                && $aditivo->nova_data_fim->greaterThan(now())
+            ) {
+                $contrato->updateQuietly(['status' => StatusContrato::Vigente->value]);
+                AlertaService::regularizarContrato($contrato);
+                AlertaService::resolverAlertasPorContrato($contrato, $user);
+            }
 
             return $aditivo->fresh(['contrato', 'workflowAprovacoes']);
         });

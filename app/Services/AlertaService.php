@@ -338,13 +338,27 @@ class AlertaService
     // --- Metodos privados ---
 
     /**
-     * Marca contratos com data_fim < hoje como vencidos (RN-008).
+     * Marca contratos com data_fim < hoje como vencidos e irregulares (RN-008, RN-046).
      */
     private static function marcarContratosVencidos(): int
     {
         return Contrato::where('status', StatusContrato::Vigente->value)
             ->where('data_fim', '<', now()->startOfDay())
-            ->update(['status' => StatusContrato::Vencido->value]);
+            ->update([
+                'status' => StatusContrato::Vencido->value,
+                'is_irregular' => true,
+            ]);
+    }
+
+    /**
+     * Remove flag IRREGULAR quando contrato e regularizado (RN-046).
+     * Chamado quando aditivo retroativo e registrado ou contrato e encerrado formalmente.
+     */
+    public static function regularizarContrato(Contrato $contrato): void
+    {
+        if ($contrato->is_irregular) {
+            $contrato->updateQuietly(['is_irregular' => false]);
+        }
     }
 
     /**

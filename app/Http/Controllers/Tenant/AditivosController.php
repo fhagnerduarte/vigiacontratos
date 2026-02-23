@@ -107,13 +107,16 @@ class AditivosController extends Controller
      */
     public function create(Contrato $contrato): View|RedirectResponse
     {
-        // Contrato precisa estar vigente (RN-009)
-        if ($contrato->status !== StatusContrato::Vigente) {
+        // RN-009/RN-052: Contrato precisa estar vigente ou vencido (retroativo com justificativa)
+        if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente (RN-009).');
+                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
         }
 
         $contrato->load('fornecedor', 'secretaria');
+
+        // Flag para view: contrato vencido exige justificativa retroativa (RN-052)
+        $exigeJustificativaRetroativa = $contrato->status === StatusContrato::Vencido;
 
         // Dados para o formulario
         $proximoSequencial = AditivoService::gerarNumeroSequencial($contrato);
@@ -127,6 +130,7 @@ class AditivosController extends Controller
             'percentualAcumuladoAtual',
             'valorOriginal',
             'limiteLegal',
+            'exigeJustificativaRetroativa',
         ));
     }
 
@@ -135,10 +139,10 @@ class AditivosController extends Controller
      */
     public function store(StoreAditivoRequest $request, Contrato $contrato): RedirectResponse
     {
-        // Contrato precisa estar vigente (RN-009)
-        if ($contrato->status !== StatusContrato::Vigente) {
+        // RN-009/RN-052: Contrato precisa estar vigente ou vencido
+        if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente (RN-009).');
+                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
         }
 
         $dados = $request->validated();

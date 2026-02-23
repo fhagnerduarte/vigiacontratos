@@ -34,6 +34,7 @@ class Aditivo extends Model
         'justificativa',
         'justificativa_tecnica',
         'justificativa_excesso_limite',
+        'justificativa_retroativa',
         'parecer_juridico_obrigatorio',
         'motivo_reequilibrio',
         'indice_utilizado',

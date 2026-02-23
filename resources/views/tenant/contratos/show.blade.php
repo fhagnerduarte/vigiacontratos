@@ -30,6 +30,18 @@
     </div>
 @endif
 
+{{-- Banner IRREGULAR (RN-046) --}}
+@if ($contrato->is_irregular)
+    <div class="alert alert-danger radius-8 mb-24 d-flex align-items-start gap-3" role="alert">
+        <iconify-icon icon="solar:danger-triangle-bold" class="text-danger-main text-2xl mt-2 flex-shrink-0"></iconify-icon>
+        <div>
+            <h6 class="fw-semibold text-danger-main mb-4">Contrato IRREGULAR (RN-046)</h6>
+            <p class="mb-4">Este contrato esta vencido e em situacao irregular. A edicao esta bloqueada (RN-006).</p>
+            <p class="mb-0">Para regularizar: registre um <strong>aditivo com justificativa retroativa</strong> ou <strong>encerre formalmente</strong> o contrato.</p>
+        </div>
+    </div>
+@endif
+
 {{-- Header --}}
 <div class="card radius-8 border-0 mb-24">
     <div class="card-body p-24">
@@ -42,6 +54,11 @@
                 <span class="badge bg-{{ $contrato->status->cor() }}-focus text-{{ $contrato->status->cor() }}-main px-20 py-9 radius-4 text-sm">
                     {{ $contrato->status->label() }}
                 </span>
+                @if ($contrato->is_irregular)
+                    <span class="badge bg-danger text-white px-20 py-9 radius-4 text-sm">
+                        IRREGULAR
+                    </span>
+                @endif
                 <span class="badge bg-{{ $contrato->nivel_risco->cor() }}-focus text-{{ $contrato->nivel_risco->cor() }}-main px-20 py-9 radius-4 text-sm">
                     Risco: {{ $contrato->nivel_risco->label() }} ({{ $contrato->score_risco }}pts)
                 </span>
@@ -611,11 +628,17 @@
                 @endif
 
                 {{-- Botao para adicionar aditivo --}}
-                @if (auth()->user()->hasPermission('aditivo.criar') && $contrato->status === \App\Enums\StatusContrato::Vigente)
+                @if (auth()->user()->hasPermission('aditivo.criar') && in_array($contrato->status, [\App\Enums\StatusContrato::Vigente, \App\Enums\StatusContrato::Vencido]))
                     <div class="text-center mt-16">
+                        @if ($contrato->status === \App\Enums\StatusContrato::Vencido)
+                            <div class="alert alert-warning radius-8 mb-12">
+                                <small>Contrato vencido: aditivo retroativo exigira justificativa formal (RN-052).</small>
+                            </div>
+                        @endif
                         <a href="{{ route('tenant.contratos.aditivos.create', $contrato) }}"
                            class="btn btn-primary-600 radius-8">
-                            <iconify-icon icon="solar:add-circle-bold" class="icon"></iconify-icon> Adicionar Aditivo
+                            <iconify-icon icon="solar:add-circle-bold" class="icon"></iconify-icon>
+                            {{ $contrato->status === \App\Enums\StatusContrato::Vencido ? 'Adicionar Aditivo Retroativo' : 'Adicionar Aditivo' }}
                         </a>
                     </div>
                 @endif

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Tenant;
 
+use App\Enums\StatusContrato;
 use App\Enums\TipoAditivo;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -62,6 +63,14 @@ class StoreAditivoRequest extends FormRequest
             // Justificativa de excesso de limite (RN-102)
             'justificativa_excesso_limite' => ['nullable', 'string'],
 
+            // Justificativa retroativa obrigatoria se contrato vencido (RN-052)
+            'justificativa_retroativa' => [
+                'nullable',
+                Rule::requiredIf(fn () => $contrato?->status === StatusContrato::Vencido),
+                'string',
+                'min:50',
+            ],
+
             // Outros
             'observacoes' => ['nullable', 'string'],
         ];
@@ -88,6 +97,8 @@ class StoreAditivoRequest extends FormRequest
             'indice_utilizado.required_if' => 'O indice utilizado e obrigatorio para reequilibrio (RN-095).',
             'valor_anterior_reequilibrio.required_if' => 'O valor anterior ao reequilibrio e obrigatorio (RN-095).',
             'valor_reajustado.required_if' => 'O valor reajustado e obrigatorio (RN-095).',
+            'justificativa_retroativa.required' => 'A justificativa retroativa e obrigatoria para aditivos em contrato vencido (RN-052).',
+            'justificativa_retroativa.min' => 'A justificativa retroativa deve ter no minimo 50 caracteres para garantir fundamentacao adequada.',
         ];
     }
 }

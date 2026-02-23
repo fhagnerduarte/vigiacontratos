@@ -269,13 +269,35 @@ class AditivoServiceTest extends TestCase
         $this->assertEquals(12000, (float) $aditivo->valor_acrescimo);
     }
 
-    public function test_criar_aditivo_contrato_nao_vigente_lanca_exception(): void
+    public function test_criar_aditivo_contrato_nao_vigente_nem_vencido_lanca_exception(): void
+    {
+        $user = $this->createAdminUser();
+        $contrato = Contrato::factory()->create([
+            'status' => \App\Enums\StatusContrato::Cancelado,
+            'data_fim' => now()->addMonths(3)->format('Y-m-d'),
+        ]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('RN-009');
+
+        AditivoService::criar([
+            'tipo' => TipoAditivo::Prazo->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'nova_data_fim' => now()->addYear()->format('Y-m-d'),
+            'fundamentacao_legal' => 'Art. 107',
+            'justificativa' => 'Teste',
+            'justificativa_tecnica' => 'Teste',
+        ], $contrato, $user, '127.0.0.1');
+    }
+
+    public function test_criar_aditivo_contrato_vencido_sem_justificativa_retroativa_lanca_exception(): void
     {
         $user = $this->createAdminUser();
         $contrato = Contrato::factory()->vencido()->create();
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('RN-009');
+        $this->expectExceptionMessage('RN-052');
 
         AditivoService::criar([
             'tipo' => TipoAditivo::Prazo->value,

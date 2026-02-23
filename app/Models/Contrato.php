@@ -38,6 +38,7 @@ class Contrato extends Model
         'objeto',
         'tipo',
         'status',
+        'is_irregular',
         'modalidade_contratacao',
         'fornecedor_id',
         'secretaria_id',
@@ -70,6 +71,7 @@ class Contrato extends Model
         return [
             'tipo' => TipoContrato::class,
             'status' => StatusContrato::class,
+            'is_irregular' => 'boolean',
             'modalidade_contratacao' => ModalidadeContratacao::class,
             'tipo_pagamento' => TipoPagamento::class,
             'categoria' => CategoriaContrato::class,
@@ -149,6 +151,13 @@ class Contrato extends Model
     public function alertasPendentes(): HasMany
     {
         return $this->hasMany(Alerta::class)->whereIn('status', ['pendente', 'enviado', 'visualizado']);
+    }
+
+    // Scopes
+
+    public function scopeIrregulares($query)
+    {
+        return $query->where('is_irregular', true);
     }
 
     // Accessors

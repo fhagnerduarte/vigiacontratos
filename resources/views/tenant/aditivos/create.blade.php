@@ -350,6 +350,35 @@
                 </div>
             </div>
 
+            {{-- Justificativa Retroativa (RN-052) — obrigatoria se contrato vencido --}}
+            @if ($exigeJustificativaRetroativa)
+                <div class="alert alert-danger radius-8 mb-16">
+                    <div class="d-flex align-items-start gap-2">
+                        <iconify-icon icon="solar:danger-triangle-bold" class="text-danger-main text-xl mt-2"></iconify-icon>
+                        <div>
+                            <strong>Aditivo Retroativo (RN-052)</strong>
+                            <p class="mb-0 mt-4">
+                                Este contrato esta vencido. A justificativa retroativa e obrigatoria para fundamentar a regularizacao.
+                                Descreva os motivos que justificam o aditivo apos o vencimento do contrato original.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gy-3 mb-24">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            Justificativa Retroativa <span class="text-danger-main">*</span>
+                        </label>
+                        <textarea name="justificativa_retroativa" rows="4"
+                                  class="form-control radius-8 @error('justificativa_retroativa') is-invalid @enderror"
+                                  placeholder="Descreva detalhadamente os motivos que justificam a celebracao deste aditivo apos o vencimento do contrato. Minimo 50 caracteres." required>{{ old('justificativa_retroativa') }}</textarea>
+                        @error('justificativa_retroativa')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            @endif
+
             {{-- Observacoes --}}
             <div class="row gy-3">
                 <div class="col-12">

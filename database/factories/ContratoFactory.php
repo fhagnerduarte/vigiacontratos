@@ -75,6 +75,16 @@ class ContratoFactory extends Factory
         return $this->state(fn () => [
             'status' => StatusContrato::Vencido,
             'data_fim' => now()->subDays(10)->format('Y-m-d'),
+            'is_irregular' => true,
+        ]);
+    }
+
+    public function irregular(): static
+    {
+        return $this->state(fn () => [
+            'status' => StatusContrato::Vencido,
+            'data_fim' => now()->subDays(10)->format('Y-m-d'),
+            'is_irregular' => true,
         ]);
     }
 

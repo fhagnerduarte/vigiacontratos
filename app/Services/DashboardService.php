@@ -325,6 +325,7 @@ class DashboardService
     {
         // Irregularidades
         $vencidos = Contrato::where('status', StatusContrato::Vencido->value)->count();
+        $irregulares = Contrato::where('is_irregular', true)->count();
 
         $semFiscal = Contrato::where('status', StatusContrato::Vigente->value)
             ->whereDoesntHave('fiscalAtual')
@@ -370,6 +371,7 @@ class DashboardService
         return [
             'irregularidades' => [
                 ['label' => 'Contratos vencidos', 'total' => $vencidos, 'cor' => 'danger', 'icone' => 'solar:danger-triangle-bold'],
+                ['label' => 'Contratos irregulares', 'total' => $irregulares, 'cor' => 'danger', 'icone' => 'solar:shield-warning-bold'],
                 ['label' => 'Sem fiscal designado', 'total' => $semFiscal, 'cor' => 'warning', 'icone' => 'solar:user-cross-bold'],
                 ['label' => 'Sem documentos', 'total' => $semDocumento, 'cor' => 'info', 'icone' => 'solar:document-cross-bold'],
                 ['label' => 'Aditivos acima de 25%', 'total' => $aditivosAcimaLimite, 'cor' => 'danger', 'icone' => 'solar:chart-bold'],

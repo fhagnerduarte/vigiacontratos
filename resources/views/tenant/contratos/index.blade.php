@@ -92,7 +92,7 @@
                 </thead>
                 <tbody>
                     @forelse ($contratos as $contrato)
-                        <tr>
+                        <tr class="{{ $contrato->is_irregular ? 'border-start border-danger border-3' : '' }}">
                             <td class="px-24 py-16 fw-medium">
                                 <a href="{{ route('tenant.contratos.show', $contrato) }}" class="text-primary-600 fw-semibold">
                                     {{ $contrato->numero }}
@@ -108,6 +108,11 @@
                                 <span class="badge bg-{{ $contrato->status->cor() }}-focus text-{{ $contrato->status->cor() }}-main px-16 py-6 radius-4">
                                     {{ $contrato->status->label() }}
                                 </span>
+                                @if ($contrato->is_irregular)
+                                    <span class="badge bg-danger text-white px-8 py-4 radius-4 text-xs ms-4" title="Contrato em situacao irregular (RN-046)">
+                                        IRREGULAR
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-24 py-16 text-center">
                                 <span class="badge bg-{{ $contrato->nivel_risco->cor() }}-focus text-{{ $contrato->nivel_risco->cor() }}-main px-12 py-6 radius-4">
