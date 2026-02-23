@@ -5,14 +5,18 @@ namespace App\Services;
 use App\Enums\AcaoLogDocumento;
 use App\Enums\StatusCompletudeDocumental;
 use App\Enums\StatusContrato;
+use App\Enums\StatusIntegridade;
 use App\Enums\TipoDocumentoContratual;
 use App\Models\Contrato;
 use App\Models\Documento;
 use App\Models\LogAcessoDocumento;
+use App\Models\LogIntegridadeDocumento;
 use App\Models\User;
+use App\Notifications\IntegridadeComprometidaNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -113,6 +117,12 @@ class DocumentoService
      */
     public static function download(Documento $documento, User $user, string $ip): StreamedResponse
     {
+        if ($documento->integridade_comprometida) {
+            throw new \RuntimeException(
+                'Download bloqueado: a integridade deste documento esta comprometida. Contate o administrador do sistema.'
+            );
+        }
+
         self::registrarLog($documento, $user, AcaoLogDocumento::Download, $ip);
 
         return Storage::disk('local')->download(
@@ -215,6 +225,72 @@ class DocumentoService
             'total_aditivos_sem_doc' => $totalAditivosSemDoc,
             'secretarias_pendentes' => count($secretariasComPendencia),
         ];
+    }
+
+    /**
+     * Verificar integridade SHA-256 de um documento (RN-221).
+     * Recalcula o hash e compara com o armazenado.
+     */
+    public static function verificarIntegridade(Documento $documento): StatusIntegridade
+    {
+        if (empty($documento->hash_integridade)) {
+            return StatusIntegridade::Ok;
+        }
+
+        if (empty($documento->caminho) || ! Storage::disk('local')->exists($documento->caminho)) {
+            LogIntegridadeDocumento::create([
+                'documento_id' => $documento->id,
+                'hash_esperado' => $documento->hash_integridade,
+                'hash_calculado' => null,
+                'status' => StatusIntegridade::ArquivoAusente,
+                'detectado_em' => now(),
+            ]);
+
+            $documento->update(['integridade_comprometida' => true]);
+            self::notificarIntegridadeComprometida($documento);
+
+            return StatusIntegridade::ArquivoAusente;
+        }
+
+        $caminhoCompleto = Storage::disk('local')->path($documento->caminho);
+        $hashRecalculado = hash_file('sha256', $caminhoCompleto);
+
+        if ($hashRecalculado === $documento->hash_integridade) {
+            LogIntegridadeDocumento::create([
+                'documento_id' => $documento->id,
+                'hash_esperado' => $documento->hash_integridade,
+                'hash_calculado' => $hashRecalculado,
+                'status' => StatusIntegridade::Ok,
+                'detectado_em' => now(),
+            ]);
+
+            return StatusIntegridade::Ok;
+        }
+
+        LogIntegridadeDocumento::create([
+            'documento_id' => $documento->id,
+            'hash_esperado' => $documento->hash_integridade,
+            'hash_calculado' => $hashRecalculado,
+            'status' => StatusIntegridade::Divergente,
+            'detectado_em' => now(),
+        ]);
+
+        $documento->update(['integridade_comprometida' => true]);
+        self::notificarIntegridadeComprometida($documento);
+
+        return StatusIntegridade::Divergente;
+    }
+
+    /**
+     * Notificar administradores sobre integridade comprometida.
+     */
+    private static function notificarIntegridadeComprometida(Documento $documento): void
+    {
+        $admins = User::whereHas('role', fn ($q) => $q->where('nome', 'administrador_geral'))->get();
+
+        if ($admins->isNotEmpty()) {
+            Notification::send($admins, new IntegridadeComprometidaNotification($documento));
+        }
     }
 
     /**

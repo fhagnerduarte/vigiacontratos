@@ -30,6 +30,7 @@ class Documento extends Model
         'tamanho',
         'mime_type',
         'hash_integridade',
+        'integridade_comprometida',
         'versao',
         'is_versao_atual',
         'uploaded_by',
@@ -40,6 +41,7 @@ class Documento extends Model
         return [
             'tipo_documento' => TipoDocumentoContratual::class,
             'is_versao_atual' => 'boolean',
+            'integridade_comprometida' => 'boolean',
             'versao' => 'integer',
             'tamanho' => 'integer',
         ];
@@ -67,5 +69,10 @@ class Documento extends Model
     public function logsAcesso(): HasMany
     {
         return $this->hasMany(LogAcessoDocumento::class);
+    }
+
+    public function logsIntegridade(): HasMany
+    {
+        return $this->hasMany(LogIntegridadeDocumento::class);
     }
 }

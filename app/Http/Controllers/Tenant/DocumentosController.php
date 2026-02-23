@@ -111,9 +111,31 @@ class DocumentosController extends Controller
     /**
      * Download autenticado de documento (RN-130).
      */
-    public function download(Request $request, Documento $documento): StreamedResponse
+    public function download(Request $request, Documento $documento): StreamedResponse|RedirectResponse
     {
-        return DocumentoService::download($documento, $request->user(), $request->ip());
+        try {
+            return DocumentoService::download($documento, $request->user(), $request->ip());
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Verificar integridade SHA-256 de um documento (RN-221).
+     */
+    public function verificarIntegridade(Request $request, Documento $documento): RedirectResponse
+    {
+        $status = DocumentoService::verificarIntegridade($documento);
+
+        $mensagem = match ($status) {
+            \App\Enums\StatusIntegridade::Ok => 'Integridade verificada: documento integro.',
+            \App\Enums\StatusIntegridade::Divergente => 'ATENCAO: Integridade comprometida! Download bloqueado.',
+            \App\Enums\StatusIntegridade::ArquivoAusente => 'Arquivo nao encontrado no storage.',
+        };
+
+        $flash = $status === \App\Enums\StatusIntegridade::Ok ? 'success' : 'error';
+
+        return redirect()->back()->with($flash, $mensagem);
     }
 
     /**

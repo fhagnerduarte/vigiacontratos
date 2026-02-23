@@ -391,7 +391,14 @@
                                     {{ $doc->is_versao_atual ? '' : 'opacity-75 bg-neutral-50' }}">
                                     <iconify-icon icon="solar:file-bold" class="text-primary-600 text-xl flex-shrink-0"></iconify-icon>
                                     <div class="flex-grow-1">
-                                        <p class="fw-medium mb-0 text-sm">{{ $doc->nome_original }}</p>
+                                        <p class="fw-medium mb-0 text-sm">
+                                            {{ $doc->nome_original }}
+                                            @if ($doc->integridade_comprometida)
+                                                <span class="badge bg-danger-focus text-danger-main px-8 py-4 radius-4 text-xs ms-4" title="Integridade comprometida — download bloqueado">
+                                                    <iconify-icon icon="solar:danger-triangle-bold"></iconify-icon> Comprometido
+                                                </span>
+                                            @endif
+                                        </p>
                                         <p class="text-neutral-400 text-xs mb-0">
                                             v{{ $doc->versao }}
                                             — {{ number_format($doc->tamanho / 1024 / 1024, 2) }} MB
@@ -409,6 +416,17 @@
                                                title="Download">
                                                 <iconify-icon icon="solar:download-bold"></iconify-icon>
                                             </a>
+                                        @endif
+                                        @if (auth()->user()->hasPermission('auditoria.verificar_integridade'))
+                                            <form action="{{ route('tenant.documentos.verificar-integridade', $doc) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit"
+                                                   class="w-32-px h-32-px bg-warning-focus text-warning-main rounded-circle d-inline-flex align-items-center justify-content-center border-0"
+                                                   onclick="return confirm('Verificar integridade deste documento?')"
+                                                   title="Verificar integridade">
+                                                    <iconify-icon icon="solar:shield-check-bold"></iconify-icon>
+                                                </button>
+                                            </form>
                                         @endif
                                         @if (auth()->user()->hasPermission('documento.excluir') && $doc->is_versao_atual)
                                             <form action="{{ route('tenant.documentos.destroy', $doc) }}" method="POST" class="d-inline">

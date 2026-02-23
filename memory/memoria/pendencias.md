@@ -46,8 +46,12 @@
 - [ ] Middleware ForceHttps para produção
 - [x] Adicionar campo `hash_integridade` ao Model Documento — ADR-047 *(IMP-016 campo na migration, IMP-017 calculo no upload)*
 - [x] Implementar cálculo de hash SHA-256 no upload de documento (DocumentoService) — RN-220 *(IMP-017)*
-- [ ] Implementar verificação de integridade (recalcular hash e comparar) — RN-221
-- [ ] Implementar relatório de logs exportável (PDF/CSV) — RN-222
+- [x] Implementar verificação de integridade (recalcular hash e comparar) — RN-221 *(IMP-034)*
+- [x] Implementar relatório de logs exportável (PDF/CSV) — RN-222 *(IMP-029/IMP-033)*
+- [x] Módulo Auditoria dedicado (trilha navegável + exportação PDF/CSV) *(IMP-033)*
+- [x] Triggers MySQL de imutabilidade em tabelas append-only *(IMP-035)*
+- [x] Verificação automática de integridade (Command + Job + Schedule semanal) *(IMP-034)*
+- [x] Bloqueio de download quando integridade comprometida *(IMP-034)*
 - [x] Criar seeders iniciais (AdminUserSeeder IMP-012, RoleSeeder IMP-014) — *SecretariaSeeder opcional para futuro*
 
 ### Módulo: Contratos (Cadastro Inteligente)

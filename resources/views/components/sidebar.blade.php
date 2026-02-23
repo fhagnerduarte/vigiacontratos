@@ -176,7 +176,8 @@
 
                 @if (auth()->user()->hasPermission('auditoria.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.auditoria.index') }}"
+                           class="{{ request()->routeIs('tenant.auditoria.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:clipboard-list-bold" class="menu-icon"></iconify-icon>
                             <span>Auditoria</span>
                         </a>

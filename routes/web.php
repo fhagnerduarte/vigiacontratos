@@ -16,6 +16,7 @@ use App\Http\Controllers\Tenant\RolesController;
 use App\Http\Controllers\Tenant\SecretariasController;
 use App\Http\Controllers\Tenant\ServidoresController;
 use App\Http\Controllers\Tenant\AlertasController;
+use App\Http\Controllers\Tenant\AuditoriaController;
 use App\Http\Controllers\Tenant\RelatoriosController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -126,6 +127,29 @@ Route::middleware(['tenant', 'auth', 'mfa.verified'])->group(function () {
     Route::delete('documentos/{documento}', [DocumentosController::class, 'destroy'])
         ->name('tenant.documentos.destroy')
         ->middleware('permission:documento.excluir');
+
+    Route::post('documentos/{documento}/verificar-integridade', [DocumentosController::class, 'verificarIntegridade'])
+        ->name('tenant.documentos.verificar-integridade')
+        ->middleware('permission:auditoria.verificar_integridade');
+
+    // Administracao — Auditoria
+    // IMPORTANTE: rotas estaticas antes de {tipo}/{id} parametrizado
+    Route::post('auditoria/exportar/pdf', [AuditoriaController::class, 'exportarPdf'])
+        ->name('tenant.auditoria.exportar.pdf')
+        ->middleware(['permission:auditoria.exportar', 'throttle:exportacoes']);
+
+    Route::post('auditoria/exportar/csv', [AuditoriaController::class, 'exportarCsv'])
+        ->name('tenant.auditoria.exportar.csv')
+        ->middleware(['permission:auditoria.exportar', 'throttle:exportacoes']);
+
+    Route::get('auditoria', [AuditoriaController::class, 'index'])
+        ->name('tenant.auditoria.index')
+        ->middleware('permission:auditoria.visualizar');
+
+    Route::get('auditoria/{tipo}/{id}', [AuditoriaController::class, 'show'])
+        ->name('tenant.auditoria.show')
+        ->middleware('permission:auditoria.visualizar')
+        ->where('tipo', 'alteracao|login|acesso_documento');
 
     // Monitoramento — Alertas
     // IMPORTANTE: rotas estaticas antes de {alerta} para evitar conflito

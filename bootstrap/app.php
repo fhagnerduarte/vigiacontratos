@@ -30,6 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('permissoes:verificar-expiradas')
             ->dailyAt('01:00')
             ->withoutOverlapping();
+
+        $schedule->command('documentos:verificar-integridade')
+            ->weeklyOn(0, '02:00')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/integridade-documentos.log'));
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([

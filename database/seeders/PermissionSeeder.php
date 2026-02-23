@@ -58,6 +58,8 @@ class PermissionSeeder extends Seeder
 
             // Auditoria
             ['nome' => 'auditoria.visualizar', 'descricao' => 'Visualizar logs de auditoria', 'grupo' => 'auditoria'],
+            ['nome' => 'auditoria.exportar', 'descricao' => 'Exportar logs de auditoria (PDF/CSV)', 'grupo' => 'auditoria'],
+            ['nome' => 'auditoria.verificar_integridade', 'descricao' => 'Verificar integridade de documentos manualmente', 'grupo' => 'auditoria'],
 
             // Parecer
             ['nome' => 'parecer.visualizar', 'descricao' => 'Visualizar pareceres', 'grupo' => 'parecer'],
