@@ -201,6 +201,19 @@ Route::middleware(['tenant', 'auth', 'mfa.verified'])->group(function () {
         ->name('tenant.relatorios.conformidade-documental')
         ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
 
+    // RN-057: Efetividade mensal dos alertas
+    Route::get('relatorios/efetividade-mensal', [RelatoriosController::class, 'efetividadeMensal'])
+        ->name('tenant.relatorios.efetividade-mensal')
+        ->middleware('permission:relatorio.gerar');
+
+    Route::post('relatorios/efetividade-mensal/pdf', [RelatoriosController::class, 'efetividadeMensalPdf'])
+        ->name('tenant.relatorios.efetividade-mensal.pdf')
+        ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
+
+    Route::get('relatorios/efetividade-mensal/excel', [RelatoriosController::class, 'efetividadeMensalExcel'])
+        ->name('tenant.relatorios.efetividade-mensal.excel')
+        ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
+
     Route::get('contratos/{contrato}/relatorio-documentos', [RelatoriosController::class, 'documentosContratoPdf'])
         ->name('tenant.relatorios.documentos-contrato')
         ->middleware(['permission:documento.download', 'throttle:exportacoes']);

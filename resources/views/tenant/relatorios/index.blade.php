@@ -132,6 +132,27 @@
                 </div>
             </div>
         </div>
+
+        {{-- Card: Efetividade Mensal --}}
+        <div class="col-md-6 col-lg-4">
+            <div class="card radius-8 border-0 h-100">
+                <div class="card-body p-20">
+                    <div class="d-flex align-items-center gap-12 mb-16">
+                        <div class="w-40-px h-40-px bg-success-100 rounded-circle d-flex align-items-center justify-content-center">
+                            <iconify-icon icon="solar:graph-up-bold" class="text-success-600 text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold mb-0 text-sm">Efetividade Mensal</h6>
+                            <span class="text-neutral-500 text-xs">RN-057 — Alertas</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-500 text-sm mb-16">Contratos regularizados a tempo vs. vencidos sem acao. Mede a efetividade do sistema de alertas.</p>
+                    <a href="{{ route('tenant.relatorios.efetividade-mensal') }}" class="btn btn-outline-success-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
+                        <iconify-icon icon="solar:chart-2-bold" class="text-lg"></iconify-icon> Gerar Relatorio
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endif

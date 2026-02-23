@@ -127,7 +127,7 @@
 - [x] Contrato essencial → prioridade elevada nos alertas *(IMP-021)*
 - [x] Email institucional: template de email para alertas de vencimento *(IMP-023)*
 - [x] Bloqueio preventivo: contrato vencido → IRREGULAR, aditivo retroativo exige justificativa *(IMP-039)*
-- [ ] Relatório de efetividade mensal (contratos regularizados vs vencidos)
+- [x] Relatório de efetividade mensal (contratos regularizados vs vencidos) *(IMP-040)*
 
 ### Módulo: Dashboard Executivo (Painel Estratégico)
 - [x] Migration da tabela dashboard_agregados (dados pré-calculados) *(IMP-025)*

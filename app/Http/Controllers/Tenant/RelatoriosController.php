@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Exports\AlertasExport;
 use App\Exports\ContratosExport;
+use App\Exports\EfetividadeMensalExport;
 use App\Exports\FornecedoresExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\GerarRelatorioAuditoriaRequest;
 use App\Models\Contrato;
+use App\Models\Secretaria;
 use App\Models\User;
 use App\Services\RelatorioService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -114,6 +116,66 @@ class RelatoriosController extends Controller
         $nomeArquivo = 'relatorio-conformidade-documental-' . now()->format('Y-m-d') . '.pdf';
 
         return $pdf->download($nomeArquivo);
+    }
+
+    /**
+     * RN-057: Tela de efetividade mensal com filtros e indicadores.
+     */
+    public function efetividadeMensal(Request $request): View
+    {
+        $secretarias = Secretaria::orderBy('nome')->get(['id', 'nome']);
+
+        $dados = null;
+        if ($request->has('mes') && $request->has('ano')) {
+            $request->validate([
+                'mes' => 'required|integer|min:1|max:12',
+                'ano' => 'required|integer|min:2020|max:2099',
+                'secretaria_id' => 'nullable|integer|exists:tenant.secretarias,id',
+            ]);
+
+            $dados = RelatorioService::dadosEfetividadeMensal($request->only(['mes', 'ano', 'secretaria_id']));
+        }
+
+        return view('tenant.relatorios.efetividade-mensal', compact('secretarias', 'dados'));
+    }
+
+    /**
+     * RN-057: Gerar PDF do relatorio de efetividade mensal.
+     */
+    public function efetividadeMensalPdf(Request $request)
+    {
+        $request->validate([
+            'mes' => 'required|integer|min:1|max:12',
+            'ano' => 'required|integer|min:2020|max:2099',
+            'secretaria_id' => 'nullable|integer|exists:tenant.secretarias,id',
+        ]);
+
+        $dados = RelatorioService::dadosEfetividadeMensal($request->only(['mes', 'ano', 'secretaria_id']));
+
+        $pdf = Pdf::loadView('tenant.relatorios.pdf.efetividade-mensal', compact('dados'))
+            ->setPaper('a4', 'landscape');
+
+        $nomeArquivo = 'relatorio-efetividade-' . $request->ano . '-' . str_pad($request->mes, 2, '0', STR_PAD_LEFT) . '.pdf';
+
+        return $pdf->download($nomeArquivo);
+    }
+
+    /**
+     * RN-057: Exportar efetividade mensal em Excel.
+     */
+    public function efetividadeMensalExcel(Request $request): BinaryFileResponse
+    {
+        $request->validate([
+            'mes' => 'required|integer|min:1|max:12',
+            'ano' => 'required|integer|min:2020|max:2099',
+            'secretaria_id' => 'nullable|integer|exists:tenant.secretarias,id',
+        ]);
+
+        $dados = RelatorioService::dadosEfetividadeMensal($request->only(['mes', 'ano', 'secretaria_id']));
+
+        $nomeArquivo = 'efetividade-mensal-' . $request->ano . '-' . str_pad($request->mes, 2, '0', STR_PAD_LEFT) . '.xlsx';
+
+        return Excel::download(new EfetividadeMensalExport($dados), $nomeArquivo);
     }
 
     /**

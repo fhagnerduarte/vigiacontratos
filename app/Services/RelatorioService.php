@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\Enums\StatusContrato;
+use App\Enums\TipoAditivo;
+use App\Models\Aditivo;
 use App\Models\Contrato;
 use App\Models\Documento;
 use App\Models\HistoricoAlteracao;
 use App\Models\LoginLog;
 use App\Models\LogAcessoDocumento;
+use App\Models\Secretaria;
 use App\Models\Tenant;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -241,6 +246,140 @@ class RelatorioService
                 'ausentes' => $totalAusentes,
             ],
             'documentos' => $itens,
+        ];
+    }
+
+    /**
+     * RN-057: Dados do relatorio de efetividade mensal dos alertas.
+     * Contratos regularizados a tempo vs. vencidos, tempo medio de antecipacao.
+     */
+    public static function dadosEfetividadeMensal(array $filtros): array
+    {
+        $mes = (int) $filtros['mes'];
+        $ano = (int) $filtros['ano'];
+        $secretariaId = $filtros['secretaria_id'] ?? null;
+
+        $mesInicio = Carbon::create($ano, $mes, 1)->startOfDay();
+        $mesFim = $mesInicio->copy()->endOfMonth()->endOfDay();
+
+        $tenant = Tenant::where('is_ativo', true)->first();
+
+        // Contratos elegiveis: data_fim dentro do mes analisado
+        $queryElegiveis = Contrato::withoutGlobalScope(\App\Models\Scopes\SecretariaScope::class)
+            ->with(['secretaria:id,nome', 'fornecedor:id,razao_social'])
+            ->whereBetween('data_fim', [$mesInicio, $mesFim])
+            ->whereNotIn('status', [StatusContrato::Cancelado->value]);
+
+        if ($secretariaId) {
+            $queryElegiveis->where('secretaria_id', $secretariaId);
+        }
+
+        $contratosElegiveis = $queryElegiveis->get();
+
+        // Classificar cada contrato
+        $contratos = [];
+        $regularizadosATempo = 0;
+        $vencidosSemAcao = 0;
+        $regularizadosRetroativos = 0;
+        $diasAntecipacao = [];
+
+        foreach ($contratosElegiveis as $contrato) {
+            // Buscar aditivos de prazo deste contrato (vigentes/aprovados)
+            $aditivoPrazo = Aditivo::where('contrato_id', $contrato->id)
+                ->whereIn('tipo', [
+                    TipoAditivo::Prazo->value,
+                    TipoAditivo::PrazoEValor->value,
+                    TipoAditivo::Misto->value,
+                ])
+                ->whereNotIn('status', ['cancelado'])
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($aditivoPrazo && $aditivoPrazo->created_at->lte($contrato->data_fim)) {
+                // Regularizado a tempo (aditivo criado ANTES do vencimento)
+                $statusEfetividade = 'regularizado_a_tempo';
+                $regularizadosATempo++;
+                $dias = (int) $aditivoPrazo->created_at->startOfDay()->diffInDays($contrato->data_fim->startOfDay(), false);
+                $diasAntecipacao[] = $dias;
+            } elseif ($aditivoPrazo && $aditivoPrazo->created_at->gt($contrato->data_fim)) {
+                // Regularizado apos vencimento (aditivo retroativo)
+                $statusEfetividade = 'regularizado_retroativo';
+                $regularizadosRetroativos++;
+            } else {
+                // Vencido sem acao
+                $statusEfetividade = 'vencido_sem_acao';
+                $vencidosSemAcao++;
+            }
+
+            $contratos[] = [
+                'id' => $contrato->id,
+                'numero' => $contrato->numero . '/' . $contrato->ano,
+                'objeto' => $contrato->objeto,
+                'secretaria' => $contrato->secretaria?->nome ?? '-',
+                'secretaria_id' => $contrato->secretaria_id,
+                'fornecedor' => $contrato->fornecedor?->razao_social ?? '-',
+                'valor_global' => (float) $contrato->valor_global,
+                'data_fim' => $contrato->data_fim->format('d/m/Y'),
+                'status_atual' => $contrato->status->label(),
+                'is_irregular' => $contrato->is_irregular,
+                'status_efetividade' => $statusEfetividade,
+                'aditivo' => $aditivoPrazo ? 'Aditivo #' . $aditivoPrazo->numero_sequencial . ' (' . $aditivoPrazo->tipo->label() . ')' : '-',
+                'dias_antecipacao' => ($statusEfetividade === 'regularizado_a_tempo' && $aditivoPrazo)
+                    ? (int) $aditivoPrazo->created_at->startOfDay()->diffInDays($contrato->data_fim->startOfDay(), false)
+                    : null,
+            ];
+        }
+
+        $totalElegiveis = count($contratos);
+        $taxaEfetividade = $totalElegiveis > 0
+            ? round(($regularizadosATempo / $totalElegiveis) * 100, 1)
+            : 0;
+        $tempoMedioAntecipacao = count($diasAntecipacao) > 0
+            ? round(array_sum($diasAntecipacao) / count($diasAntecipacao), 1)
+            : 0;
+
+        // Detalhamento por secretaria
+        $porSecretaria = collect($contratos)
+            ->groupBy('secretaria')
+            ->map(function ($grupo, $nomeSecretaria) {
+                $total = $grupo->count();
+                $regularizados = $grupo->where('status_efetividade', 'regularizado_a_tempo')->count();
+                $vencidos = $grupo->where('status_efetividade', 'vencido_sem_acao')->count();
+                $retroativos = $grupo->where('status_efetividade', 'regularizado_retroativo')->count();
+                $taxa = $total > 0 ? round(($regularizados / $total) * 100, 1) : 0;
+
+                return [
+                    'secretaria' => $nomeSecretaria,
+                    'total' => $total,
+                    'regularizados' => $regularizados,
+                    'vencidos' => $vencidos,
+                    'retroativos' => $retroativos,
+                    'taxa' => $taxa,
+                ];
+            })
+            ->sortByDesc('taxa')
+            ->values()
+            ->toArray();
+
+        return [
+            'municipio' => $tenant?->nome ?? 'Municipio',
+            'data_geracao' => now()->format('d/m/Y H:i'),
+            'filtros' => [
+                'periodo' => $mesInicio->translatedFormat('F/Y'),
+                'secretaria' => $secretariaId
+                    ? (Secretaria::find($secretariaId)?->nome ?? 'Todas')
+                    : 'Todas',
+            ],
+            'resumo' => [
+                'total_elegiveis' => $totalElegiveis,
+                'regularizados_a_tempo' => $regularizadosATempo,
+                'vencidos_sem_acao' => $vencidosSemAcao,
+                'regularizados_retroativos' => $regularizadosRetroativos,
+                'taxa_efetividade' => $taxaEfetividade,
+                'tempo_medio_antecipacao' => $tempoMedioAntecipacao,
+            ],
+            'por_secretaria' => $porSecretaria,
+            'contratos' => $contratos,
         ];
     }
 
