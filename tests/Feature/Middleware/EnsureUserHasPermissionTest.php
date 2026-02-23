@@ -27,9 +27,16 @@ class EnsureUserHasPermissionTest extends TestCase
 
     public function test_admin_geral_sempre_passa(): void
     {
-        $this->actingAsAdmin();
+        $user = $this->createAdminUser([
+            'mfa_secret' => 'TESTSECRETKEY123',
+            'mfa_enabled_at' => now(),
+            'mfa_recovery_codes' => encrypt(json_encode(['AAAA-BBBB'])),
+        ]);
 
-        $response = $this->get(route('tenant.contratos.index'));
+        // Admin geral tem MFA obrigatório — simular sessão verificada
+        $response = $this->actingAs($user)
+            ->withSession(['mfa_verified' => true])
+            ->get(route('tenant.contratos.index'));
 
         $response->assertStatus(200);
     }

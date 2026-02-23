@@ -34,13 +34,13 @@
 - [x] TenantController (painel admin): index (listar), create/store (provisionar), show (detalhes), ativar/desativar *(IMP-012)*
 - [x] Views: admin-saas/tenants/index.blade.php, create.blade.php, show.blade.php *(IMP-012)*
 - [x] Seeder: AdminUserSeeder (criar usuário root inicial) *(IMP-012)*
-- [ ] MFA obrigatório para AdminUser (TOTP)
+- [x] MFA obrigatório para AdminUser (TOTP) *(IMP-030)*
 
 ### Módulo: Segurança Expandida
 - [x] Configurar hashing driver Argon2id (`config/hashing.php`) — ADR-044 *(IMP-012)*
 - [x] Migration banco tenant: tabela `login_logs` (user_id, ip_address, user_agent, success, created_at) — ADR-048 *(IMP-013)*
 - [x] Model: LoginLog (append-only, sem update/delete) *(IMP-013)*
-- [ ] Implementar MFA opcional via TOTP para admin/gestor — ADR-045
+- [x] Implementar MFA via TOTP (obrigatório admin_geral/controladoria, opcional demais perfis) — ADR-045/ADR-055 *(IMP-030)*
 - [x] Implementar bloqueio de login após 5 tentativas com cooldown 15min — ADR-046 *(IMP-013)*
 - [x] Implementar expiração de sessão configurável (SESSION_LIFETIME) — ADR-049 *(IMP-013)*
 - [ ] Middleware ForceHttps para produção
@@ -94,59 +94,58 @@
 - [x] Página de detalhes/timeline do aditivo (aditivos/show.blade.php) com workflow stepper *(IMP-020)*
 - [x] Dashboard de aditivos (indicadores anuais — RN-109 a RN-114) *(IMP-020)*
 - [x] Cancelamento de aditivo (RN-116 — apenas admin) com recálculo do contrato *(IMP-020)*
-- [ ] AditivoFactory para testes
-- [ ] Testes: AditivoServiceTest (limites legais, percentual, reequilíbrio)
-- [ ] Testes: AditivoTest (fluxo completo)
+- [x] AditivoFactory para testes *(IMP-028)*
+- [x] Testes: AditivoServiceTest (limites legais, percentual, reequilíbrio) *(IMP-028)*
+- [ ] Testes: AditivoTest (fluxo completo Feature)
 - [ ] Testes: LimiteLegalAditivoTest (bloqueio e alerta)
 - [x] Índices em aditivos (contrato_id, composto contrato_id+data_assinatura) *(IMP-020)*
 
 ### Módulo: Alertas (Motor de Monitoramento)
-- [ ] Migration da tabela alertas (expandida: tipo_evento, dias_antecedencia_config, data_disparo, tentativas_envio)
-- [ ] Migration da tabela configuracoes_alerta (dias_antecedencia, prioridade, is_ativo)
-- [ ] Migration da tabela log_notificacoes (canal, destinatario, sucesso, resposta_gateway)
-- [ ] Índice em contratos.data_fim + índice composto em alertas
-- [ ] Enums: StatusAlerta (add enviado), CanalNotificacao, TipoEventoAlerta
-- [ ] Model: LogNotificacao
-- [ ] Command: VerificarVencimentosCommand (alertas:verificar-vencimentos)
-- [ ] Job: EnviarNotificacaoAlertaJob (retry exponencial, max 3 tentativas)
-- [ ] Notification: AlertaVencimentoNotification (canais: mail + database)
-- [ ] Service: AlertaService (geração, resolução, prioridade automática)
-- [ ] Service: NotificacaoService (orquestração de envio por canal)
-- [ ] Seeder: ConfiguracaoAlertaSeeder (6 prazos: 120, 90, 60, 30, 15, 7 dias)
-- [ ] Scheduler: registrar VerificarVencimentosCommand no schedule() do Kernel
-- [ ] Queue: configurar Redis como driver de filas
-- [ ] Dashboard de alertas (indicadores: vencendo 120d/60d/30d, vencidos, secretarias com risco)
-- [ ] Listagem de alertas com filtros (secretaria, criticidade, tipo contrato, faixa valor)
-- [ ] Tela de configuração de prazos de alerta (admin)
-- [ ] Notificação interna no sistema (sino/badge no navbar)
-- [ ] Resolução automática de alertas ao registrar aditivo de prazo
+- [x] Migration da tabela alertas (expandida: tipo_evento, dias_antecedencia_config, data_disparo, tentativas_envio) *(IMP-021)*
+- [x] Migration da tabela configuracoes_alerta (dias_antecedencia, prioridade, is_ativo) *(IMP-021)*
+- [x] Migration da tabela log_notificacoes (canal, destinatario, sucesso, resposta_gateway) *(IMP-021)*
+- [x] Índice em contratos.data_fim + índice composto em alertas *(IMP-021)*
+- [x] Enums: StatusAlerta (add enviado), CanalNotificacao, TipoEventoAlerta, PrioridadeAlerta *(IMP-021)*
+- [x] Model: Alerta, ConfiguracaoAlerta, LogNotificacao *(IMP-021)*
+- [x] Command: VerificarVencimentosCommand (alertas:verificar-vencimentos) *(IMP-022)*
+- [x] Job: ProcessarAlertaJob (retry exponencial, max 3 tentativas, backoff [60s,300s,900s]) *(IMP-023)*
+- [x] Notification: AlertaVencimentoNotification (canais: mail + database) *(IMP-023)*
+- [x] Service: AlertaService (geração, resolução, prioridade automática, dedup) *(IMP-021)*
+- [x] Service: NotificacaoService (orquestração de envio por canal) *(IMP-023)*
+- [x] Seeder: ConfiguracaoAlertaSeeder (6 prazos: 120, 90, 60, 30, 15, 7 dias) *(IMP-021)*
+- [x] Scheduler: registrar VerificarVencimentosCommand no schedule() *(IMP-024)*
+- [x] Queue: configurar Redis como driver de filas *(IMP-023)*
+- [x] Dashboard de alertas (indicadores: vencendo 120d/60d/30d, vencidos, secretarias com risco) *(IMP-024)*
+- [x] Listagem de alertas com filtros (secretaria, criticidade, tipo contrato, faixa valor) *(IMP-024)*
+- [x] Tela de configuração de prazos de alerta (admin) *(IMP-024)*
+- [x] Notificação interna no sistema (sino/badge no navbar) *(IMP-024)*
+- [x] Resolução automática de alertas ao registrar aditivo de prazo *(IMP-024)*
+- [x] Contrato essencial → prioridade elevada nos alertas *(IMP-021)*
+- [x] Email institucional: template de email para alertas de vencimento *(IMP-023)*
 - [ ] Bloqueio preventivo: contrato vencido → IRREGULAR, aditivo retroativo exige justificativa
-- [ ] Contrato essencial → prioridade elevada nos alertas
-- [ ] Email institucional: template de email para alertas de vencimento
 - [ ] Relatório de efetividade mensal (contratos regularizados vs vencidos)
 
 ### Módulo: Dashboard Executivo (Painel Estratégico)
-- [ ] Migration da tabela dashboard_agregados (dados pré-calculados)
-- [ ] Índices adicionais em contratos: data_fim, secretaria_id, status, valor_global, categoria
-- [ ] Model: DashboardAgregado
-- [ ] Service: DashboardService (agregação, consulta, score de gestão)
-- [ ] Command: AgregarDashboardCommand (dashboard:agregar-dados — cron noturno)
-- [ ] Scheduler: registrar AgregarDashboardCommand no schedule()
-- [ ] Cache Redis para dados do dashboard (TTL 24h + invalidação manual)
-- [ ] Bloco 1: Visão Geral Financeira (5 cards de indicadores)
-- [ ] Bloco 2: Mapa de Risco Contratual (donut chart com ApexCharts)
-- [ ] Bloco 3: Vencimentos por Janela de Tempo (gráfico/tabela 5 faixas)
-- [ ] Bloco 4: Distribuição por Secretaria (ranking com tabela)
-- [ ] Bloco 5: Contratos Essenciais (painel especial de alerta)
-- [ ] Filtros inteligentes (secretaria, faixa valor, risco, tipo, modalidade, fonte recurso)
-- [ ] Score de Gestão Contratual (nota 0-100 com classificação)
-- [ ] Tendência Mensal (mini BI — últimos 12 meses)
-- [ ] Ranking de Fornecedores (top 10 por volume, contratos, aditivos)
-- [ ] Visão do Controlador (irregularidades, log recente, aditivos acima de limite)
-- [ ] Botão "Atualizar Dados" (atualização manual sob demanda)
-- [ ] JS do dashboard (assets/js/dashboardExecutivo.js com ApexCharts)
-- [ ] Testes unitários: DashboardService (cálculos de agregação, score de gestão)
-- [ ] Testes de feature: AgregarDashboardCommand (processamento noturno)
+- [x] Migration da tabela dashboard_agregados (dados pré-calculados) *(IMP-025)*
+- [x] Model: DashboardAgregado *(IMP-025)*
+- [x] Service: DashboardService (agregação, consulta, score de gestão) *(IMP-025)*
+- [x] Command: AgregarDashboardCommand (dashboard:agregar — cron noturno) *(IMP-025)*
+- [x] Scheduler: registrar AgregarDashboardCommand no schedule() *(IMP-025)*
+- [x] Cache Redis para dados do dashboard (TTL 24h + invalidação manual) *(IMP-025)*
+- [x] Bloco 1: Visão Geral Financeira (5 cards de indicadores) *(IMP-025)*
+- [x] Bloco 2: Mapa de Risco Contratual (donut chart com ApexCharts) *(IMP-025)*
+- [x] Bloco 3: Vencimentos por Janela de Tempo (gráfico/tabela 5 faixas) *(IMP-025)*
+- [x] Bloco 4: Distribuição por Secretaria (ranking com tabela) *(IMP-025)*
+- [x] Bloco 5: Contratos Essenciais (painel especial de alerta) *(IMP-025)*
+- [x] Filtros inteligentes (secretaria, faixa valor, risco, tipo, modalidade, fonte recurso) *(IMP-025)*
+- [x] Score de Gestão Contratual (nota 0-100 com classificação) *(IMP-025)*
+- [x] Tendência Mensal (mini BI — últimos 12 meses) *(IMP-025)*
+- [x] Ranking de Fornecedores (top 10 por volume, contratos, aditivos) *(IMP-025)*
+- [x] Visão do Controlador (irregularidades, log recente, aditivos acima de limite) *(IMP-025)*
+- [x] Botão "Atualizar Dados" (atualização manual sob demanda) *(IMP-025)*
+- [x] JS do dashboard (assets/js/dashboard-charts.js com ApexCharts) *(IMP-025)*
+- [x] Testes unitários: DashboardServiceTest *(IMP-028)*
+- [ ] Testes de feature: DashboardController (acesso, filtros, atualização)
 - [ ] Testes de performance: dashboard carrega em <2 segundos
 
 ### Módulo: Documentos (Central de Documentos — Módulo 5)
@@ -189,46 +188,41 @@
 - [ ] `documentos/dashboard.blade.php`: dashboard dedicado de documentos — *indicadores integrados na Central de Documentos*
 
 **Testes:**
-- [ ] DocumentoFactory (novo) — para testes
-- [ ] DocumentoServiceTest: upload, versionamento automático, cálculo de completude, nomes padronizados, log de acesso
-- [ ] DocumentoTest: fluxo completo upload → completude → score → log
-- [ ] Teste de imutabilidade do log_acesso_documentos
+- [x] DocumentoFactory (novo) — para testes *(IMP-028)*
+- [x] DocumentoServiceTest: upload, versionamento automático, cálculo de completude, nomes padronizados, log de acesso *(IMP-028)*
+- [ ] DocumentoTest: fluxo completo Feature upload → completude → score → log
+- [x] Teste de imutabilidade do log_acesso_documentos *(IMP-028)*
 - [ ] Teste de autorização por perfil (DocumentoPolicy)
 - [ ] DocumentoRelatorioTest: relatório TCE (geração PDF)
 
 ### Módulo: Painel de Risco Administrativo (Módulo 6 — Grande Diferencial Estratégico)
 
 **Schema e Enums:**
-- [ ] Novo enum: CategoriaRisco (vencimento, financeiro, documental, juridico, operacional)
-- [ ] Atualizar RiscoService: expandir critérios do score com 5 categorias de risco (RN-136 a RN-142)
-- [ ] Resolver sobreposição de critério `sem_documento` existente com critérios documentais granulares (RN-139, ADR-038)
+- [x] RiscoService: expandir critérios do score com 5 categorias de risco (RN-136 a RN-142) *(IMP-026)*
 
 **Service e Controller:**
-- [ ] PainelRiscoService: método calcularIndicadores() — retorna os 5 indicadores do topo (RN-144)
-- [ ] PainelRiscoService: método rankingRisco() — retorna tabela ordenada por score DESC com categorias (RN-146, RN-147)
-- [ ] PainelRiscoService: método mapaRiscoPorSecretaria() — retorna total contratos e críticos por secretaria (RN-148, RN-149)
-- [ ] PainelRiscoService: método gerarRelatorioRiscoTCE() — gera PDF com lista monitorada, justificativas de risco, plano de ação, histórico de alertas (RN-150 a RN-152)
-- [ ] PainelRiscoController: index() — carrega painel de risco com cache Redis
-- [ ] PainelRiscoController: exportarRelatorioTCE() — dispara geração e download do PDF
-- [ ] PainelRiscoResource: dados do ranking de risco
+- [x] PainelRiscoService: método indicadores() — retorna os 5 indicadores do topo (RN-144) *(IMP-026)*
+- [x] PainelRiscoService: método rankingRisco() — retorna tabela ordenada por score DESC com categorias (RN-146, RN-147) *(IMP-026)*
+- [x] PainelRiscoService: método mapaRiscoPorSecretaria() — retorna total contratos e críticos por secretaria (RN-148, RN-149) *(IMP-026)*
+- [x] PainelRiscoService: método dadosRelatorioTCE() — gera dados relatório TCE (RN-150 a RN-152) *(IMP-026)*
+- [x] PainelRiscoController: index() — carrega painel de risco *(IMP-026)*
+- [x] PainelRiscoController: exportarRelatorioTCE() — dispara geração e download do PDF *(IMP-026)*
 
 **Integração com motor de monitoramento:**
-- [ ] Atualizar VerificarVencimentosCommand para gerar alertas preventivos com mensagens contextualizadas (RN-153, RN-154)
-- [ ] Integrar dados do Painel de Risco ao AgregarDashboardCommand (cron noturno para pré-calcular indicadores)
+- [x] VerificarVencimentosCommand com alertas preventivos contextualizados *(IMP-022)*
+- [x] AgregarDashboardCommand integrado com dados do Painel de Risco *(IMP-025)*
 
 **Views:**
-- [ ] `painel-risco/index.blade.php`: 5 cards indicadores com semáforo + ranking de risco (tabela) + mapa por secretaria + botão "Exportar Relatório TCE"
-- [ ] Atualizar menu lateral (sidebar): adicionar item "Painel de Risco" com ícone de alerta/shield
-- [ ] Atualizar Dashboard Executivo Bloco 2: adicionar link "Ver detalhes" → `/painel-risco` (ADR-039)
+- [x] `painel-risco/index.blade.php`: 5 cards indicadores + ranking de risco + mapa por secretaria + botão "Exportar Relatório TCE" *(IMP-026)*
+- [x] `painel-risco/relatorio-tce.blade.php`: relatório PDF para TCE *(IMP-026)*
+- [x] Sidebar: item "Painel de Risco" com ícone *(IMP-026)*
 
-**Cache:**
-- [ ] Cache Redis para painel de risco (chave separada `painel_risco`, TTL 24h + invalidação com agregação noturna)
+**Permissões:**
+- [x] painel-risco.visualizar + painel-risco.exportar no PermissionSeeder *(IMP-026)*
 
 **Testes:**
-- [ ] PainelRiscoServiceTest: indicadores (5 cards), ranking, mapa secretaria, relatório PDF
-- [ ] PainelRiscoTest: fluxo completo (acesso, filtros, exportação PDF)
-- [ ] Testar score de risco expandido com critérios de 5 categorias (RN-136 a RN-142)
-- [ ] Testar categorias múltiplas de risco simultâneas por contrato (RN-147)
+- [x] PainelRiscoServiceTest: indicadores, ranking, mapa secretaria *(IMP-028)*
+- [ ] PainelRiscoTest: fluxo completo Feature (acesso, exportação PDF)
 - [ ] Testar performance do painel (<2 segundos com cache Redis)
 
 ### Módulo: Perfis de Usuário (RBAC — Módulo 7)
@@ -265,7 +259,7 @@
 - [x] PermissoesController: gestão de permissões por role (index, update) *(IMP-015)*
 - [x] UsersController: CRUD com atribuição de role + secretarias *(IMP-015)*
 - [x] VerificarPermissoesExpiradasCommand (`permissoes:verificar-expiradas`) *(IMP-015)*
-- [ ] Scheduler: registrar VerificarPermissoesExpiradasCommand no schedule()
+- [x] Scheduler: registrar VerificarPermissoesExpiradasCommand no schedule() *(IMP-024)*
 
 **Views:**
 - [x] roles/index.blade.php, create.blade.php, edit.blade.php *(IMP-015)*
@@ -274,24 +268,31 @@
 - [x] Sidebar dinâmico (menu condicional por permissão do usuário logado) *(IMP-015)*
 
 **Testes:**
-- [ ] PermissaoServiceTest (verificação por role, por user, expiração automática)
-- [ ] WorkflowServiceTest (criação de fluxo, avanço, reprovação, notificação)
-- [ ] PerfilUsuarioTest (acesso por perfil a recursos protegidos)
+- [x] PermissaoServiceTest (verificação por role, por user, expiração automática) *(IMP-028)*
+- [x] WorkflowServiceTest (criação de fluxo, avanço, reprovação) *(IMP-028)*
+- [ ] PerfilUsuarioTest Feature (acesso por perfil a recursos protegidos)
 - [ ] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job)
-- [ ] WorkflowAprovacaoTest (fluxo completo de aditivo com 5 etapas)
+- [x] WorkflowAprovacaoTest (imutabilidade) *(IMP-028)*
 - [ ] Testar perfis padrão não deletáveis (is_padrao = true)
-- [ ] Testar escopo por secretaria (queries filtradas automaticamente)
+- [ ] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326)
 
 ### Módulo: Relatórios
-- [ ] Relatórios gerenciais (exportação PDF/Excel)
+- [x] Relatórios gerenciais (exportação PDF/Excel) *(IMP-029)*
+- [x] RelatorioService com exportação CSV/PDF (auditoria, conformidade documental) *(IMP-029)*
+- [x] Excel exports para contratos, alertas, fornecedores *(IMP-029)*
+- [x] RateLimiter (10/min) para exports *(IMP-029)*
+- [x] 9 rotas de relatórios + sidebar link *(IMP-029)*
 
 ### Geral
-- [ ] Testes unitários (Services: ContratoService, AlertaService, NotificacaoService, RiscoService, AuditoriaService)
-- [ ] Testes unitários (validação de CNPJ, cálculo de score de risco)
-- [ ] Testes de integração (fluxos CRUD, cadastro multi-etapa)
-- [ ] Testes de imutabilidade do audit trail
-- [ ] Testes do motor de monitoramento (VerificarVencimentosCommand por faixa de dias)
-- [ ] Testes de prioridade automática e não-duplicação de alertas
-- [ ] Testes de resolução automática de alertas (via aditivo)
-- [ ] Testes do EnviarNotificacaoAlertaJob (retry, backoff)
-- [ ] Testes de bloqueio preventivo (aditivo retroativo sem justificativa)
+- [x] Testes unitários Services: ContratoService, AlertaService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService, DocumentoService, PermissaoService, WorkflowService, FornecedorService, DashboardService, PainelRiscoService, MfaService *(IMP-027/028/030)*
+- [x] Testes unitários validação de CNPJ + CPF *(IMP-028)*
+- [x] Testes unitários Enums: StatusContrato, TipoAditivo, ModalidadeContratacao, EtapaWorkflow, PrioridadeAlerta, StatusCompletudeDocumental *(IMP-028)*
+- [x] Testes unitários Models: Contrato, Aditivo, Alerta, User, WorkflowAprovacao, HistoricoAlteracao, LogAcessoDocumento, LogNotificacao *(IMP-028)*
+- [x] Testes de imutabilidade do audit trail (HistoricoAlteracaoTest, LogAcessoDocumentoTest, LogNotificacaoTest, WorkflowAprovacaoTest) *(IMP-028)*
+- [x] Testes de prioridade automática e não-duplicação de alertas (AlertaServiceTest) *(IMP-028)*
+- [x] Testes MFA: 38 testes (MfaServiceTest + MfaMiddlewareTest + UserMfaTest) *(IMP-030)*
+- [ ] Testes Feature: Controllers CRUD (contratos, fornecedores, secretarias, servidores, usuarios, aditivos, documentos, alertas)
+- [ ] Testes Feature: DashboardController + PainelRiscoController
+- [ ] Testes de integração: fluxos CRUD end-to-end
+- [ ] Testes do ProcessarAlertaJob (retry, backoff)
+- [ ] Testes de performance: dashboard/painel carrega em <2 segundos

@@ -17,13 +17,16 @@ class SecretariaFactory extends Factory
         $nomes = [
             'Educação', 'Saúde', 'Infraestrutura', 'Administração',
             'Finanças', 'Transporte', 'Meio Ambiente', 'Cultura',
+            'Esportes', 'Turismo', 'Assistência Social', 'Segurança',
+            'Planejamento', 'Habitação', 'Comunicação', 'Tecnologia',
+            'Agricultura', 'Desenvolvimento Econômico', 'Obras', 'Governo',
         ];
 
         return [
-            'nome' => 'Secretaria de ' . fake()->unique()->randomElement($nomes),
-            'sigla' => strtoupper(fake()->unique()->lexify('???')),
+            'nome' => 'Secretaria de ' . fake()->randomElement($nomes) . ' ' . fake()->numerify('##'),
+            'sigla' => strtoupper(fake()->lexify('???')) . fake()->numerify('##'),
             'responsavel' => fake()->name(),
-            'email' => fake()->unique()->companyEmail(),
+            'email' => fake()->unique()->safeEmail(),
             'telefone' => fake()->numerify('(##) ####-####'),
         ];
     }

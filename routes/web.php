@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Tenant\DashboardController;
+use App\Http\Controllers\Tenant\MfaController;
 use App\Http\Controllers\Tenant\PainelRiscoController;
 use App\Http\Controllers\Tenant\AditivosController;
 use App\Http\Controllers\Tenant\ContratosController;
@@ -36,8 +37,19 @@ Route::middleware(['tenant', 'guest'])->group(function () {
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('tenant.password.email');
 });
 
-// Rotas protegidas (autenticado)
-Route::middleware(['tenant', 'auth'])->group(function () {
+// Rotas MFA (autenticado, sem exigir verificação MFA)
+Route::middleware(['tenant', 'auth'])->prefix('mfa')->name('tenant.mfa.')->group(function () {
+    Route::get('setup', [MfaController::class, 'setup'])->name('setup');
+    Route::post('enable', [MfaController::class, 'enable'])->name('enable');
+    Route::get('verify', [MfaController::class, 'showVerify'])->name('verify');
+    Route::post('verify', [MfaController::class, 'verify'])->name('verify.submit');
+    Route::get('recovery', [MfaController::class, 'showRecovery'])->name('recovery');
+    Route::post('recovery', [MfaController::class, 'useRecovery'])->name('recovery.submit');
+    Route::post('disable', [MfaController::class, 'disable'])->name('disable');
+});
+
+// Rotas protegidas (autenticado + MFA verificado)
+Route::middleware(['tenant', 'auth', 'mfa.verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('dashboard/atualizar', [DashboardController::class, 'atualizar'])
         ->name('tenant.dashboard.atualizar')

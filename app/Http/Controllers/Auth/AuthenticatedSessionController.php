@@ -26,6 +26,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        // MFA habilitado — redirecionar para verificação
+        if ($user->isMfaEnabled()) {
+            $request->session()->put('mfa_pending', true);
+
+            return redirect()->route('tenant.mfa.verify');
+        }
+
+        // MFA obrigatório mas não configurado — forçar setup
+        if ($user->isMfaRequired()) {
+            return redirect()->route('tenant.mfa.setup');
+        }
+
         return redirect()->intended(route('tenant.dashboard'));
     }
 

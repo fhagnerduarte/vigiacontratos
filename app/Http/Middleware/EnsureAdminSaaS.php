@@ -26,6 +26,16 @@ class EnsureAdminSaaS
                 ->withErrors(['email' => 'Sua conta foi desativada.']);
         }
 
+        // MFA obrigatório para admin — verificar se habilitado e verificado na sessão
+        if ($admin->isMfaEnabled() && !$request->session()->get('mfa_verified')) {
+            return redirect()->route('admin-saas.mfa.verify');
+        }
+
+        // MFA obrigatório mas não configurado — redirecionar para setup
+        if ($admin->isMfaRequired() && !$admin->isMfaEnabled()) {
+            return redirect()->route('admin-saas.mfa.setup');
+        }
+
         return $next($request);
     }
 }

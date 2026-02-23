@@ -40,6 +40,18 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
+            // MFA habilitado — redirecionar para verificação
+            if ($admin->isMfaEnabled()) {
+                $request->session()->put('mfa_pending', true);
+
+                return redirect()->route('admin-saas.mfa.verify');
+            }
+
+            // MFA obrigatório mas não configurado — forçar setup
+            if ($admin->isMfaRequired() && !$admin->isMfaEnabled()) {
+                return redirect()->route('admin-saas.mfa.setup');
+            }
+
             return redirect()->route('admin-saas.dashboard');
         }
 

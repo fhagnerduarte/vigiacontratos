@@ -19,6 +19,7 @@
                     <th class="px-24 py-16">Slug</th>
                     <th class="px-24 py-16">Banco</th>
                     <th class="px-24 py-16">Plano</th>
+                    <th class="px-24 py-16">MFA</th>
                     <th class="px-24 py-16">Status</th>
                     <th class="px-24 py-16">Criado em</th>
                     <th class="px-24 py-16">Ações</th>
@@ -33,6 +34,17 @@
                         <td class="px-24 py-16"><code>{{ $tenant->slug }}</code></td>
                         <td class="px-24 py-16"><code>{{ $tenant->database_name }}</code></td>
                         <td class="px-24 py-16">{{ ucfirst($tenant->plano) }}</td>
+                        <td class="px-24 py-16">
+                            @if ($tenant->mfa_habilitado)
+                                @if ($tenant->mfa_modo === 'obrigatorio')
+                                    <span class="bg-warning-focus text-warning-main px-12 py-4 radius-4 fw-medium text-xs">Obrigatório</span>
+                                @else
+                                    <span class="bg-primary-50 text-primary-main px-12 py-4 radius-4 fw-medium text-xs">Opcional</span>
+                                @endif
+                            @else
+                                <span class="bg-neutral-100 text-secondary-light px-12 py-4 radius-4 fw-medium text-xs">Desativado</span>
+                            @endif
+                        </td>
                         <td class="px-24 py-16">
                             @if ($tenant->is_ativo)
                                 <span class="bg-success-focus text-success-main px-16 py-6 radius-4 fw-medium text-sm">Ativo</span>
@@ -57,7 +69,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center text-secondary-light py-24">Nenhum tenant cadastrado.</td>
+                        <td colspan="8" class="text-center text-secondary-light py-24">Nenhum tenant cadastrado.</td>
                     </tr>
                 @endforelse
             </tbody>

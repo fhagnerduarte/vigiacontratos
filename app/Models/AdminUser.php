@@ -15,12 +15,15 @@ class AdminUser extends Authenticatable
         'password',
         'is_ativo',
         'mfa_secret',
+        'mfa_enabled_at',
+        'mfa_recovery_codes',
         'last_login_at',
     ];
 
     protected $hidden = [
         'password',
         'mfa_secret',
+        'mfa_recovery_codes',
     ];
 
     protected function casts(): array
@@ -29,7 +32,19 @@ class AdminUser extends Authenticatable
             'is_ativo' => 'boolean',
             'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'mfa_enabled_at' => 'datetime',
+            'mfa_recovery_codes' => 'encrypted',
         ];
+    }
+
+    public function isMfaEnabled(): bool
+    {
+        return $this->mfa_enabled_at !== null;
+    }
+
+    public function isMfaRequired(): bool
+    {
+        return true;
     }
 
     public function loginLogs(): HasMany
