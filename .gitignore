@@ -20,6 +20,9 @@
 /storage/logs/*
 !storage/logs/.gitkeep
 
+# Documentos de teste (uploads gerados por testes/seeders)
+/storage/app/private/documentos/
+
 # Framework cache
 /storage/framework/cache/data/*
 !storage/framework/cache/data/.gitkeep
@@ -44,6 +47,7 @@ Thumbs.db
 # PHP
 composer.phar
 phpunit.result.cache
+.phpunit.result.cache
 .phpunit.cache
 
 # NPM / Build
