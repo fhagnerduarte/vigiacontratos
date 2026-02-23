@@ -10,9 +10,14 @@
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <h6 class="fw-semibold mb-0">Fornecedores</h6>
-    <a href="{{ route('tenant.fornecedores.create') }}" class="btn btn-primary text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
-        <iconify-icon icon="ic:baseline-plus" class="icon text-xl"></iconify-icon> Novo Fornecedor
-    </a>
+    <div class="d-flex gap-8">
+        <a href="{{ route('tenant.exportar.fornecedores') }}" class="btn btn-outline-success-600 text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:file-download-bold" class="icon text-xl"></iconify-icon> Exportar Excel
+        </a>
+        <a href="{{ route('tenant.fornecedores.create') }}" class="btn btn-primary text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl"></iconify-icon> Novo Fornecedor
+        </a>
+    </div>
 </div>
 
 @if (session('success'))

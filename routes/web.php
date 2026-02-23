@@ -15,6 +15,7 @@ use App\Http\Controllers\Tenant\RolesController;
 use App\Http\Controllers\Tenant\SecretariasController;
 use App\Http\Controllers\Tenant\ServidoresController;
 use App\Http\Controllers\Tenant\AlertasController;
+use App\Http\Controllers\Tenant\RelatoriosController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -141,6 +142,45 @@ Route::middleware(['tenant', 'auth'])->group(function () {
         $request->user()->notifications()->where('id', $notification)->update(['read_at' => now()]);
         return response()->json(['ok' => true]);
     })->name('tenant.notificacoes.marcar-lida');
+
+    // Monitoramento — Relatorios (RN-133, RN-222, RN-225)
+    Route::get('relatorios', [RelatoriosController::class, 'index'])
+        ->name('tenant.relatorios.index')
+        ->middleware('permission:relatorio.visualizar');
+
+    // IMPORTANTE: rotas estaticas antes de {contrato} parametrizado
+    Route::get('relatorios/auditoria', [RelatoriosController::class, 'auditoriaFiltros'])
+        ->name('tenant.relatorios.auditoria')
+        ->middleware('permission:relatorio.gerar');
+
+    Route::post('relatorios/auditoria/pdf', [RelatoriosController::class, 'auditoriaPdf'])
+        ->name('tenant.relatorios.auditoria.pdf')
+        ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
+
+    Route::post('relatorios/auditoria/csv', [RelatoriosController::class, 'auditoriaCsv'])
+        ->name('tenant.relatorios.auditoria.csv')
+        ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
+
+    Route::get('relatorios/conformidade-documental', [RelatoriosController::class, 'conformidadeDocumentalPdf'])
+        ->name('tenant.relatorios.conformidade-documental')
+        ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
+
+    Route::get('contratos/{contrato}/relatorio-documentos', [RelatoriosController::class, 'documentosContratoPdf'])
+        ->name('tenant.relatorios.documentos-contrato')
+        ->middleware(['permission:documento.download', 'throttle:exportacoes']);
+
+    // Exportacoes Excel
+    Route::get('exportar/contratos', [RelatoriosController::class, 'contratosExcel'])
+        ->name('tenant.exportar.contratos')
+        ->middleware(['permission:contrato.visualizar', 'throttle:exportacoes']);
+
+    Route::get('exportar/alertas', [RelatoriosController::class, 'alertasExcel'])
+        ->name('tenant.exportar.alertas')
+        ->middleware(['permission:alerta.visualizar', 'throttle:exportacoes']);
+
+    Route::get('exportar/fornecedores', [RelatoriosController::class, 'fornecedoresExcel'])
+        ->name('tenant.exportar.fornecedores')
+        ->middleware(['permission:fornecedor.visualizar', 'throttle:exportacoes']);
 
     // Cadastros
     Route::resource('secretarias', SecretariasController::class)

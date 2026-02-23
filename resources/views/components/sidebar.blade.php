@@ -123,7 +123,8 @@
 
                 @if (auth()->user()->hasPermission('relatorio.visualizar'))
                     <li>
-                        <a href="#">
+                        <a href="{{ route('tenant.relatorios.index') }}"
+                           class="{{ request()->routeIs('tenant.relatorios.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:chart-bold" class="menu-icon"></iconify-icon>
                             <span>Relatorios</span>
                         </a>

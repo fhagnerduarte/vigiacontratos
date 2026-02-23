@@ -11,11 +11,16 @@
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <h6 class="fw-semibold mb-0">Painel de Alertas</h6>
-    @if (auth()->user()->hasPermission('configuracao.editar'))
-        <a href="{{ route('tenant.alertas.configuracoes') }}" class="btn btn-sm btn-outline-primary">
-            <iconify-icon icon="solar:settings-bold" class="me-1"></iconify-icon> Configuracoes
+    <div class="d-flex gap-8">
+        <a href="{{ route('tenant.exportar.alertas', request()->query()) }}" class="btn btn-sm btn-outline-success-600 d-flex align-items-center gap-4">
+            <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Exportar Excel
         </a>
-    @endif
+        @if (auth()->user()->hasPermission('configuracao.editar'))
+            <a href="{{ route('tenant.alertas.configuracoes') }}" class="btn btn-sm btn-outline-primary">
+                <iconify-icon icon="solar:settings-bold" class="me-1"></iconify-icon> Configuracoes
+            </a>
+        @endif
+    </div>
 </div>
 
 {{-- 4 Cards de Indicadores (RN-055) --}}

@@ -337,11 +337,18 @@
                         <iconify-icon icon="{{ $completude->icone() }}" class="text-{{ $completude->cor() }}-main text-2xl"></iconify-icon>
                         <span class="fw-semibold text-{{ $completude->cor() }}-main">{{ $completude->descricao() }}</span>
                     </div>
-                    @if (auth()->user()->hasPermission('documento.criar') && $contrato->status !== \App\Enums\StatusContrato::Vencido)
-                        <button class="btn btn-primary-600 btn-sm radius-8" data-bs-toggle="modal" data-bs-target="#modalUploadDocumento">
-                            <iconify-icon icon="solar:upload-bold" class="icon"></iconify-icon> Adicionar Documento
-                        </button>
-                    @endif
+                    <div class="d-flex gap-8">
+                        @if (auth()->user()->hasPermission('documento.download'))
+                            <a href="{{ route('tenant.relatorios.documentos-contrato', $contrato) }}" class="btn btn-outline-success-600 btn-sm radius-8 d-flex align-items-center gap-4">
+                                <iconify-icon icon="solar:file-download-bold" class="icon"></iconify-icon> Exportar PDF
+                            </a>
+                        @endif
+                        @if (auth()->user()->hasPermission('documento.criar') && $contrato->status !== \App\Enums\StatusContrato::Vencido)
+                            <button class="btn btn-primary-600 btn-sm radius-8" data-bs-toggle="modal" data-bs-target="#modalUploadDocumento">
+                                <iconify-icon icon="solar:upload-bold" class="icon"></iconify-icon> Adicionar Documento
+                            </button>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Checklist de Documentos Obrigatorios (RN-129) --}}
