@@ -150,7 +150,7 @@
 - [x] JS do dashboard (assets/js/dashboard-charts.js com ApexCharts) *(IMP-025)*
 - [x] Testes unitários: DashboardServiceTest *(IMP-028)*
 - [x] Testes de feature: DashboardController (acesso, filtros, atualização) *(IMP-041)*
-- [ ] Testes de performance: dashboard carrega em <2 segundos
+- [x] Testes de performance: dashboard carrega em <2 segundos *(IMP-043)*
 
 ### Módulo: Documentos (Central de Documentos — Módulo 5)
 
@@ -197,7 +197,8 @@
 - [x] DocumentoTest: fluxo completo Feature upload → completude → score → log *(IMP-041)*
 - [x] Teste de imutabilidade do log_acesso_documentos *(IMP-028)*
 - [ ] Teste de autorização por perfil (DocumentoPolicy)
-- [ ] DocumentoRelatorioTest: relatório TCE (geração PDF)
+- [x] DocumentosRelatorioTest: relatório documentos contrato (PDF, permissão, vazio) *(IMP-043)*
+- [ ] DocumentoRelatorioTest: relatório TCE completo (geração PDF) — *pendente: metodo gerarRelatorioTCEContrato() nao implementado*
 
 ### Módulo: Painel de Risco Administrativo (Módulo 6 — Grande Diferencial Estratégico)
 
@@ -227,7 +228,7 @@
 **Testes:**
 - [x] PainelRiscoServiceTest: indicadores, ranking, mapa secretaria *(IMP-028)*
 - [x] PainelRiscoTest: fluxo completo Feature (acesso, exportação PDF) *(IMP-041)*
-- [ ] Testar performance do painel (<2 segundos com cache Redis)
+- [x] Testar performance do painel (<2 segundos) *(IMP-043)*
 
 ### Módulo: Perfis de Usuário (RBAC — Módulo 7)
 
@@ -297,6 +298,6 @@
 - [x] Testes MFA: 38 testes (MfaServiceTest + MfaMiddlewareTest + UserMfaTest) *(IMP-030)*
 - [x] Testes Feature: Controllers CRUD (contratos, fornecedores, secretarias, servidores, usuarios, aditivos, documentos, alertas) *(IMP-031 base + IMP-041 expansão)*
 - [x] Testes Feature: DashboardController + PainelRiscoController *(IMP-041)*
-- [ ] Testes de integração: fluxos CRUD end-to-end
+- [x] Testes de integração: fluxos end-to-end (contrato lifecycle, aditivo workflow, alerta flow) *(IMP-043)*
 - [x] Testes do ProcessarAlertaJob (retry, backoff) *(IMP-041)*
-- [ ] Testes de performance: dashboard/painel carrega em <2 segundos
+- [x] Testes de performance: dashboard/painel carrega em <2 segundos *(IMP-043)*
