@@ -100,8 +100,8 @@
 - [x] Cancelamento de aditivo (RN-116 — apenas admin) com recálculo do contrato *(IMP-020)*
 - [x] AditivoFactory para testes *(IMP-028)*
 - [x] Testes: AditivoServiceTest (limites legais, percentual, reequilíbrio) *(IMP-028)*
-- [ ] Testes: AditivoTest (fluxo completo Feature)
-- [ ] Testes: LimiteLegalAditivoTest (bloqueio e alerta)
+- [x] Testes: AditivoTest (fluxo completo Feature) *(IMP-041)*
+- [x] Testes: LimiteLegalAditivoTest (bloqueio e alerta) *(IMP-041 — integrado em AditivosControllerTest)*
 - [x] Índices em aditivos (contrato_id, composto contrato_id+data_assinatura) *(IMP-020)*
 
 ### Módulo: Alertas (Motor de Monitoramento)
@@ -149,7 +149,7 @@
 - [x] Botão "Atualizar Dados" (atualização manual sob demanda) *(IMP-025)*
 - [x] JS do dashboard (assets/js/dashboard-charts.js com ApexCharts) *(IMP-025)*
 - [x] Testes unitários: DashboardServiceTest *(IMP-028)*
-- [ ] Testes de feature: DashboardController (acesso, filtros, atualização)
+- [x] Testes de feature: DashboardController (acesso, filtros, atualização) *(IMP-041)*
 - [ ] Testes de performance: dashboard carrega em <2 segundos
 
 ### Módulo: Documentos (Central de Documentos — Módulo 5)
@@ -194,7 +194,7 @@
 **Testes:**
 - [x] DocumentoFactory (novo) — para testes *(IMP-028)*
 - [x] DocumentoServiceTest: upload, versionamento automático, cálculo de completude, nomes padronizados, log de acesso *(IMP-028)*
-- [ ] DocumentoTest: fluxo completo Feature upload → completude → score → log
+- [x] DocumentoTest: fluxo completo Feature upload → completude → score → log *(IMP-041)*
 - [x] Teste de imutabilidade do log_acesso_documentos *(IMP-028)*
 - [ ] Teste de autorização por perfil (DocumentoPolicy)
 - [ ] DocumentoRelatorioTest: relatório TCE (geração PDF)
@@ -226,7 +226,7 @@
 
 **Testes:**
 - [x] PainelRiscoServiceTest: indicadores, ranking, mapa secretaria *(IMP-028)*
-- [ ] PainelRiscoTest: fluxo completo Feature (acesso, exportação PDF)
+- [x] PainelRiscoTest: fluxo completo Feature (acesso, exportação PDF) *(IMP-041)*
 - [ ] Testar performance do painel (<2 segundos com cache Redis)
 
 ### Módulo: Perfis de Usuário (RBAC — Módulo 7)
@@ -295,8 +295,8 @@
 - [x] Testes de imutabilidade do audit trail (HistoricoAlteracaoTest, LogAcessoDocumentoTest, LogNotificacaoTest, WorkflowAprovacaoTest) *(IMP-028)*
 - [x] Testes de prioridade automática e não-duplicação de alertas (AlertaServiceTest) *(IMP-028)*
 - [x] Testes MFA: 38 testes (MfaServiceTest + MfaMiddlewareTest + UserMfaTest) *(IMP-030)*
-- [ ] Testes Feature: Controllers CRUD (contratos, fornecedores, secretarias, servidores, usuarios, aditivos, documentos, alertas)
-- [ ] Testes Feature: DashboardController + PainelRiscoController
+- [x] Testes Feature: Controllers CRUD (contratos, fornecedores, secretarias, servidores, usuarios, aditivos, documentos, alertas) *(IMP-031 base + IMP-041 expansão)*
+- [x] Testes Feature: DashboardController + PainelRiscoController *(IMP-041)*
 - [ ] Testes de integração: fluxos CRUD end-to-end
-- [ ] Testes do ProcessarAlertaJob (retry, backoff)
+- [x] Testes do ProcessarAlertaJob (retry, backoff) *(IMP-041)*
 - [ ] Testes de performance: dashboard/painel carrega em <2 segundos

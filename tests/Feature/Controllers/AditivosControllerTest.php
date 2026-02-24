@@ -3,11 +3,14 @@
 namespace Tests\Feature\Controllers;
 
 use App\Enums\StatusAditivo;
+use App\Enums\StatusContrato;
 use App\Enums\TipoAditivo;
 use App\Models\Aditivo;
 use App\Models\ConfiguracaoLimiteAditivo;
 use App\Models\Contrato;
 use App\Models\User;
+use App\Services\AditivoService;
+use App\Services\WorkflowService;
 use Database\Seeders\ConfiguracaoLimiteAditivoSeeder;
 use Tests\TestCase;
 use Tests\Traits\RunsTenantMigrations;
@@ -200,5 +203,264 @@ class AditivosControllerTest extends TestCase
 
         $aditivo->refresh();
         $this->assertEquals(StatusAditivo::Cancelado, $aditivo->status);
+    }
+
+    // ─── STORE AVANÇADO ──────────────────────────────────────
+
+    public function test_store_cria_aditivo_de_valor_com_sucesso(): void
+    {
+        $contrato = Contrato::factory()->vigente()->create([
+            'valor_global' => 100000,
+            'data_fim' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+
+        $dados = [
+            'tipo' => TipoAditivo::Valor->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'valor_acrescimo' => 20000,
+            'justificativa' => 'Necessidade de ampliacao dos servicos contratados para atender demanda crescente.',
+            'justificativa_tecnica' => 'Laudo tecnico comprova a necessidade de ampliacao.',
+            'fundamentacao_legal' => 'Art. 124 da Lei 14.133/2021',
+        ];
+
+        $response = $this->actAsAdmin()->post(route('tenant.contratos.aditivos.store', $contrato), $dados);
+
+        $response->assertRedirect();
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('aditivos', [
+            'contrato_id' => $contrato->id,
+            'tipo' => TipoAditivo::Valor->value,
+        ], 'tenant');
+    }
+
+    public function test_store_bloqueia_percentual_acima_limite_bloqueante(): void
+    {
+        // Garante limite bloqueante de 25% para servico
+        ConfiguracaoLimiteAditivo::where('tipo_contrato', 'servico')
+            ->update(['is_bloqueante' => true, 'percentual_limite' => 25.00]);
+
+        $contrato = Contrato::factory()->vigente()->create([
+            'valor_global' => 100000,
+            'tipo' => 'servico',
+            'data_fim' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+
+        $dados = [
+            'tipo' => TipoAditivo::Valor->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'valor_acrescimo' => 30000, // 30% > 25%
+            'justificativa' => 'Necessidade de ampliacao dos servicos contratados para atender demanda crescente.',
+            'justificativa_tecnica' => 'Laudo tecnico comprova a necessidade.',
+            'fundamentacao_legal' => 'Art. 124 da Lei 14.133/2021',
+        ];
+
+        $response = $this->actAsAdmin()->post(route('tenant.contratos.aditivos.store', $contrato), $dados);
+
+        $response->assertSessionHas('error');
+        $this->assertDatabaseMissing('aditivos', [
+            'contrato_id' => $contrato->id,
+            'valor_acrescimo' => 30000,
+        ], 'tenant');
+    }
+
+    public function test_store_nao_bloqueante_exige_justificativa_excesso(): void
+    {
+        // Configura limite nao-bloqueante de 25%
+        ConfiguracaoLimiteAditivo::where('tipo_contrato', 'servico')
+            ->update(['is_bloqueante' => false, 'percentual_limite' => 25.00]);
+
+        $contrato = Contrato::factory()->vigente()->create([
+            'valor_global' => 100000,
+            'tipo' => 'servico',
+            'data_fim' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+
+        $dados = [
+            'tipo' => TipoAditivo::Valor->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'valor_acrescimo' => 30000, // 30% > 25%
+            'justificativa' => 'Necessidade de ampliacao dos servicos contratados para atender demanda crescente.',
+            'justificativa_tecnica' => 'Laudo tecnico comprova a necessidade.',
+            'fundamentacao_legal' => 'Art. 124 da Lei 14.133/2021',
+            // SEM justificativa_excesso_limite
+        ];
+
+        $response = $this->actAsAdmin()->post(route('tenant.contratos.aditivos.store', $contrato), $dados);
+
+        $response->assertSessionHasErrors('justificativa_excesso_limite');
+    }
+
+    public function test_store_nao_bloqueante_com_justificativa_aceita(): void
+    {
+        ConfiguracaoLimiteAditivo::where('tipo_contrato', 'servico')
+            ->update(['is_bloqueante' => false, 'percentual_limite' => 25.00]);
+
+        $contrato = Contrato::factory()->vigente()->create([
+            'valor_global' => 100000,
+            'tipo' => 'servico',
+            'data_fim' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+
+        $dados = [
+            'tipo' => TipoAditivo::Valor->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'valor_acrescimo' => 30000,
+            'justificativa' => 'Necessidade de ampliacao dos servicos contratados para atender demanda crescente.',
+            'justificativa_tecnica' => 'Laudo tecnico comprova a necessidade.',
+            'fundamentacao_legal' => 'Art. 124 da Lei 14.133/2021',
+            'justificativa_excesso_limite' => 'Justificativa formal para exceder o limite legal conforme parecer juridico.',
+        ];
+
+        $response = $this->actAsAdmin()->post(route('tenant.contratos.aditivos.store', $contrato), $dados);
+
+        $response->assertRedirect();
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('aditivos', [
+            'contrato_id' => $contrato->id,
+            'tipo' => TipoAditivo::Valor->value,
+        ], 'tenant');
+    }
+
+    // ─── WORKFLOW AVANÇADO ───────────────────────────────────
+
+    public function test_aprovar_etapa_workflow_funciona_para_admin(): void
+    {
+        $contrato = Contrato::factory()->vigente()->create([
+            'data_fim' => now()->addMonths(2)->format('Y-m-d'),
+        ]);
+
+        $aditivo = AditivoService::criar([
+            'tipo' => TipoAditivo::Prazo->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'nova_data_fim' => now()->addYear()->format('Y-m-d'),
+            'justificativa' => 'Necessidade de continuidade dos servicos essenciais ao municipio.',
+            'justificativa_tecnica' => 'Os servicos sao continuos.',
+            'fundamentacao_legal' => 'Art. 107 da Lei 14.133/2021',
+        ], $contrato, $this->admin, '127.0.0.1');
+
+        // Etapa 1 (Solicitacao) ja auto-aprovada. Proximo: etapa 2
+        $etapaAtual = WorkflowService::obterEtapaAtual($aditivo);
+        $this->assertNotNull($etapaAtual);
+
+        $response = $this->actAsAdmin()->post(route('tenant.aditivos.aprovar', $aditivo));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_aprovar_sem_etapa_pendente_retorna_erro(): void
+    {
+        $aditivo = Aditivo::factory()->create();
+        // Sem workflow criado = sem etapas pendentes
+
+        $response = $this->actAsAdmin()->post(route('tenant.aditivos.aprovar', $aditivo));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_reprovar_com_parecer_funciona(): void
+    {
+        $contrato = Contrato::factory()->vigente()->create([
+            'data_fim' => now()->addMonths(2)->format('Y-m-d'),
+        ]);
+
+        $aditivo = AditivoService::criar([
+            'tipo' => TipoAditivo::Prazo->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'nova_data_fim' => now()->addYear()->format('Y-m-d'),
+            'justificativa' => 'Necessidade de continuidade dos servicos essenciais ao municipio.',
+            'justificativa_tecnica' => 'Os servicos sao continuos.',
+            'fundamentacao_legal' => 'Art. 107 da Lei 14.133/2021',
+        ], $contrato, $this->admin, '127.0.0.1');
+
+        $response = $this->actAsAdmin()->post(route('tenant.aditivos.reprovar', $aditivo), [
+            'parecer' => 'Valores incompativeis com o mercado atual conforme pesquisa de precos.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+    }
+
+    public function test_reprovar_sem_parecer_retorna_erro_validacao(): void
+    {
+        $aditivo = Aditivo::factory()->create();
+        // Criar workflow para ter etapa pendente
+        WorkflowService::criarFluxo($aditivo, $this->admin, '127.0.0.1');
+
+        $response = $this->actAsAdmin()->post(route('tenant.aditivos.reprovar', $aditivo), [
+            // Sem parecer
+        ]);
+
+        $response->assertSessionHasErrors('parecer');
+    }
+
+    // ─── SHOW AVANÇADO ───────────────────────────────────────
+
+    public function test_show_exibe_dados_workflow(): void
+    {
+        $contrato = Contrato::factory()->vigente()->create([
+            'data_fim' => now()->addMonths(2)->format('Y-m-d'),
+        ]);
+
+        $aditivo = AditivoService::criar([
+            'tipo' => TipoAditivo::Prazo->value,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'data_inicio_vigencia' => now()->format('Y-m-d'),
+            'nova_data_fim' => now()->addYear()->format('Y-m-d'),
+            'justificativa' => 'Necessidade de continuidade dos servicos essenciais ao municipio.',
+            'justificativa_tecnica' => 'Os servicos sao continuos.',
+            'fundamentacao_legal' => 'Art. 107 da Lei 14.133/2021',
+        ], $contrato, $this->admin, '127.0.0.1');
+
+        $response = $this->actAsAdmin()->get(route('tenant.aditivos.show', $aditivo));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('aditivo');
+        $response->assertViewHas('todosAditivos');
+        $response->assertViewHas('etapaAtual');
+    }
+
+    // ─── INDEX AVANÇADO ──────────────────────────────────────
+
+    public function test_index_exibe_indicadores_anuais(): void
+    {
+        $contrato = Contrato::factory()->vigente()->create([
+            'data_fim' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+
+        Aditivo::factory()->create([
+            'contrato_id' => $contrato->id,
+            'data_assinatura' => now()->format('Y-m-d'),
+            'valor_acrescimo' => 15000,
+        ]);
+
+        $response = $this->actAsAdmin()->get(route('tenant.aditivos.index'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('totalAditivosAno');
+        $response->assertViewHas('valorTotalAcrescido');
+    }
+
+    // ─── CREATE AVANÇADO ─────────────────────────────────────
+
+    public function test_create_contrato_cancelado_redireciona_com_erro(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'status' => StatusContrato::Cancelado->value,
+        ]);
+
+        $response = $this->actAsAdmin()->get(route('tenant.contratos.aditivos.create', $contrato));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
     }
 }

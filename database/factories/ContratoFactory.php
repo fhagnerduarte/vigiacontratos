@@ -29,7 +29,7 @@ class ContratoFactory extends Factory
         $valorGlobal = fake()->randomFloat(2, 10000, 5000000);
 
         return [
-            'numero' => str_pad(fake()->unique()->numberBetween(1, 99999), 5, '0', STR_PAD_LEFT) . '/' . date('Y'),
+            'numero' => str_pad(fake()->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT) . '/' . date('Y'),
             'ano' => date('Y'),
             'objeto' => fake()->sentence(10),
             'tipo' => fake()->randomElement(TipoContrato::cases()),

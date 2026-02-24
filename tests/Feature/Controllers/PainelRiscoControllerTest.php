@@ -98,4 +98,81 @@ class PainelRiscoControllerTest extends TestCase
         $response = $this->actAsAdmin()->get(route('tenant.painel-risco.exportar-tce'));
         $response->assertStatus(200);
     }
+
+    // ─── DADOS AVANÇADOS ─────────────────────────────────────
+
+    public function test_index_view_recebe_ranking(): void
+    {
+        Contrato::factory()->vigente()->count(3)->create();
+
+        $response = $this->actAsAdmin()->get(route('tenant.painel-risco.index'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('ranking');
+    }
+
+    public function test_index_view_recebe_mapa_secretarias(): void
+    {
+        Contrato::factory()->vigente()->count(2)->create();
+
+        $response = $this->actAsAdmin()->get(route('tenant.painel-risco.index'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('mapaSecretarias');
+    }
+
+    public function test_index_indicadores_incluem_campos_obrigatorios(): void
+    {
+        Contrato::factory()->vigente()->count(2)->create();
+        Contrato::factory()->altoRisco()->create();
+
+        $response = $this->actAsAdmin()->get(route('tenant.painel-risco.index'));
+
+        $indicadores = $response->viewData('indicadores');
+        $this->assertArrayHasKey('total_ativos', $indicadores);
+        $this->assertArrayHasKey('alto_risco', $indicadores);
+        $this->assertArrayHasKey('pct_alto_risco', $indicadores);
+        $this->assertArrayHasKey('vencendo_30d', $indicadores);
+        $this->assertArrayHasKey('aditivos_acima_20', $indicadores);
+        $this->assertArrayHasKey('sem_doc_obrigatoria', $indicadores);
+    }
+
+    public function test_index_acessivel_por_controladoria(): void
+    {
+        $user = $this->createUserWithRole('controladoria');
+
+        $response = $this->actingAs($user)->get(route('tenant.painel-risco.index'));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_index_acessivel_por_gestor_contrato(): void
+    {
+        $user = $this->createUserWithRole('gestor_contrato');
+
+        $response = $this->actingAs($user)->get(route('tenant.painel-risco.index'));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_exportar_tce_retorna_pdf_com_nome_arquivo(): void
+    {
+        Contrato::factory()->altoRisco()->create();
+
+        $response = $this->actAsAdmin()->get(route('tenant.painel-risco.exportar-tce'));
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'application/pdf');
+        $contentDisposition = $response->headers->get('content-disposition');
+        $this->assertStringContainsString('relatorio-risco-tce', $contentDisposition);
+    }
+
+    public function test_exportar_tce_acessivel_por_controladoria(): void
+    {
+        $user = $this->createUserWithRole('controladoria');
+
+        $response = $this->actingAs($user)->get(route('tenant.painel-risco.exportar-tce'));
+
+        $response->assertStatus(200);
+    }
 }
