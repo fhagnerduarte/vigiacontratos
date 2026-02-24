@@ -153,7 +153,8 @@ class AlertaFlowTest extends TestCase
         AlertaService::verificarVencimentos();
 
         // Contrato essencial <=7 dias: prioridade deve ser Urgente (RN-051 eleva atencao->urgente)
-        $alerta = Alerta::orderByDesc('id')->first();
+        $alerta = Alerta::where('tipo_evento', 'vencimento_vigencia')
+            ->orderByDesc('id')->first();
         $this->assertNotNull($alerta);
         $this->assertEquals(PrioridadeAlerta::Urgente, $alerta->prioridade);
     }

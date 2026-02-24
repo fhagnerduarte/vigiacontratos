@@ -205,4 +205,159 @@ class LgpdControllerTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('error');
     }
+
+    // ─── PROCESSAR SOLICITACAO PENDENTE ──────────────────
+
+    public function test_processar_solicitacao_pendente_cria_registro_processado(): void
+    {
+        $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao pendente (portabilidade)
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Portabilidade->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Solicitacao de portabilidade de dados.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+        $this->assertEquals('pendente', $solicitacao->status);
+
+        $response = $this->post(route('tenant.lgpd.processar', $solicitacao), [
+            'observacao' => 'Dados exportados em formato CSV e enviados ao titular via email protocolar.',
+        ]);
+
+        $response->assertRedirect(route('tenant.lgpd.show', $solicitacao));
+        $response->assertSessionHas('success');
+
+        // Verificar novo registro com status processado
+        $logProcessado = LogLgpdSolicitacao::where('status', 'processado')
+            ->where('entidade_tipo', Fornecedor::class)
+            ->where('entidade_id', $fornecedor->id)
+            ->where('tipo_solicitacao', TipoSolicitacaoLGPD::Portabilidade->value)
+            ->first();
+
+        $this->assertNotNull($logProcessado);
+        $this->assertNotNull($logProcessado->data_execucao);
+    }
+
+    public function test_processar_solicitacao_ja_processada_retorna_erro(): void
+    {
+        $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao ja processada (anonimizacao)
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Anonimizacao->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Anonimizacao de fornecedor.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+        $this->assertEquals('processado', $solicitacao->status);
+
+        $response = $this->post(route('tenant.lgpd.processar', $solicitacao), [
+            'observacao' => 'Tentativa de reprocessar solicitacao ja processada.',
+        ]);
+
+        $response->assertRedirect(route('tenant.lgpd.show', $solicitacao));
+        $response->assertSessionHas('error');
+    }
+
+    public function test_processar_valida_observacao_obrigatoria(): void
+    {
+        $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao pendente
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Exclusao->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Solicitacao de exclusao de dados.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+
+        // Sem observacao
+        $response = $this->post(route('tenant.lgpd.processar', $solicitacao), []);
+        $response->assertSessionHasErrors('observacao');
+
+        // Observacao curta demais
+        $response = $this->post(route('tenant.lgpd.processar', $solicitacao), [
+            'observacao' => 'Curta',
+        ]);
+        $response->assertSessionHasErrors('observacao');
+    }
+
+    public function test_processar_requer_permissao_lgpd_processar(): void
+    {
+        $admin = $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao pendente como admin
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Retificacao->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Solicitacao de retificacao de dados.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+
+        // Trocar para usuario sem permissao lgpd.processar
+        $user = $this->createUserWithRole('controladoria');
+        $this->actingAs($user)->withSession(['mfa_verified' => true]);
+
+        $response = $this->post(route('tenant.lgpd.processar', $solicitacao), [
+            'observacao' => 'Tentativa de processamento sem permissao adequada.',
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_show_exibe_botao_processar_para_solicitacao_pendente(): void
+    {
+        $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao pendente
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Revogacao->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Revogacao de consentimento pelo titular.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+
+        $response = $this->get(route('tenant.lgpd.show', $solicitacao));
+
+        $response->assertStatus(200);
+        $response->assertSee('Processar Solicitacao');
+        $response->assertSee('Marcar como Processado');
+    }
+
+    public function test_show_nao_exibe_botao_processar_para_solicitacao_ja_processada(): void
+    {
+        $this->actingAsAdminWithMfa();
+        $fornecedor = Fornecedor::factory()->create();
+
+        // Criar solicitacao ja processada (anonimizacao)
+        $this->post(route('tenant.lgpd.store'), [
+            'tipo_solicitacao' => TipoSolicitacaoLGPD::Anonimizacao->value,
+            'entidade_tipo' => 'fornecedor',
+            'entidade_id' => $fornecedor->id,
+            'justificativa' => 'Anonimizacao de dados do fornecedor.',
+        ]);
+
+        $solicitacao = LogLgpdSolicitacao::latest('id')->first();
+
+        $response = $this->get(route('tenant.lgpd.show', $solicitacao));
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Marcar como Processado');
+    }
 }

@@ -6,11 +6,15 @@ use App\Enums\CategoriaContrato;
 use App\Enums\PrioridadeAlerta;
 use App\Enums\StatusAlerta;
 use App\Enums\StatusContrato;
+use App\Enums\TipoAditivo;
+use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoEventoAlerta;
 use App\Jobs\ProcessarAlertaJob;
+use App\Models\Aditivo;
 use App\Models\Alerta;
 use App\Models\ConfiguracaoAlerta;
 use App\Models\Contrato;
+use App\Models\Documento;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -95,7 +99,10 @@ class AlertaService
             }
         }
 
-        // 4. Re-enviar notificacoes para alertas pendentes nao resolvidos (RN-054)
+        // 4. Verificar incompletude documental (RN-125, RN-126, RN-127)
+        $resultado['alertas_gerados'] += self::verificarIncompletudeDocumental();
+
+        // 5. Re-enviar notificacoes para alertas pendentes nao resolvidos (RN-054)
         $resultado['notificacoes_reenvio'] = self::reenviarNotificacoesPendentes();
 
         return $resultado;
@@ -333,6 +340,150 @@ class AlertaService
                 ->count(),
             'vencidos' => Contrato::where('status', StatusContrato::Vencido->value)->count(),
         ];
+    }
+
+    /**
+     * Verifica incompletude documental e gera alertas (RN-125, RN-126, RN-127).
+     */
+    public static function verificarIncompletudeDocumental(): int
+    {
+        $alertasGerados = 0;
+
+        // RN-125: Aditivos sem documento tipo aditivo_doc
+        $aditivos = Aditivo::whereNotIn('status', ['cancelado'])
+            ->with('contrato')
+            ->get();
+
+        foreach ($aditivos as $aditivo) {
+            if (!$aditivo->contrato) {
+                continue;
+            }
+
+            $temDoc = Documento::where('documentable_type', Aditivo::class)
+                ->where('documentable_id', $aditivo->id)
+                ->where('tipo_documento', TipoDocumentoContratual::AditivoDoc->value)
+                ->where('is_versao_atual', true)
+                ->whereNull('deleted_at')
+                ->exists();
+
+            if (!$temDoc) {
+                $alerta = self::gerarAlertaDocumental(
+                    $aditivo->contrato,
+                    TipoEventoAlerta::AditivoSemDocumento,
+                    "Aditivo #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} nao possui documento do tipo 'Aditivo' vinculado."
+                );
+
+                if ($alerta) {
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        // RN-126: Prorrogacao de prazo sem parecer_juridico
+        $aditivosPrazo = Aditivo::whereIn('tipo', [
+            TipoAditivo::Prazo->value,
+            TipoAditivo::PrazoEValor->value,
+            TipoAditivo::Misto->value,
+        ])
+            ->whereNotIn('status', ['cancelado'])
+            ->with('contrato')
+            ->get();
+
+        foreach ($aditivosPrazo as $aditivo) {
+            if (!$aditivo->contrato) {
+                continue;
+            }
+
+            $temParecer = Documento::where('documentable_type', Aditivo::class)
+                ->where('documentable_id', $aditivo->id)
+                ->where('tipo_documento', TipoDocumentoContratual::ParecerJuridico->value)
+                ->where('is_versao_atual', true)
+                ->whereNull('deleted_at')
+                ->exists();
+
+            if (!$temParecer) {
+                $alerta = self::gerarAlertaDocumental(
+                    $aditivo->contrato,
+                    TipoEventoAlerta::ProrrogacaoSemParecer,
+                    "Prorrogacao #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} nao possui Parecer Juridico vinculado."
+                );
+
+                if ($alerta) {
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        // RN-127: Contratos >R$500k sem publicacao_oficial
+        $contratosAltoValor = Contrato::where('status', StatusContrato::Vigente->value)
+            ->where('valor_global', '>', 500000)
+            ->get();
+
+        foreach ($contratosAltoValor as $contrato) {
+            $temPublicacao = Documento::where('documentable_type', Contrato::class)
+                ->where('documentable_id', $contrato->id)
+                ->where('tipo_documento', TipoDocumentoContratual::PublicacaoOficial->value)
+                ->where('is_versao_atual', true)
+                ->whereNull('deleted_at')
+                ->exists();
+
+            if (!$temPublicacao) {
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::ContratoSemPublicacao,
+                    "Contrato {$contrato->numero} (R$ " . number_format((float) $contrato->valor_global, 2, ',', '.') . ") nao possui Publicacao Oficial."
+                );
+
+                if ($alerta) {
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Gera alerta de incompletude documental com deduplicacao (RN-125/126/127).
+     */
+    private static function gerarAlertaDocumental(
+        Contrato $contrato,
+        TipoEventoAlerta $tipoEvento,
+        string $mensagem,
+    ): ?Alerta {
+        // Deduplicacao: verificar se ja existe alerta nao-resolvido do mesmo tipo
+        $existente = Alerta::where('contrato_id', $contrato->id)
+            ->where('tipo_evento', $tipoEvento->value)
+            ->naoResolvidos()
+            ->exists();
+
+        if ($existente) {
+            return null;
+        }
+
+        $alerta = Alerta::create([
+            'contrato_id' => $contrato->id,
+            'tipo_evento' => $tipoEvento->value,
+            'prioridade' => PrioridadeAlerta::Atencao->value,
+            'status' => StatusAlerta::Pendente->value,
+            'dias_para_vencimento' => $contrato->dias_para_vencimento ?? 0,
+            'dias_antecedencia_config' => 0,
+            'data_vencimento' => $contrato->data_fim,
+            'data_disparo' => now(),
+            'mensagem' => $mensagem,
+            'tentativas_envio' => 0,
+        ]);
+
+        $destinatarios = self::obterDestinatarios($contrato);
+        if (!empty($destinatarios)) {
+            ProcessarAlertaJob::dispatch(
+                $alerta,
+                $destinatarios,
+                config('database.connections.tenant.database')
+            );
+        }
+
+        return $alerta;
     }
 
     // --- Metodos privados ---

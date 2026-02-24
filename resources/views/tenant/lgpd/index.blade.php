@@ -68,7 +68,11 @@
                                 </td>
                                 <td>{{ $solicitacao->solicitante }}</td>
                                 <td>
-                                    @if ($solicitacao->status === 'processado')
+                                    @if ($solicitacao->status === 'processado' && $solicitacao->tipo_solicitacao?->value === 'anonimizacao')
+                                        <span class="badge bg-success-focus text-success-main px-12 py-6 radius-4">
+                                            Anonimizado
+                                        </span>
+                                    @elseif ($solicitacao->jaProcessado)
                                         <span class="badge bg-success-focus text-success-main px-12 py-6 radius-4">
                                             Processado
                                         </span>
@@ -81,10 +85,20 @@
                                 <td>{{ $solicitacao->data_solicitacao?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td>{{ $solicitacao->data_execucao?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('tenant.lgpd.show', $solicitacao) }}"
-                                       class="btn btn-sm btn-outline-primary-600">
-                                        <iconify-icon icon="solar:eye-bold" class="text-lg"></iconify-icon>
-                                    </a>
+                                    <div class="d-flex justify-content-center gap-4">
+                                        <a href="{{ route('tenant.lgpd.show', $solicitacao) }}"
+                                           class="btn btn-sm btn-outline-primary-600"
+                                           title="Visualizar">
+                                            <iconify-icon icon="solar:eye-bold" class="text-lg"></iconify-icon>
+                                        </a>
+                                        @if ($solicitacao->status === 'pendente' && !$solicitacao->jaProcessado && auth()->user()->hasPermission('lgpd.processar'))
+                                            <a href="{{ route('tenant.lgpd.show', $solicitacao) }}"
+                                               class="btn btn-sm btn-outline-success-600"
+                                               title="Processar">
+                                                <iconify-icon icon="solar:check-circle-bold" class="text-lg"></iconify-icon>
+                                            </a>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

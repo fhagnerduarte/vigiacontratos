@@ -289,4 +289,8 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
     Route::get('lgpd/{solicitacao}', [LgpdController::class, 'show'])
         ->name('tenant.lgpd.show')
         ->middleware('permission:lgpd.visualizar');
+
+    Route::post('lgpd/{solicitacao}/processar', [LgpdController::class, 'processar'])
+        ->name('tenant.lgpd.processar')
+        ->middleware('permission:lgpd.processar');
 });

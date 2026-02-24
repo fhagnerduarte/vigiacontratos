@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Storage;
 class RelatorioService
 {
     /**
-     * RN-133: Dados do relatorio de documentos por contrato (TCE).
+     * RN-133: Dados do relatorio TCE de documentos por contrato.
+     * Alias: gerarRelatorioTCEContrato()
      */
     public static function dadosDocumentosContrato(Contrato $contrato): array
     {
@@ -63,6 +64,14 @@ class RelatorioService
             'documentos' => $documentos,
             'total_documentos' => count($documentos),
         ];
+    }
+
+    /**
+     * RN-133: Alias para dadosDocumentosContrato (nome referenciado na documentacao).
+     */
+    public static function gerarRelatorioTCEContrato(Contrato $contrato): array
+    {
+        return self::dadosDocumentosContrato($contrato);
     }
 
     /**
