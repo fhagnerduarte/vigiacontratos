@@ -16,6 +16,7 @@ use App\Notifications\IntegridadeComprometidaNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -76,8 +77,9 @@ class DocumentoService
             $numeroContrato = str_replace('/', '-', $numeroContrato);
             $nomeArquivo = "contrato_{$numeroContrato}_{$tipoDocumento->value}_v{$versao}.pdf";
 
-            // Path de storage isolado por contrato e tipo (ADR-033)
-            $storagePath = "documentos/contratos/{$contratoId}/{$tipoDocumento->value}";
+            // Path de storage isolado por tenant, contrato e tipo (ADR-033, ADR-058)
+            $tenantSlug = self::getTenantSlug();
+            $storagePath = "{$tenantSlug}/documentos/contratos/{$contratoId}/{$tipoDocumento->value}";
             $caminhoCompleto = $arquivo->storeAs($storagePath, $nomeArquivo, 'local');
 
             // Hash SHA-256 para integridade (ADR-047, RN-220)
@@ -122,6 +124,9 @@ class DocumentoService
                 'Download bloqueado: a integridade deste documento esta comprometida. Contate o administrador do sistema.'
             );
         }
+
+        // Validar que o documento pertence ao tenant atual (ADR-058)
+        self::validarTenantPath($documento);
 
         self::registrarLog($documento, $user, AcaoLogDocumento::Download, $ip);
 
@@ -308,6 +313,58 @@ class DocumentoService
             'acao' => $acao->value,
             'ip_address' => $ip,
         ]);
+    }
+
+    /**
+     * Resolve o slug do tenant atual para isolamento de storage (ADR-058).
+     *
+     * @throws \RuntimeException Se nao houver contexto de tenant.
+     */
+    private static function getTenantSlug(): string
+    {
+        if (app()->bound('tenant') && app('tenant')) {
+            return app('tenant')->slug;
+        }
+
+        throw new \RuntimeException(
+            'Contexto de tenant nao disponivel. Storage de documentos requer tenant ativo.'
+        );
+    }
+
+    /**
+     * Valida que o path do documento pertence ao tenant atual (ADR-058).
+     * Paths legados (sem prefixo tenant) sao permitidos com log de warning.
+     *
+     * @throws \RuntimeException Se o path pertence a outro tenant.
+     */
+    private static function validarTenantPath(Documento $documento): void
+    {
+        if (!app()->bound('tenant') || !app('tenant')) {
+            return; // Sem contexto de tenant (CLI, testes unitarios)
+        }
+
+        $tenantSlug = app('tenant')->slug;
+        $expectedPrefix = "{$tenantSlug}/";
+
+        if (str_starts_with($documento->caminho, $expectedPrefix)) {
+            return; // Path correto do tenant atual
+        }
+
+        // Path legado (pre-isolamento): documentos/contratos/...
+        if (str_starts_with($documento->caminho, 'documentos/')) {
+            Log::warning('Documento com path legado detectado (pre-isolamento tenant)', [
+                'documento_id' => $documento->id,
+                'caminho' => $documento->caminho,
+                'tenant' => $tenantSlug,
+            ]);
+
+            return;
+        }
+
+        // Path de outro tenant ou invalido
+        throw new \RuntimeException(
+            'Acesso negado: documento nao pertence ao tenant atual.'
+        );
     }
 
     /**

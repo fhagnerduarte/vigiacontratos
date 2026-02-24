@@ -21,6 +21,8 @@ class DocumentosController extends Controller
      */
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Documento::class);
+
         $indicadores = DocumentoService::gerarIndicadoresDashboard();
 
         $query = Contrato::with([
@@ -88,6 +90,8 @@ class DocumentosController extends Controller
      */
     public function store(StoreDocumentoRequest $request, Contrato $contrato): RedirectResponse
     {
+        $this->authorize('create', Documento::class);
+
         $tipoDocumento = TipoDocumentoContratual::from($request->validated('tipo_documento'));
 
         try {
@@ -113,6 +117,8 @@ class DocumentosController extends Controller
      */
     public function download(Request $request, Documento $documento): StreamedResponse|RedirectResponse
     {
+        $this->authorize('download', $documento);
+
         try {
             return DocumentoService::download($documento, $request->user(), $request->ip());
         } catch (\RuntimeException $e) {
@@ -125,6 +131,8 @@ class DocumentosController extends Controller
      */
     public function verificarIntegridade(Request $request, Documento $documento): RedirectResponse
     {
+        $this->authorize('verificarIntegridade', $documento);
+
         $status = DocumentoService::verificarIntegridade($documento);
 
         $mensagem = match ($status) {
@@ -143,6 +151,8 @@ class DocumentosController extends Controller
      */
     public function destroy(Request $request, Documento $documento): RedirectResponse
     {
+        $this->authorize('delete', $documento);
+
         DocumentoService::excluir($documento, $request->user(), $request->ip());
 
         $contrato = $documento->documentable;
