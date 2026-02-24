@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedWithFallback;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ class Fiscal extends Model
             'data_inicio' => 'date',
             'data_fim' => 'date',
             'is_atual' => 'boolean',
+            'email' => EncryptedWithFallback::class,
         ];
     }
 

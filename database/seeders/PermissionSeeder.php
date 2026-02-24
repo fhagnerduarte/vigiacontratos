@@ -92,6 +92,11 @@ class PermissionSeeder extends Seeder
             // Painel de Risco
             ['nome' => 'painel-risco.visualizar', 'descricao' => 'Visualizar painel de risco', 'grupo' => 'painel-risco'],
             ['nome' => 'painel-risco.exportar', 'descricao' => 'Exportar relatorio de risco TCE', 'grupo' => 'painel-risco'],
+
+            // LGPD (RN-213)
+            ['nome' => 'lgpd.visualizar', 'descricao' => 'Visualizar solicitacoes LGPD', 'grupo' => 'lgpd'],
+            ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitacao LGPD', 'grupo' => 'lgpd'],
+            ['nome' => 'lgpd.processar', 'descricao' => 'Processar anonimizacao LGPD', 'grupo' => 'lgpd'],
         ];
 
         foreach ($permissions as $permission) {

@@ -38,6 +38,7 @@ class RolePermissionSeeder extends Seeder
                 'alerta.visualizar', 'alerta.resolver',
                 'dashboard.visualizar', 'dashboard.atualizar',
                 'painel-risco.visualizar', 'painel-risco.exportar',
+                'lgpd.visualizar', 'lgpd.solicitar', 'lgpd.processar',
             ],
             'controladoria' => [
                 'contrato.visualizar',
@@ -55,6 +56,7 @@ class RolePermissionSeeder extends Seeder
                 'alerta.visualizar', 'alerta.resolver',
                 'dashboard.visualizar', 'dashboard.atualizar',
                 'painel-risco.visualizar', 'painel-risco.exportar',
+                'lgpd.visualizar',
             ],
             'secretario' => [
                 'contrato.visualizar',

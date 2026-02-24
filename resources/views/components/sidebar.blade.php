@@ -143,7 +143,7 @@
             @endif
 
             {{-- ADMINISTRACAO --}}
-            @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar'))
+            @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar') || auth()->user()->hasPermission('lgpd.visualizar'))
                 <li class="sidebar-menu-group-title">Administração</li>
 
                 @if (auth()->user()->hasPermission('usuario.visualizar'))
@@ -180,6 +180,16 @@
                            class="{{ request()->routeIs('tenant.auditoria.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:clipboard-list-bold" class="menu-icon"></iconify-icon>
                             <span>Auditoria</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (auth()->user()->hasPermission('lgpd.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.lgpd.index') }}"
+                           class="{{ request()->routeIs('tenant.lgpd.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:shield-keyhole-bold" class="menu-icon"></iconify-icon>
+                            <span>LGPD</span>
                         </a>
                     </li>
                 @endif

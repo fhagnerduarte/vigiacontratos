@@ -60,6 +60,23 @@ class LoginRequest extends FormRequest
 
         $user = Auth::user();
 
+        // Verificar se usuario esta ativo
+        if (! $user->is_ativo) {
+            Auth::logout();
+
+            LoginLog::create([
+                'user_id' => $user->id,
+                'tenant_id' => app('tenant')?->id,
+                'ip_address' => $this->ip(),
+                'user_agent' => $this->userAgent(),
+                'success' => false,
+            ]);
+
+            throw ValidationException::withMessages([
+                'email' => 'Sua conta foi desativada. Contate o administrador.',
+            ]);
+        }
+
         LoginLog::create([
             'user_id' => $user->id,
             'tenant_id' => app('tenant')?->id,

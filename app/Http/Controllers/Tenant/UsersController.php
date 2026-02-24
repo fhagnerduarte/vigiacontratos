@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Secretaria;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UsersController extends Controller
@@ -78,7 +79,24 @@ class UsersController extends Controller
         // Desativar em vez de deletar
         $user->update(['is_ativo' => false]);
 
+        // Invalidar sessoes ativas do usuario (best-effort, driver database)
+        $this->invalidateUserSessions($user);
+
         return redirect()->route('tenant.users.index')
             ->with('success', 'Usuario desativado com sucesso.');
+    }
+
+    private function invalidateUserSessions(User $user): void
+    {
+        if (config('session.driver') === 'database') {
+            $connection = config('session.connection') ?: config('database.default');
+            DB::connection($connection)
+                ->table(config('session.table', 'sessions'))
+                ->where('user_id', $user->id)
+                ->delete();
+        }
+
+        // Para drivers nao-database (redis, file), o middleware EnsureUserIsActive
+        // cuida da invalidacao na proxima request do usuario.
     }
 }

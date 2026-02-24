@@ -18,6 +18,7 @@ use App\Http\Controllers\Tenant\ServidoresController;
 use App\Http\Controllers\Tenant\AlertasController;
 use App\Http\Controllers\Tenant\AuditoriaController;
 use App\Http\Controllers\Tenant\RelatoriosController;
+use App\Http\Controllers\Tenant\LgpdController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,8 +50,8 @@ Route::middleware(['tenant', 'auth'])->prefix('mfa')->name('tenant.mfa.')->group
     Route::post('disable', [MfaController::class, 'disable'])->name('disable');
 });
 
-// Rotas protegidas (autenticado + MFA verificado)
-Route::middleware(['tenant', 'auth', 'mfa.verified'])->group(function () {
+// Rotas protegidas (autenticado + usuario ativo + MFA verificado)
+Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('tenant.dashboard');
     Route::post('dashboard/atualizar', [DashboardController::class, 'atualizar'])
         ->name('tenant.dashboard.atualizar')
@@ -271,4 +272,21 @@ Route::middleware(['tenant', 'auth', 'mfa.verified'])->group(function () {
     Route::put('perfis/{role}/permissoes', [PermissoesController::class, 'update'])
         ->name('tenant.permissoes.update')
         ->middleware('permission:configuracao.editar');
+
+    // Administracao — LGPD (RN-213)
+    Route::get('lgpd', [LgpdController::class, 'index'])
+        ->name('tenant.lgpd.index')
+        ->middleware('permission:lgpd.visualizar');
+
+    Route::get('lgpd/criar', [LgpdController::class, 'create'])
+        ->name('tenant.lgpd.create')
+        ->middleware('permission:lgpd.solicitar');
+
+    Route::post('lgpd', [LgpdController::class, 'store'])
+        ->name('tenant.lgpd.store')
+        ->middleware('permission:lgpd.processar');
+
+    Route::get('lgpd/{solicitacao}', [LgpdController::class, 'show'])
+        ->name('tenant.lgpd.show')
+        ->middleware('permission:lgpd.visualizar');
 });

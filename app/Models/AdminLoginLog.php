@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedWithFallback;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -21,6 +22,8 @@ class AdminLoginLog extends Model
         return [
             'success' => 'boolean',
             'created_at' => 'datetime',
+            'ip_address' => EncryptedWithFallback::class,
+            'user_agent' => EncryptedWithFallback::class,
         ];
     }
 

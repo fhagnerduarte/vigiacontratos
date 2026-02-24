@@ -43,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \App\Http\Middleware\EnsureUserHasPermission::class,
             'mfa.verified' => \App\Http\Middleware\EnsureMfaVerified::class,
             'force.https' => \App\Http\Middleware\ForceHttps::class,
+            'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
 
         $middleware->priority([
@@ -52,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\SetTenantConnection::class,
             \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+            \App\Http\Middleware\EnsureUserIsActive::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,
             \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
             \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,

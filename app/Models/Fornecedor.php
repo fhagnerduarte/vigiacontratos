@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedWithFallback;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,6 +29,15 @@ class Fornecedor extends Model
         'cep',
         'observacoes',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'email' => EncryptedWithFallback::class,
+            'telefone' => EncryptedWithFallback::class,
+            'representante_legal' => EncryptedWithFallback::class,
+        ];
+    }
 
     public function contratos(): HasMany
     {
