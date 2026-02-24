@@ -34,7 +34,7 @@
                     <div class="dropdown-menu to-top dropdown-menu-lg p-0">
                         <div class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-0">Notificacoes</h6>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-0">Notificações</h6>
                             </div>
                             <span class="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center">{{ $unreadCount }}</span>
                         </div>
@@ -62,7 +62,7 @@
                             </a>
                             @empty
                             <div class="px-24 py-12 text-center">
-                                <p class="text-sm text-secondary-light mb-0">Nenhuma notificacao no momento.</p>
+                                <p class="text-sm text-secondary-light mb-0">Nenhuma notificação no momento.</p>
                             </div>
                             @endforelse
                         </div>
@@ -94,16 +94,6 @@
                             </button>
                         </div>
                         <ul class="to-top-list">
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="#">
-                                    <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> Meu Perfil
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="#">
-                                    <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> Configurações
-                                </a>
-                            </li>
                             <li>
                                 <form method="POST" action="{{ route('tenant.logout') }}">
                                     @csrf

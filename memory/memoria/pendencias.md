@@ -274,10 +274,10 @@
 **Testes:**
 - [x] PermissaoServiceTest (verificação por role, por user, expiração automática) *(IMP-028)*
 - [x] WorkflowServiceTest (criação de fluxo, avanço, reprovação) *(IMP-028)*
-- [ ] PerfilUsuarioTest Feature (acesso por perfil a recursos protegidos)
-- [ ] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job)
+- [x] PerfilUsuarioTest Feature (acesso por perfil a recursos protegidos) *(IMP-042)*
+- [x] PermissaoTemporariaTest (concessão com expires_at, revogação automática por job) *(IMP-042)*
 - [x] WorkflowAprovacaoTest (imutabilidade) *(IMP-028)*
-- [ ] Testar perfis padrão não deletáveis (is_padrao = true)
+- [x] Testar perfis padrão não deletáveis (is_padrao = true) *(IMP-042)*
 - [x] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326) *(IMP-038)*
 
 ### Módulo: Relatórios

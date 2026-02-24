@@ -23,7 +23,7 @@
 
             {{-- GESTAO CONTRATUAL --}}
             @if (auth()->user()->hasPermission('contrato.visualizar') || auth()->user()->hasPermission('aditivo.visualizar') || auth()->user()->hasPermission('documento.visualizar'))
-                <li class="sidebar-menu-group-title">Gestao Contratual</li>
+                <li class="sidebar-menu-group-title">Gestão Contratual</li>
 
                 @if (auth()->user()->hasPermission('contrato.visualizar'))
                     <li class="dropdown">
@@ -126,7 +126,7 @@
                         <a href="{{ route('tenant.relatorios.index') }}"
                            class="{{ request()->routeIs('tenant.relatorios.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:chart-bold" class="menu-icon"></iconify-icon>
-                            <span>Relatorios</span>
+                            <span>Relatórios</span>
                         </a>
                     </li>
                 @endif
@@ -144,14 +144,14 @@
 
             {{-- ADMINISTRACAO --}}
             @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar'))
-                <li class="sidebar-menu-group-title">Administracao</li>
+                <li class="sidebar-menu-group-title">Administração</li>
 
                 @if (auth()->user()->hasPermission('usuario.visualizar'))
                     <li>
                         <a href="{{ route('tenant.users.index') }}"
                            class="{{ request()->routeIs('tenant.users.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:users-group-two-rounded-bold" class="menu-icon"></iconify-icon>
-                            <span>Usuarios</span>
+                            <span>Usuários</span>
                         </a>
                     </li>
                 @endif
@@ -161,13 +161,13 @@
                         <a href="javascript:void(0)"
                            class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:settings-bold" class="menu-icon"></iconify-icon>
-                            <span>Configuracoes</span>
+                            <span>Configurações</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
                                 <a href="{{ route('tenant.roles.index') }}"
                                    class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') ? 'active-page' : '' }}">
-                                    <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Perfis e Permissoes
+                                    <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Perfis e Permissões
                                 </a>
                             </li>
                         </ul>
