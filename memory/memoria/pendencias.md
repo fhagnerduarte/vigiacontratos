@@ -253,7 +253,7 @@
 
 **Middleware e Autorização:**
 - [x] Middleware: EnsureUserHasPermission (route parameter `permission:recurso.acao`) *(IMP-015)*
-- [ ] Atualizar todas as Policies para verificar role + permission + secretaria
+- [x] Atualizar todas as Policies para verificar role + permission + secretaria *(IMP-048)*
 - [x] Helper $user->hasPermission('recurso.acao') no Model User (verificacao real-time expires_at) *(IMP-015)*
 - [x] Scope global por secretaria (Eloquent Global Scope para queries filtradas — RN-326) *(IMP-038)*
 

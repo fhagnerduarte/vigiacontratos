@@ -4,8 +4,7 @@
 /public/hot
 /public/storage
 /public/build
-/storage/*.key
-/storage/pail
+/storage/
 
 # Environment
 .env
@@ -15,23 +14,6 @@
 # Cache e arquivos gerados
 /bootstrap/cache/*
 !bootstrap/cache/.gitkeep
-
-# Logs
-/storage/logs/*
-!storage/logs/.gitkeep
-
-# Documentos de teste (uploads gerados por testes/seeders)
-/storage/app/private/documentos/
-
-# Framework cache
-/storage/framework/cache/data/*
-!storage/framework/cache/data/.gitkeep
-/storage/framework/sessions/*
-!storage/framework/sessions/.gitkeep
-/storage/framework/testing/*
-!storage/framework/testing/.gitkeep
-/storage/framework/views/*
-!storage/framework/views/.gitkeep
 
 # IDE
 .idea/
@@ -56,6 +38,9 @@ yarn-error.log
 
 # Sail / Docker
 docker-compose.override.yml
+
+# Claude Code
+.claude/settings.local.json
 
 # Temporarios
 /tmp/

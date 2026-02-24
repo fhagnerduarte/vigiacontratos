@@ -27,6 +27,8 @@ class ContratosController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Contrato::class);
+
         $query = Contrato::with('fornecedor', 'secretaria', 'fiscalAtual')
             ->orderBy('created_at', 'desc');
 
@@ -55,6 +57,8 @@ class ContratosController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Contrato::class);
+
         $fornecedores = Fornecedor::orderBy('razao_social')->get();
         $secretarias = Secretaria::orderBy('nome')->get();
         $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
@@ -68,6 +72,8 @@ class ContratosController extends Controller
 
     public function store(StoreContratoRequest $request): RedirectResponse
     {
+        $this->authorize('create', Contrato::class);
+
         $dados = $request->validated();
 
         // Separa dados do fiscal
@@ -87,6 +93,8 @@ class ContratosController extends Controller
 
     public function show(Contrato $contrato): View
     {
+        $this->authorize('view', $contrato);
+
         $contrato->load([
             'fornecedor',
             'secretaria',
@@ -125,6 +133,8 @@ class ContratosController extends Controller
 
     public function edit(Contrato $contrato): View|RedirectResponse
     {
+        $this->authorize('update', $contrato);
+
         // RN-006: Contrato vencido nao pode ser editado
         if ($contrato->status === StatusContrato::Vencido) {
             return redirect()->route('tenant.contratos.show', $contrato)
@@ -141,7 +151,9 @@ class ContratosController extends Controller
 
     public function update(UpdateContratoRequest $request, Contrato $contrato): RedirectResponse
     {
-        // RN-006: Defesa em profundidade (authorize() ja bloqueia, mas reforcar aqui)
+        $this->authorize('update', $contrato);
+
+        // RN-006: Defesa em profundidade
         if ($contrato->status === StatusContrato::Vencido) {
             return redirect()->route('tenant.contratos.show', $contrato)
                 ->with('error', 'Contrato vencido nao pode ser editado (RN-006). Para alterar, crie um aditivo retroativo ou encerre formalmente.');
@@ -158,6 +170,8 @@ class ContratosController extends Controller
 
     public function destroy(Contrato $contrato): RedirectResponse
     {
+        $this->authorize('delete', $contrato);
+
         $contrato->delete();
 
         return redirect()->route('tenant.contratos.index')

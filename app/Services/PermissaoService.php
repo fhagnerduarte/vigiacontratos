@@ -20,6 +20,7 @@ class PermissaoService
 
     /**
      * Atribui uma permissao individual ao usuario (com ou sem expiracao).
+     * Registra auditoria (RN-332).
      */
     public static function atribuirPermissaoIndividual(
         User $user,
@@ -34,13 +35,46 @@ class PermissaoService
                 'created_at' => now(),
             ],
         ]);
+
+        // Auditoria (RN-332)
+        $detalhe = $permission->nome;
+        if ($expiresAt) {
+            $detalhe .= " (expira: {$expiresAt->toDateTimeString()})";
+        } else {
+            $detalhe .= ' (permanente)';
+        }
+
+        AuditoriaService::registrar(
+            $user,
+            'permissao_concedida',
+            null,
+            $detalhe,
+            $concedidoPor,
+            request()?->ip() ?? '127.0.0.1'
+        );
     }
 
     /**
      * Revoga uma permissao individual do usuario.
+     * Registra auditoria (RN-332).
      */
-    public static function revogarPermissaoIndividual(User $user, Permission $permission): void
-    {
+    public static function revogarPermissaoIndividual(
+        User $user,
+        Permission $permission,
+        ?User $revogadoPor = null
+    ): void {
+        $executor = $revogadoPor ?? (auth()->check() ? auth()->user() : $user);
+
+        // Auditoria antes do detach (RN-332)
+        AuditoriaService::registrar(
+            $user,
+            'permissao_revogada',
+            $permission->nome,
+            null,
+            $executor,
+            request()?->ip() ?? '127.0.0.1'
+        );
+
         $user->permissions()->detach($permission->id);
     }
 

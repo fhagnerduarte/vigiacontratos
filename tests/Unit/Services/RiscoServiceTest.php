@@ -5,6 +5,8 @@ namespace Tests\Unit\Services;
 use App\Enums\CategoriaContrato;
 use App\Enums\NivelRisco;
 use App\Enums\TipoContrato;
+use App\Enums\TipoDocumentoContratual;
+use App\Models\Aditivo;
 use App\Models\Contrato;
 use App\Models\Documento;
 use App\Models\Fiscal;
@@ -19,11 +21,14 @@ class RiscoServiceTest extends TestCase
     use RunsTenantMigrations;
     use SeedsTenantData;
 
+    protected User $admin;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpTenant();
         $this->seedBaseData();
+        $this->admin = $this->createAdminUser();
     }
 
     public function test_contrato_sem_riscos_retorna_baixo(): void
@@ -56,6 +61,9 @@ class RiscoServiceTest extends TestCase
         Documento::factory()->notaEmpenho()->create($docDefaults);
         Documento::factory()->create(array_merge($docDefaults, [
             'tipo_documento' => 'relatorio_fiscalizacao',
+        ]));
+        Documento::factory()->create(array_merge($docDefaults, [
+            'tipo_documento' => TipoDocumentoContratual::RelatorioMedicao,
         ]));
 
         $contrato->load('fiscalAtual', 'documentos');
@@ -231,5 +239,188 @@ class RiscoServiceTest extends TestCase
             $this->assertIsInt($categoria['score']);
             $this->assertIsArray($categoria['criterios']);
         }
+    }
+
+    // ── RN-139: Risco documental granular ────────────────────────────────
+
+    public function test_contrato_sem_relatorio_medicao_adiciona_5pts_documental(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+        $contrato->load('fiscalAtual', 'documentos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $documental = $resultado['categorias']['documental'];
+
+        $criterioMedicao = collect($documental['criterios'])->first(
+            fn (string $c) => str_contains($c, 'Relatorio de Medicao')
+        );
+
+        $this->assertNotNull($criterioMedicao, 'Deveria conter criterio sobre Relatorio de Medicao');
+        $this->assertStringContainsString('+5pts', $criterioMedicao);
+    }
+
+    public function test_contrato_com_todos_documentos_documental_score_zero(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+
+        $docDefaults = [
+            'documentable_type' => Contrato::class,
+            'documentable_id' => $contrato->id,
+            'uploaded_by' => $this->admin->id,
+            'is_versao_atual' => true,
+        ];
+
+        // 6 tipos obrigatorios/checklist
+        Documento::factory()->contratoOriginal()->create($docDefaults);
+        Documento::factory()->publicacaoOficial()->create($docDefaults);
+        Documento::factory()->parecerJuridico()->create($docDefaults);
+        Documento::factory()->notaEmpenho()->create($docDefaults);
+        Documento::factory()->create(array_merge($docDefaults, [
+            'tipo_documento' => TipoDocumentoContratual::RelatorioFiscalizacao,
+        ]));
+        Documento::factory()->create(array_merge($docDefaults, [
+            'tipo_documento' => TipoDocumentoContratual::RelatorioMedicao,
+        ]));
+
+        $contrato->load('fiscalAtual', 'documentos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+
+        $this->assertEquals(0, $resultado['categorias']['documental']['score']);
+    }
+
+    // ── RN-140: Risco juridico — prazo superior ao limite legal ──────────
+
+    public function test_contrato_servico_prazo_superior_60_meses_adiciona_10pts(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+            'tipo' => TipoContrato::Servico,
+            'prazo_meses' => 72,
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+        $contrato->load('fiscalAtual', 'documentos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $juridico = $resultado['categorias']['juridico'];
+
+        $criterioPrazo = collect($juridico['criterios'])->first(
+            fn (string $c) => str_contains($c, 'Prazo')
+        );
+
+        $this->assertNotNull($criterioPrazo, 'Deveria conter criterio sobre Prazo');
+        $this->assertStringContainsString('+10pts', $criterioPrazo);
+    }
+
+    public function test_contrato_servico_prazo_dentro_limite_nao_adiciona(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+            'tipo' => TipoContrato::Servico,
+            'prazo_meses' => 48,
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+        $contrato->load('fiscalAtual', 'documentos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $juridico = $resultado['categorias']['juridico'];
+
+        $criterioPrazo = collect($juridico['criterios'])->first(
+            fn (string $c) => str_contains($c, 'Prazo')
+        );
+
+        $this->assertNull($criterioPrazo, 'Nao deveria conter criterio sobre Prazo para servico com 48 meses');
+    }
+
+    public function test_contrato_outro_tipo_prazo_superior_36_meses_adiciona_10pts(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+            'tipo' => TipoContrato::Compra,
+            'prazo_meses' => 40,
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+        $contrato->load('fiscalAtual', 'documentos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $juridico = $resultado['categorias']['juridico'];
+
+        $criterioPrazo = collect($juridico['criterios'])->first(
+            fn (string $c) => str_contains($c, 'Prazo')
+        );
+
+        $this->assertNotNull($criterioPrazo, 'Deveria conter criterio sobre Prazo para compra com 40 meses');
+        $this->assertStringContainsString('+10pts', $criterioPrazo);
+    }
+
+    // ── RN-140: Risco juridico — aditivo sem justificativa tecnica ──────
+
+    public function test_aditivo_sem_justificativa_tecnica_adiciona_10pts_juridico(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+
+        Aditivo::factory()->create([
+            'contrato_id' => $contrato->id,
+            'justificativa_tecnica' => '',
+        ]);
+
+        $contrato->load('fiscalAtual', 'documentos', 'aditivos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $juridico = $resultado['categorias']['juridico'];
+
+        $criterioJustificativa = collect($juridico['criterios'])->first(
+            fn (string $c) => str_contains(mb_strtolower($c), 'justificativa')
+        );
+
+        $this->assertNotNull($criterioJustificativa, 'Deveria conter criterio sobre justificativa tecnica');
+        $this->assertStringContainsString('+10pts', $criterioJustificativa);
+    }
+
+    public function test_aditivo_com_justificativa_tecnica_nao_adiciona_pts(): void
+    {
+        $contrato = Contrato::factory()->create([
+            'data_fim' => now()->addYear(),
+            'numero_processo' => '12345/2026',
+        ]);
+
+        Fiscal::factory()->create(['contrato_id' => $contrato->id, 'is_atual' => true]);
+
+        Aditivo::factory()->create([
+            'contrato_id' => $contrato->id,
+            'justificativa_tecnica' => 'Texto justificativa tecnica detalhada para o aditivo',
+        ]);
+
+        $contrato->load('fiscalAtual', 'documentos', 'aditivos');
+
+        $resultado = RiscoService::calcularExpandido($contrato);
+        $juridico = $resultado['categorias']['juridico'];
+
+        $criterioJustificativa = collect($juridico['criterios'])->first(
+            fn (string $c) => str_contains(mb_strtolower($c), 'justificativa')
+        );
+
+        $this->assertNull($criterioJustificativa, 'Nao deveria conter criterio sobre justificativa quando aditivo tem justificativa tecnica');
     }
 }

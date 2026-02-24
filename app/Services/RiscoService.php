@@ -156,6 +156,7 @@ class RiscoService
             ->where('is_versao_atual', true)
             ->whereNull('deleted_at')
             ->pluck('tipo_documento')
+            ->map(fn ($t) => $t instanceof TipoDocumentoContratual ? $t->value : $t)
             ->unique();
 
         // Checklist obrigatorio: contrato_original, publicacao_oficial, parecer_juridico, nota_empenho
@@ -177,6 +178,12 @@ class RiscoService
         if (! $tiposPresentes->contains(TipoDocumentoContratual::RelatorioFiscalizacao->value)) {
             $score += 5;
             $criterios[] = 'Falta Relatorio de Fiscalizacao (+5pts)';
+        }
+
+        // Falta relatorio de execucao (medicao): +5pts (RN-139)
+        if (! $tiposPresentes->contains(TipoDocumentoContratual::RelatorioMedicao->value)) {
+            $score += 5;
+            $criterios[] = 'Falta Relatorio de Medicao (+5pts)';
         }
 
         // Sem nenhum documento: +10pts adicional (criterio base)
@@ -222,6 +229,32 @@ class RiscoService
             if ($aditivosRecentes >= 4) {
                 $score += 10;
                 $criterios[] = "{$aditivosRecentes} aditivos em 12 meses (+10pts)";
+            }
+        }
+
+        // Prazo superior ao permitido por lei: +10pts (RN-140)
+        if ($contrato->prazo_meses) {
+            $limiteMeses = match ($contrato->tipo) {
+                \App\Enums\TipoContrato::Servico => 60,
+                default => 36,
+            };
+            if ($contrato->prazo_meses > $limiteMeses) {
+                $score += 10;
+                $criterios[] = "Prazo ({$contrato->prazo_meses} meses) superior ao limite legal ({$limiteMeses} meses) (+10pts)";
+            }
+        }
+
+        // Ausencia de justificativa formal em aditivo: +10pts (RN-140)
+        if ($contrato->relationLoaded('aditivos') || $contrato->aditivos()->exists()) {
+            $aditivosSemJustificativa = $contrato->aditivos()
+                ->where(function ($q) {
+                    $q->whereNull('justificativa_tecnica')
+                      ->orWhere('justificativa_tecnica', '');
+                })
+                ->count();
+            if ($aditivosSemJustificativa > 0) {
+                $score += 10;
+                $criterios[] = "{$aditivosSemJustificativa} aditivo(s) sem justificativa tecnica (+10pts)";
             }
         }
 

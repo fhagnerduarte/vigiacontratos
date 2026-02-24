@@ -22,6 +22,8 @@ class AditivosController extends Controller
      */
     public function index(): View
     {
+        $this->authorize('viewAny', Aditivo::class);
+
         $anoAtual = date('Y');
         $conn = \Illuminate\Support\Facades\DB::connection('tenant');
 
@@ -107,6 +109,8 @@ class AditivosController extends Controller
      */
     public function create(Contrato $contrato): View|RedirectResponse
     {
+        $this->authorize('create', Aditivo::class);
+
         // RN-009/RN-052: Contrato precisa estar vigente ou vencido (retroativo com justificativa)
         if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
@@ -139,6 +143,8 @@ class AditivosController extends Controller
      */
     public function store(StoreAditivoRequest $request, Contrato $contrato): RedirectResponse
     {
+        $this->authorize('create', Aditivo::class);
+
         // RN-009/RN-052: Contrato precisa estar vigente ou vencido
         if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
@@ -182,6 +188,8 @@ class AditivosController extends Controller
      */
     public function show(Aditivo $aditivo): View
     {
+        $this->authorize('view', $aditivo);
+
         $aditivo->load([
             'contrato.fornecedor',
             'contrato.secretaria',
@@ -218,6 +226,8 @@ class AditivosController extends Controller
      */
     public function aprovar(Request $request, Aditivo $aditivo): RedirectResponse
     {
+        $this->authorize('aprovar', $aditivo);
+
         $etapaAtual = WorkflowService::obterEtapaAtual($aditivo);
 
         if (! $etapaAtual) {
@@ -246,6 +256,8 @@ class AditivosController extends Controller
      */
     public function cancelar(Request $request, Aditivo $aditivo): RedirectResponse
     {
+        $this->authorize('aprovar', $aditivo);
+
         try {
             AditivoService::cancelar($aditivo, $request->user(), $request->ip());
 
@@ -262,6 +274,8 @@ class AditivosController extends Controller
      */
     public function reprovar(Request $request, Aditivo $aditivo): RedirectResponse
     {
+        $this->authorize('aprovar', $aditivo);
+
         $request->validate([
             'parecer' => ['required', 'string'],
         ], [

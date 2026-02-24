@@ -15,6 +15,8 @@ class ServidoresController extends Controller
 {
     public function index(): View
     {
+        $this->authorize('viewAny', Servidor::class);
+
         $servidores = Servidor::with('secretaria')
             ->orderBy('nome')
             ->paginate(25);
@@ -24,6 +26,8 @@ class ServidoresController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Servidor::class);
+
         $secretarias = Secretaria::orderBy('nome')->get();
 
         return view('tenant.servidores.create', compact('secretarias'));
@@ -31,6 +35,8 @@ class ServidoresController extends Controller
 
     public function store(StoreServidorRequest $request): RedirectResponse
     {
+        $this->authorize('create', Servidor::class);
+
         $data = $request->validated();
 
         if (! empty($data['cpf'])) {
@@ -47,6 +53,8 @@ class ServidoresController extends Controller
 
     public function edit(Servidor $servidor): View
     {
+        $this->authorize('update', $servidor);
+
         $secretarias = Secretaria::orderBy('nome')->get();
 
         return view('tenant.servidores.edit', compact('servidor', 'secretarias'));
@@ -54,6 +62,8 @@ class ServidoresController extends Controller
 
     public function update(UpdateServidorRequest $request, Servidor $servidor): RedirectResponse
     {
+        $this->authorize('update', $servidor);
+
         $data = $request->validated();
 
         if (! empty($data['cpf'])) {
@@ -70,6 +80,8 @@ class ServidoresController extends Controller
 
     public function destroy(Servidor $servidor): RedirectResponse
     {
+        $this->authorize('delete', $servidor);
+
         $servidor->delete();
 
         return redirect()->route('tenant.servidores.index')
