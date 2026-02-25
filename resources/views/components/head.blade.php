@@ -37,5 +37,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/lib/audioplayer.css') }}">
     <!-- main css -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <!-- custom overrides -->
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
     @stack('styles')
 </head>

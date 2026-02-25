@@ -1,0 +1,21 @@
+/* Overrides para WowDash theme — carregado apos style.css */
+
+/* Fix: iconify-icon renderiza display:block por padrao, empurrando texto para baixo */
+iconify-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Fix: style.css linha 459 define "button { border: none }" removendo bordas de btn-outline-* */
+button.btn {
+    border: 1px solid transparent;
+}
+
+/* Fix: Select2 container nao ocupa 100% da largura do pai */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .selection {
+    display: block;
+}
