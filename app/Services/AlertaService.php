@@ -13,8 +13,11 @@ use App\Jobs\ProcessarAlertaJob;
 use App\Models\Aditivo;
 use App\Models\Alerta;
 use App\Models\ConfiguracaoAlerta;
+use App\Models\ConfiguracaoAlertaAvancado;
 use App\Models\Contrato;
 use App\Models\Documento;
+use App\Models\ExecucaoFinanceira;
+use App\Models\HistoricoAlteracao;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -102,7 +105,16 @@ class AlertaService
         // 4. Verificar incompletude documental (RN-125, RN-126, RN-127)
         $resultado['alertas_gerados'] += self::verificarIncompletudeDocumental();
 
-        // 5. Re-enviar notificacoes para alertas pendentes nao resolvidos (RN-054)
+        // 5. Motor completo — Regras 2-10 (IMP-051)
+        $resultado['alertas_gerados'] += self::verificarExecucaoAposVencimento();
+        $resultado['alertas_gerados'] += self::verificarAditivosAcimaLimite();
+        $resultado['alertas_gerados'] += self::verificarContratosSemFiscal();
+        $resultado['alertas_gerados'] += self::verificarFiscalSemRelatorio();
+        $resultado['alertas_gerados'] += self::verificarProrrogacaoForaDoPrazo();
+        $resultado['alertas_gerados'] += self::verificarContratosParados();
+        $resultado['alertas_gerados'] += self::verificarEmpenhoInsuficiente();
+
+        // 6. Re-enviar notificacoes para alertas pendentes nao resolvidos (RN-054)
         $resultado['notificacoes_reenvio'] = self::reenviarNotificacoesPendentes();
 
         return $resultado;
@@ -484,6 +496,422 @@ class AlertaService
         }
 
         return $alerta;
+    }
+
+    // --- Regras 2-10: Motor de Alertas Completo (IMP-051) ---
+
+    /**
+     * Regra 2: Execucao financeira registrada apos vencimento do contrato.
+     * Risco critico para TCE — indica pagamento sem cobertura contratual.
+     */
+    public static function verificarExecucaoAposVencimento(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::ExecucaoAposVencimento)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $execucoes = ExecucaoFinanceira::whereHas('contrato', function ($q) {
+            $q->whereIn('status', [
+                StatusContrato::Vencido->value,
+                StatusContrato::Encerrado->value,
+            ]);
+        })
+            ->with('contrato')
+            ->get();
+
+        foreach ($execucoes as $execucao) {
+            $contrato = $execucao->contrato;
+            if (!$contrato || !$contrato->data_fim) {
+                continue;
+            }
+
+            if ($execucao->data_execucao->greaterThan($contrato->data_fim)) {
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::ExecucaoAposVencimento,
+                    "CRITICO: Execucao financeira de R$ " . number_format((float) $execucao->valor, 2, ',', '.') .
+                    " registrada em " . $execucao->data_execucao->format('d/m/Y') .
+                    " para o contrato {$contrato->numero} que venceu em " .
+                    $contrato->data_fim->format('d/m/Y') . ". Pagamento sem cobertura contratual."
+                );
+
+                if ($alerta) {
+                    $alerta->update(['prioridade' => PrioridadeAlerta::Urgente->value]);
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Regra 3: Aditivos que ultrapassam o limite legal de 25% (Lei 14.133 art. 125).
+     * Limite de supressao: 25%. Limite acrescimo: 25% (obras/servicos) ou 50% (reforma).
+     */
+    public static function verificarAditivosAcimaLimite(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::AditivoAcimaLimite)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $config = ConfiguracaoAlertaAvancado::porTipo(TipoEventoAlerta::AditivoAcimaLimite)
+            ->ativos()
+            ->first();
+        $limitePadrao = $config->percentual_limite_valor ?? 25.00;
+
+        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+            ->whereHas('aditivos', function ($q) {
+                $q->whereNotIn('status', ['cancelado']);
+            })
+            ->with(['aditivos' => function ($q) {
+                $q->whereNotIn('status', ['cancelado']);
+            }])
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $percentualAcumulado = $contrato->aditivos
+                ->max('percentual_acumulado') ?? 0;
+
+            if (abs((float) $percentualAcumulado) > $limitePadrao) {
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::AditivoAcimaLimite,
+                    "Contrato {$contrato->numero} possui aditivos com percentual acumulado de " .
+                    number_format((float) $percentualAcumulado, 2, ',', '.') .
+                    "%, ultrapassando o limite legal de " .
+                    number_format($limitePadrao, 2, ',', '.') .
+                    "% (Lei 14.133/2021 art. 125)."
+                );
+
+                if ($alerta) {
+                    $alerta->update(['prioridade' => PrioridadeAlerta::Urgente->value]);
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Regra 4: Contratos vigentes sem fiscal designado (Lei 14.133 art. 117).
+     */
+    public static function verificarContratosSemFiscal(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::ContratoSemFiscal)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+            ->whereDoesntHave('fiscais', function ($q) {
+                $q->where('is_atual', true)->where('tipo_fiscal', 'titular');
+            })
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $alerta = self::gerarAlertaDocumental(
+                $contrato,
+                TipoEventoAlerta::ContratoSemFiscal,
+                "Contrato {$contrato->numero} esta vigente sem fiscal titular designado. " .
+                "Designacao obrigatoria conforme Lei 14.133/2021 art. 117."
+            );
+
+            if ($alerta) {
+                $alertasGerados++;
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Regra 5: Fiscal sem relatorio recente (prazo configuravel, padrao 60 dias).
+     * Depende do campo data_ultimo_relatorio do IMP-049.
+     */
+    public static function verificarFiscalSemRelatorio(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::FiscalSemRelatorio)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $config = ConfiguracaoAlertaAvancado::porTipo(TipoEventoAlerta::FiscalSemRelatorio)
+            ->ativos()
+            ->first();
+        $diasLimite = $config->dias_sem_relatorio ?? 60;
+
+        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+            ->whereHas('fiscais', function ($q) {
+                $q->where('is_atual', true)->where('tipo_fiscal', 'titular');
+            })
+            ->with(['fiscalAtual'])
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $fiscal = $contrato->fiscalAtual;
+            if (!$fiscal) {
+                continue;
+            }
+
+            $semRelatorio = false;
+
+            if ($fiscal->data_ultimo_relatorio === null) {
+                // Nunca registrou relatorio — verificar se contrato tem mais de $diasLimite de vigencia
+                $diasVigente = (int) $contrato->data_inicio->diffInDays(now());
+                if ($diasVigente >= $diasLimite) {
+                    $semRelatorio = true;
+                }
+            } else {
+                $diasSemRelatorio = (int) $fiscal->data_ultimo_relatorio->diffInDays(now());
+                if ($diasSemRelatorio >= $diasLimite) {
+                    $semRelatorio = true;
+                }
+            }
+
+            if ($semRelatorio) {
+                $ultimoRelatorio = $fiscal->data_ultimo_relatorio
+                    ? $fiscal->data_ultimo_relatorio->format('d/m/Y')
+                    : 'nunca';
+
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::FiscalSemRelatorio,
+                    "Fiscal do contrato {$contrato->numero} ({$fiscal->nome}) nao registra relatorio ha mais de {$diasLimite} dias. " .
+                    "Ultimo relatorio: {$ultimoRelatorio}."
+                );
+
+                if ($alerta) {
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Regra 9: Prorrogacao assinada apos o vencimento do contrato (fora do prazo).
+     * Indica irregularidade — aditivo de prazo deveria ser assinado antes do vencimento.
+     */
+    public static function verificarProrrogacaoForaDoPrazo(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::ProrrogacaoForaDoPrazo)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $aditivos = Aditivo::whereIn('tipo', [
+            TipoAditivo::Prazo->value,
+            TipoAditivo::PrazoEValor->value,
+            TipoAditivo::Misto->value,
+        ])
+            ->whereNotIn('status', ['cancelado'])
+            ->whereNotNull('data_assinatura')
+            ->with('contrato')
+            ->get();
+
+        foreach ($aditivos as $aditivo) {
+            $contrato = $aditivo->contrato;
+            if (!$contrato || !$contrato->data_fim) {
+                continue;
+            }
+
+            // Verifica se aditivo foi assinado DEPOIS do vencimento original
+            $dataFimReferencia = $contrato->data_fim;
+
+            // Se ha aditivos anteriores de prazo, usar a data do aditivo anterior
+            $aditivoAnterior = Aditivo::where('contrato_id', $contrato->id)
+                ->where('id', '<', $aditivo->id)
+                ->whereIn('tipo', [
+                    TipoAditivo::Prazo->value,
+                    TipoAditivo::PrazoEValor->value,
+                    TipoAditivo::Misto->value,
+                ])
+                ->whereNotIn('status', ['cancelado'])
+                ->whereNotNull('nova_data_fim')
+                ->orderByDesc('id')
+                ->first();
+
+            if ($aditivoAnterior) {
+                $dataFimReferencia = $aditivoAnterior->nova_data_fim;
+            }
+
+            if ($aditivo->data_assinatura->greaterThan($dataFimReferencia)) {
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::ProrrogacaoForaDoPrazo,
+                    "Aditivo de prazo #{$aditivo->numero_sequencial} do contrato {$contrato->numero} " .
+                    "foi assinado em " . $aditivo->data_assinatura->format('d/m/Y') .
+                    ", apos o vencimento em " . $dataFimReferencia->format('d/m/Y') .
+                    ". Prorrogacao fora do prazo legal."
+                );
+
+                if ($alerta) {
+                    $alerta->update(['prioridade' => PrioridadeAlerta::Urgente->value]);
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Regra 10: Contrato parado — sem nenhuma movimentacao ha N dias (configuravel, padrao 90).
+     * Movimentacao = execucao financeira, aditivo, documento ou auditoria.
+     */
+    public static function verificarContratosParados(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::ContratoParado)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $config = ConfiguracaoAlertaAvancado::porTipo(TipoEventoAlerta::ContratoParado)
+            ->ativos()
+            ->first();
+        $diasInatividade = $config->dias_inatividade ?? 90;
+
+        $limiteData = now()->subDays($diasInatividade);
+
+        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $ultimaMovimentacao = self::obterUltimaMovimentacao($contrato);
+
+            if ($ultimaMovimentacao === null || $ultimaMovimentacao->lessThan($limiteData)) {
+                $diasParado = $ultimaMovimentacao
+                    ? (int) $ultimaMovimentacao->diffInDays(now())
+                    : (int) $contrato->data_inicio->diffInDays(now());
+
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::ContratoParado,
+                    "Contrato {$contrato->numero} esta sem movimentacao ha {$diasParado} dia(s). " .
+                    "Nenhuma execucao financeira, aditivo ou documento registrado no periodo."
+                );
+
+                if ($alerta) {
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Verifica se uma regra de alerta avancado esta ativa.
+     */
+    private static function isRegraAtiva(TipoEventoAlerta $tipo): bool
+    {
+        try {
+            $config = ConfiguracaoAlertaAvancado::porTipo($tipo)->first();
+
+            return $config === null || $config->is_ativo;
+        } catch (\Throwable) {
+            // Tabela pode nao existir ainda — considera ativa por padrao
+            return true;
+        }
+    }
+
+    /**
+     * Obtem a data da ultima movimentacao de um contrato.
+     * Considera: execucoes financeiras, aditivos, documentos e auditoria.
+     */
+    private static function obterUltimaMovimentacao(Contrato $contrato): ?\Carbon\Carbon
+    {
+        $datas = [];
+
+        // Ultima execucao financeira
+        $ultimaExecucao = $contrato->execucoesFinanceiras()
+            ->orderByDesc('created_at')
+            ->value('created_at');
+        if ($ultimaExecucao) {
+            $datas[] = \Carbon\Carbon::parse($ultimaExecucao);
+        }
+
+        // Ultimo aditivo
+        $ultimoAditivo = $contrato->aditivos()
+            ->orderByDesc('created_at')
+            ->value('created_at');
+        if ($ultimoAditivo) {
+            $datas[] = \Carbon\Carbon::parse($ultimoAditivo);
+        }
+
+        // Ultimo documento
+        $ultimoDocumento = $contrato->documentos()
+            ->orderByDesc('created_at')
+            ->value('created_at');
+        if ($ultimoDocumento) {
+            $datas[] = \Carbon\Carbon::parse($ultimoDocumento);
+        }
+
+        // Ultima alteracao via auditoria
+        $ultimaAuditoria = HistoricoAlteracao::where('auditable_type', Contrato::class)
+            ->where('auditable_id', $contrato->id)
+            ->orderByDesc('created_at')
+            ->value('created_at');
+        if ($ultimaAuditoria) {
+            $datas[] = \Carbon\Carbon::parse($ultimaAuditoria);
+        }
+
+        if (empty($datas)) {
+            return null;
+        }
+
+        return collect($datas)->max();
+    }
+
+    /**
+     * Regra 7: Empenho insuficiente — total pago excede valor empenhado (IMP-053).
+     * Verifica contratos vigentes com valor_empenhado definido.
+     */
+    public static function verificarEmpenhoInsuficiente(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::EmpenhoInsuficiente)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $contratos = Contrato::where('status', StatusContrato::Vigente->value)
+            ->whereNotNull('valor_empenhado')
+            ->where('valor_empenhado', '>', 0)
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $saldo = ExecucaoFinanceiraService::calcularSaldo($contrato);
+
+            if ($saldo['empenho_insuficiente']) {
+                $alerta = self::gerarAlertaDocumental(
+                    $contrato,
+                    TipoEventoAlerta::EmpenhoInsuficiente,
+                    "CRITICO: Empenho insuficiente no contrato {$contrato->numero}. " .
+                    "Total pago: R$ " . number_format($saldo['total_pago'], 2, ',', '.') .
+                    " excede o valor empenhado: R$ " . number_format($saldo['valor_empenhado'], 2, ',', '.') .
+                    ". Risco de pagamento sem cobertura orcamentaria."
+                );
+
+                if ($alerta) {
+                    $alerta->update(['prioridade' => PrioridadeAlerta::Urgente->value]);
+                    $alertasGerados++;
+                }
+            }
+        }
+
+        return $alertasGerados;
     }
 
     // --- Metodos privados ---
