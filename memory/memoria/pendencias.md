@@ -299,7 +299,7 @@
 - [x] Views create/edit/show com campos compliance *(IMP-049)*
 - [x] Testes: ComplianceFieldsTest 22 testes *(IMP-049)*
 
-**IMP-050: Checklist por Fase Contratual** *(Em andamento)*
+**IMP-050: Checklist por Fase Contratual** *(Concluído)*
 - [x] Migration 000041: +fase/descricao/ordem em checklist, tabela contrato_conformidade_fases *(IMP-050)*
 - [x] Enum FaseContratual (7 fases) *(IMP-050)*
 - [x] Model ContratoConformidadeFase + scopes ConfiguracaoChecklistDocumento *(IMP-050)*
@@ -307,42 +307,43 @@
 - [x] Seeder: 15 docs distribuidos por 7 fases com descricoes Lei 14.133 *(IMP-050)*
 - [x] Views: aba Conformidade no show (accordion), config checklist por fase *(IMP-050)*
 - [x] Integracao RiscoService: criterio fases criticas incompletas *(IMP-050)*
-- [ ] Testes: ChecklistFaseTest (~30 testes) — pendente execucao *(IMP-050)*
+- [x] Testes: ChecklistFaseTest (30 testes, 135 assertions) — executados e passando *(IMP-050)*
 
-**IMP-051: Motor de Alertas Completo (Regras 2-10)** *(Pendente)*
-- [ ] 6 novos TipoEventoAlerta: ExecucaoAposVencimento, AditivoAcimaLimite, ContratoSemFiscal, FiscalSemRelatorio, ProrrogacaoForaDoPrazo, ContratoParado
-- [ ] Migration 000042: configuracoes_alerta_avancado (tipo_evento, dias_inatividade, dias_sem_relatorio)
-- [ ] AlertaService: 6 novos metodos verificacao integrados ao verificarVencimentos()
-- [ ] ExecucaoFinanceiraService: alerta imediato data_execucao > contrato.data_fim
-- [ ] Testes: ~50 testes estimados
+**IMP-051: Motor de Alertas Completo (Regras 2-10)** *(Concluído)*
+- [x] 6 novos TipoEventoAlerta: ExecucaoAposVencimento, AditivoAcimaLimite, ContratoSemFiscal, FiscalSemRelatorio, ProrrogacaoForaDoPrazo, ContratoParado *(IMP-051)*
+- [x] Migration 000042: configuracoes_alerta_avancado (tipo_evento, dias_inatividade, dias_sem_relatorio) *(IMP-051)*
+- [x] AlertaService: 6 novos metodos verificacao integrados ao verificarVencimentos() *(IMP-051)*
+- [x] ExecucaoFinanceiraService: alerta imediato data_execucao > contrato.data_fim *(IMP-051)*
+- [x] Testes: AlertaMotorCompletoTest (37 testes, 82 assertions) — executados e passando *(IMP-051)*
 
-**IMP-052: Encerramento Contratual (Workflow)** *(Pendente — depende 049+050)*
-- [ ] Enum EtapaEncerramento (6 etapas)
-- [ ] Migration 000043: tabela encerramentos (one-to-one com contrato)
-- [ ] Model Encerramento + EncerramentoService (iniciar→verificar→termo provisorio→avaliacao→definitivo→quitacao)
-- [ ] Controller EncerramentosController (nested: contratos/{contrato}/encerramento)
-- [ ] 5 permissoes novas: encerramento.iniciar/verificar_financeiro/registrar_termo/avaliar/quitar
-- [ ] Views: wizard step-by-step com progresso
-- [ ] Testes: ~35 testes estimados
+**IMP-052: Encerramento Contratual (Workflow)** *(Concluído)*
+- [x] Enum EtapaEncerramento (6 etapas) *(IMP-052)*
+- [x] Migration 000043: tabela encerramentos (one-to-one com contrato) *(IMP-052)*
+- [x] Model Encerramento + EncerramentoService (iniciar→verificar→termo provisorio→avaliacao→definitivo→quitacao) *(IMP-052)*
+- [x] Controller EncerramentosController (nested: contratos/{contrato}/encerramento) *(IMP-052)*
+- [x] 5 permissoes novas: encerramento.iniciar/verificar_financeiro/registrar_termo/avaliar/quitar *(IMP-052)*
+- [x] Views: wizard step-by-step com progresso *(IMP-052)*
+- [x] Testes: EncerramentoTest (35 testes, 114 assertions) — executados e passando *(IMP-052)*
 
-**IMP-053: Execucao Financeira Avancada** *(Pendente — depende 049)*
-- [ ] Migration 000044: contratos +valor_empenhado/saldo_contratual, execucoes_financeiras +tipo_execucao/numero_empenho/competencia
-- [ ] Enum TipoExecucaoFinanceira (pagamento, liquidacao, empenho_adicional)
-- [ ] ExecucaoFinanceiraService: calcularSaldo(), alerta EmpenhoInsuficiente
-- [ ] Testes: ~20 testes estimados
+**IMP-053: Execucao Financeira Avancada** *(Concluído)*
+- [x] Migration 000044: contratos +valor_empenhado/saldo_contratual, execucoes_financeiras +tipo_execucao/numero_empenho/competencia *(IMP-053)*
+- [x] Enum TipoExecucaoFinanceira (pagamento, liquidacao, empenho_adicional) *(IMP-053)*
+- [x] ExecucaoFinanceiraService: calcularSaldo(), alerta EmpenhoInsuficiente *(IMP-053)*
+- [x] Testes: ExecucaoFinanceiraAvancadaTest (31 testes, 73 assertions) — executados e passando *(IMP-053)*
 
-**IMP-054: Ocorrencias + Relatorios Fiscais** *(Pendente — depende 049)*
-- [ ] Migration 000045: tabelas ocorrencias + relatorios_fiscais
-- [ ] Enum TipoOcorrencia (atraso, inconformidade, notificacao, medicao, outros)
-- [ ] Models Ocorrencia/RelatorioFiscal + Services + Controllers (nested sob contratos)
-- [ ] 5 permissoes novas: ocorrencia.registrar/resolver/visualizar, relatorio-fiscal.registrar/visualizar
-- [ ] Integracao: RelatorioFiscalService atualiza fiscal.data_ultimo_relatorio
-- [ ] Testes: ~25 testes estimados
+**IMP-054: Ocorrencias + Relatorios Fiscais** *(Concluído)*
+- [x] Migration 000045: tabelas ocorrencias + relatorios_fiscais *(IMP-054)*
+- [x] Enum TipoOcorrencia (atraso, inconformidade, notificacao, medicao, penalidade, outros) *(IMP-054)*
+- [x] Models Ocorrencia/RelatorioFiscal + Services + Controllers (nested sob contratos) *(IMP-054)*
+- [x] 5 permissoes novas: ocorrencia.visualizar/criar/resolver, relatorio_fiscal.visualizar/criar *(IMP-054)*
+- [x] Integracao: RelatorioFiscalService atualiza fiscal.data_ultimo_relatorio *(IMP-054)*
+- [x] Testes: OcorrenciaRelatorioFiscalTest (25 testes, 84 assertions) — executados e passando *(IMP-054)*
 
-**IMP-055: Score + Session Encryption + Testes Integracao** *(Pendente — depende todos)*
-- [ ] SESSION_ENCRYPT=true + config/session.php
-- [ ] Testes E2E ciclo completo: criar→fiscal→docs→execucao→aditivo→alertas→encerrar→score
-- [ ] Testes: ~20 testes estimados
+**IMP-055: Score + Session Encryption + Testes Integracao** *(Concluído)*
+- [x] SESSION_ENCRYPT=true + config/session.php *(IMP-055)*
+- [x] NivelRisco labels TCE: Baixo→Regular, Medio→Atencao, Alto→Critico *(IMP-055)*
+- [x] RiscoService +2 criterios operacionais (ocorrencias vencidas, fiscal sem relatorio) *(IMP-055)*
+- [x] Testes E2E: ConformidadeIntegracaoTest (15 testes, 46 assertions) — executados e passando *(IMP-055)*
 
 ### Geral
 - [x] Testes unitários Services: ContratoService, AlertaService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService, DocumentoService, PermissaoService, WorkflowService, FornecedorService, DashboardService, PainelRiscoService, MfaService *(IMP-027/028/030)*
