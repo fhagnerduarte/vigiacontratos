@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Enums\CategoriaContrato;
 use App\Enums\NivelRisco;
-use App\Enums\StatusCompletudeDocumental;
+use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
 use App\Models\Contrato;
 
@@ -159,18 +159,15 @@ class RiscoService
             ->map(fn ($t) => $t instanceof TipoDocumentoContratual ? $t->value : $t)
             ->unique();
 
-        // Checklist obrigatorio: contrato_original, publicacao_oficial, parecer_juridico, nota_empenho
-        $obrigatorios = [
-            TipoDocumentoContratual::ContratoOriginal->value => 'Contrato Original',
-            TipoDocumentoContratual::PublicacaoOficial->value => 'Publicacao Oficial',
-            TipoDocumentoContratual::ParecerJuridico->value => 'Parecer Juridico',
-            TipoDocumentoContratual::NotaEmpenho->value => 'Nota de Empenho',
-        ];
+        // Checklist configuravel por tipo de contrato (RN-129 + RN-139)
+        $checklistObrigatorio = $contrato->tipo instanceof TipoContrato
+            ? DocumentoService::obterChecklistPorTipo($contrato->tipo)
+            : DocumentoService::CHECKLIST_OBRIGATORIO;
 
-        foreach ($obrigatorios as $tipo => $label) {
-            if (! $tiposPresentes->contains($tipo)) {
+        foreach ($checklistObrigatorio as $tipo) {
+            if (! $tiposPresentes->contains($tipo->value)) {
                 $score += 5;
-                $criterios[] = "Falta {$label} (+5pts)";
+                $criterios[] = "Falta {$tipo->label()} (+5pts)";
             }
         }
 

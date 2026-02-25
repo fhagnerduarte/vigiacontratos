@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             ['nome' => 'documento.criar', 'descricao' => 'Criar/upload de documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.download', 'descricao' => 'Download de documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.excluir', 'descricao' => 'Excluir documentos', 'grupo' => 'documento'],
+            ['nome' => 'documento.configurar', 'descricao' => 'Configurar checklist de documentos obrigatorios', 'grupo' => 'documento'],
 
             // Financeiro
             ['nome' => 'financeiro.visualizar', 'descricao' => 'Visualizar dados financeiros', 'grupo' => 'financeiro'],

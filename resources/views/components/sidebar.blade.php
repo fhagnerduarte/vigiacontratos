@@ -159,7 +159,7 @@
                 @if (auth()->user()->hasPermission('configuracao.visualizar'))
                     <li class="dropdown">
                         <a href="javascript:void(0)"
-                           class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') ? 'active-page' : '' }}">
+                           class="{{ request()->routeIs('tenant.roles.*') || request()->routeIs('tenant.permissoes.*') || request()->routeIs('tenant.configuracoes-checklist.*') ? 'active-page' : '' }}">
                             <iconify-icon icon="solar:settings-bold" class="menu-icon"></iconify-icon>
                             <span>Configurações</span>
                         </a>
@@ -170,6 +170,14 @@
                                     <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Perfis e Permissões
                                 </a>
                             </li>
+                            @if (auth()->user()->hasPermission('documento.configurar'))
+                                <li>
+                                    <a href="{{ route('tenant.configuracoes-checklist.index') }}"
+                                       class="{{ request()->routeIs('tenant.configuracoes-checklist.*') ? 'active-page' : '' }}">
+                                        <i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Checklist Documentos
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </li>
                 @endif

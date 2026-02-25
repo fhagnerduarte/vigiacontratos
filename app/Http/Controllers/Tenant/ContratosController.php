@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Enums\ModalidadeContratacao;
+use App\Enums\RegimeExecucao;
 use App\Enums\StatusContrato;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
@@ -19,6 +20,7 @@ use App\Models\Secretaria;
 use App\Models\Servidor;
 use App\Services\ContratoService;
 use App\Services\DocumentoService;
+use App\Services\FiscalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -76,16 +78,32 @@ class ContratosController extends Controller
 
         $dados = $request->validated();
 
-        // Separa dados do fiscal
+        // Separa dados do fiscal titular
         $dadosFiscal = [
             'servidor_id' => $dados['fiscal_servidor_id'] ?? null,
+            'portaria_designacao' => $dados['portaria_designacao'] ?? null,
         ];
-        unset($dados['fiscal_servidor_id']);
+        unset($dados['fiscal_servidor_id'], $dados['portaria_designacao']);
+
+        // Separa dados do fiscal substituto (opcional)
+        $dadosFiscalSubstituto = null;
+        if (! empty($dados['fiscal_substituto_servidor_id'])) {
+            $dadosFiscalSubstituto = [
+                'servidor_id' => $dados['fiscal_substituto_servidor_id'],
+                'portaria_designacao' => $dadosFiscal['portaria_designacao'] ?? null,
+            ];
+        }
+        unset($dados['fiscal_substituto_servidor_id']);
 
         // Checkbox prorrogacao_automatica
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
 
-        ContratoService::criar($dados, $dadosFiscal, $request->user(), $request->ip());
+        $contrato = ContratoService::criar($dados, $dadosFiscal, $request->user(), $request->ip());
+
+        // Designar fiscal substituto se informado (Lei 14.133 art. 117)
+        if ($dadosFiscalSubstituto) {
+            FiscalService::designarSubstituto($contrato, $dadosFiscalSubstituto);
+        }
 
         return redirect()->route('tenant.contratos.index')
             ->with('success', 'Contrato cadastrado com sucesso.');
@@ -100,6 +118,7 @@ class ContratosController extends Controller
             'secretaria',
             'gestor',
             'fiscalAtual.servidor',
+            'fiscalSubstituto.servidor',
             'fiscais' => fn ($q) => $q->orderBy('data_inicio', 'desc'),
             'execucoesFinanceiras' => fn ($q) => $q->orderBy('data_execucao', 'desc'),
             'execucoesFinanceiras.registrador',

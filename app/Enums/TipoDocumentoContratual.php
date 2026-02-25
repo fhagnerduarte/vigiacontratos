@@ -16,6 +16,9 @@ enum TipoDocumentoContratual: string
     case RelatorioFiscalizacao = 'relatorio_fiscalizacao';
     case Justificativa = 'justificativa';
     case DocumentoComplementar = 'documento_complementar';
+    case TermoRecebimentoProvisorio = 'termo_recebimento_provisorio';
+    case TermoRecebimentoDefinitivo = 'termo_recebimento_definitivo';
+    case PortariaDesignacaoFiscal = 'portaria_designacao_fiscal';
 
     public function label(): string
     {
@@ -32,6 +35,9 @@ enum TipoDocumentoContratual: string
             self::RelatorioFiscalizacao => 'Relatorio de Fiscalizacao',
             self::Justificativa => 'Justificativa',
             self::DocumentoComplementar => 'Documento Complementar',
+            self::TermoRecebimentoProvisorio => 'Termo de Recebimento Provisorio',
+            self::TermoRecebimentoDefinitivo => 'Termo de Recebimento Definitivo',
+            self::PortariaDesignacaoFiscal => 'Portaria de Designacao Fiscal',
         };
     }
 }

@@ -148,6 +148,23 @@
                                 @endif
                             </dd>
 
+                            @if ($contrato->data_assinatura)
+                                <dt class="col-sm-5 text-secondary-light">Assinatura:</dt>
+                                <dd class="col-sm-7">{{ $contrato->data_assinatura->format('d/m/Y') }}</dd>
+                            @endif
+
+                            @if ($contrato->regime_execucao)
+                                <dt class="col-sm-5 text-secondary-light">Regime Exec.:</dt>
+                                <dd class="col-sm-7">{{ match($contrato->regime_execucao) {
+                                    'empreitada_integral'  => 'Empreitada Integral',
+                                    'preco_unitario'       => 'Preco Unitario',
+                                    'preco_global'         => 'Preco Global',
+                                    'tarefa'               => 'Tarefa',
+                                    'contratacao_integrada'=> 'Contratacao Integrada',
+                                    default                => $contrato->regime_execucao,
+                                } }}</dd>
+                            @endif
+
                             @if ($contrato->fundamento_legal)
                                 <dt class="col-sm-5 text-secondary-light">Fund. Legal:</dt>
                                 <dd class="col-sm-7">{{ $contrato->fundamento_legal }}</dd>
@@ -165,6 +182,57 @@
                             <p class="mt-4">{{ $contrato->observacoes }}</p>
                         </div>
                     @endif
+                    @if ($contrato->condicoes_pagamento)
+                        <div class="col-12 mt-8">
+                            <strong class="text-secondary-light">Condicoes de Pagamento:</strong>
+                            <p class="mt-4">{{ $contrato->condicoes_pagamento }}</p>
+                        </div>
+                    @endif
+                    @if ($contrato->garantias)
+                        <div class="col-12 mt-8">
+                            <strong class="text-secondary-light">Garantias:</strong>
+                            <p class="mt-4">{{ $contrato->garantias }}</p>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Publicacao --}}
+                <div class="row mt-24 pt-16 border-top">
+                    <div class="col-12 mb-12 d-flex align-items-center gap-12">
+                        <h6 class="fw-semibold mb-0">Publicacao</h6>
+                        @if ($contrato->data_publicacao)
+                            <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">
+                                <iconify-icon icon="ic:baseline-check-circle" class="me-4"></iconify-icon> Publicado
+                            </span>
+                        @else
+                            <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">
+                                <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Nao publicado
+                            </span>
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-secondary-light">Data Publicacao:</dt>
+                            <dd class="col-sm-7">{{ $contrato->data_publicacao ? $contrato->data_publicacao->format('d/m/Y') : '-' }}</dd>
+
+                            <dt class="col-sm-5 text-secondary-light">Veiculo:</dt>
+                            <dd class="col-sm-7">{{ $contrato->veiculo_publicacao ?? '-' }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-secondary-light">Link Transparencia:</dt>
+                            <dd class="col-sm-7">
+                                @if ($contrato->link_transparencia)
+                                    <a href="{{ $contrato->link_transparencia }}" target="_blank" rel="noopener noreferrer" class="text-primary-600">
+                                        <iconify-icon icon="lucide:external-link" class="me-4"></iconify-icon> Acessar portal
+                                    </a>
+                                @else
+                                    -
+                                @endif
+                            </dd>
+                        </dl>
+                    </div>
                 </div>
             </div>
 
@@ -173,17 +241,60 @@
                 {{-- Fiscal Atual --}}
                 @if ($contrato->fiscalAtual)
                     <div class="alert alert-success-100 radius-8 mb-16">
-                        <strong>Fiscal Atual:</strong> {{ $contrato->fiscalAtual->nome }}
-                        — Mat: {{ $contrato->fiscalAtual->matricula }}
-                        — {{ $contrato->fiscalAtual->cargo }}
-                        @if ($contrato->fiscalAtual->email)
-                            — {{ $contrato->fiscalAtual->email }}
-                        @endif
-                        <span class="text-secondary-light ms-8">(desde {{ $contrato->fiscalAtual->data_inicio->format('d/m/Y') }})</span>
+                        <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+                            <div>
+                                <strong>Fiscal Titular:</strong> {{ $contrato->fiscalAtual->nome }}
+                                — Mat: {{ $contrato->fiscalAtual->matricula }}
+                                — {{ $contrato->fiscalAtual->cargo }}
+                                @if ($contrato->fiscalAtual->email)
+                                    — {{ $contrato->fiscalAtual->email }}
+                                @endif
+                                <span class="text-secondary-light ms-8">(desde {{ $contrato->fiscalAtual->data_inicio->format('d/m/Y') }})</span>
+                                @if ($contrato->fiscalAtual->portaria_designacao ?? $contrato->portaria_designacao ?? false)
+                                    <br><small class="text-secondary-light">Portaria: {{ $contrato->fiscalAtual->portaria_designacao ?? $contrato->portaria_designacao }}</small>
+                                @endif
+                                @if ($contrato->fiscalAtual->data_ultimo_relatorio ?? false)
+                                    <br><small class="text-secondary-light">Ultimo relatorio: {{ $contrato->fiscalAtual->data_ultimo_relatorio->format('d/m/Y') }}</small>
+                                @endif
+                            </div>
+                        </div>
                     </div>
+                    @if ($contrato->fiscalSubstitutoAtual ?? $contrato->fiscalSubstituto ?? false)
+                        @php $substituto = $contrato->fiscalSubstitutoAtual ?? $contrato->fiscalSubstituto; @endphp
+                        <div class="alert alert-info-100 radius-8 mb-16">
+                            <strong>Fiscal Substituto:</strong> {{ $substituto->nome }}
+                            — Mat: {{ $substituto->matricula }}
+                            — {{ $substituto->cargo }}
+                            @if ($substituto->email)
+                                — {{ $substituto->email }}
+                            @endif
+                        </div>
+                    @endif
                 @else
                     <div class="alert alert-warning-100 radius-8 mb-16">
                         <strong>Sem fiscal designado.</strong> Todo contrato ativo deve ter um fiscal (RN-024).
+                    </div>
+                @endif
+
+                {{-- Portaria e Ultimo Relatorio (campos do contrato) --}}
+                @if ($contrato->portaria_designacao || $contrato->data_ultimo_relatorio ?? false)
+                    <div class="row gy-2 mb-16">
+                        @if ($contrato->portaria_designacao)
+                            <div class="col-md-6">
+                                <div class="p-12 border rounded">
+                                    <span class="text-secondary-light text-sm">Portaria de Designacao:</span>
+                                    <p class="fw-medium mb-0 mt-4">{{ $contrato->portaria_designacao }}</p>
+                                </div>
+                            </div>
+                        @endif
+                        @if ($contrato->data_ultimo_relatorio ?? false)
+                            <div class="col-md-6">
+                                <div class="p-12 border rounded">
+                                    <span class="text-secondary-light text-sm">Data do Ultimo Relatorio:</span>
+                                    <p class="fw-medium mb-0 mt-4">{{ $contrato->data_ultimo_relatorio->format('d/m/Y') }}</p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 @endif
 

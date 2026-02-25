@@ -200,6 +200,15 @@
                         <a href="{{ route('tenant.servidores.create') }}" target="_blank">Cadastrar novo servidor</a>
                     </small>
                 </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Assinatura</label>
+                    <input type="date" name="data_assinatura" value="{{ old('data_assinatura') }}"
+                           class="form-control radius-8 @error('data_assinatura') is-invalid @enderror">
+                    @error('data_assinatura')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -329,6 +338,43 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Regime de Execucao</label>
+                    <select name="regime_execucao"
+                            class="form-control radius-8 form-select select2 @error('regime_execucao') is-invalid @enderror"
+                            data-placeholder="Selecione o regime...">
+                        <option value=""></option>
+                        <option value="empreitada_integral" {{ old('regime_execucao') === 'empreitada_integral' ? 'selected' : '' }}>Empreitada Integral</option>
+                        <option value="preco_unitario" {{ old('regime_execucao') === 'preco_unitario' ? 'selected' : '' }}>Preco Unitario</option>
+                        <option value="preco_global" {{ old('regime_execucao') === 'preco_global' ? 'selected' : '' }}>Preco Global</option>
+                        <option value="tarefa" {{ old('regime_execucao') === 'tarefa' ? 'selected' : '' }}>Tarefa</option>
+                        <option value="contratacao_integrada" {{ old('regime_execucao') === 'contratacao_integrada' ? 'selected' : '' }}>Contratacao Integrada</option>
+                    </select>
+                    @error('regime_execucao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Condicoes de Pagamento</label>
+                    <textarea name="condicoes_pagamento" rows="3"
+                              class="form-control radius-8 @error('condicoes_pagamento') is-invalid @enderror"
+                              placeholder="Descreva as condicoes de pagamento previstas no contrato">{{ old('condicoes_pagamento') }}</textarea>
+                    @error('condicoes_pagamento')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Garantias</label>
+                    <textarea name="garantias" rows="3"
+                              class="form-control radius-8 @error('garantias') is-invalid @enderror"
+                              placeholder="Descreva as garantias exigidas (caucao, seguro, fianca bancaria, etc.)">{{ old('garantias') }}</textarea>
+                    @error('garantias')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -380,6 +426,35 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Publicacao</label>
+                    <input type="date" name="data_publicacao" value="{{ old('data_publicacao') }}"
+                           class="form-control radius-8 @error('data_publicacao') is-invalid @enderror">
+                    @error('data_publicacao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Veiculo de Publicacao</label>
+                    <input type="text" name="veiculo_publicacao" value="{{ old('veiculo_publicacao') }}"
+                           class="form-control radius-8 @error('veiculo_publicacao') is-invalid @enderror"
+                           placeholder="Ex: Diario Oficial do Municipio">
+                    @error('veiculo_publicacao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Link Transparencia</label>
+                    <input type="url" name="link_transparencia" value="{{ old('link_transparencia') }}"
+                           class="form-control radius-8 @error('link_transparencia') is-invalid @enderror"
+                           placeholder="https://...">
+                    @error('link_transparencia')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -413,6 +488,33 @@
                        class="btn btn-outline-primary text-sm btn-sm px-16 py-10 radius-8 w-100">
                         <iconify-icon icon="lucide:plus" class="me-4"></iconify-icon> Cadastrar novo servidor
                     </a>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Fiscal Substituto</label>
+                    <select name="fiscal_substituto_servidor_id"
+                            class="form-control radius-8 form-select select2 @error('fiscal_substituto_servidor_id') is-invalid @enderror"
+                            data-placeholder="Selecione o fiscal substituto (opcional)...">
+                        <option value=""></option>
+                        @foreach ($servidores as $serv)
+                            <option value="{{ $serv->id }}" {{ old('fiscal_substituto_servidor_id') == $serv->id ? 'selected' : '' }}>
+                                {{ $serv->nome }} — Mat: {{ $serv->matricula }} — {{ $serv->cargo }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('fiscal_substituto_servidor_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portaria de Designacao</label>
+                    <input type="text" name="portaria_designacao" value="{{ old('portaria_designacao') }}"
+                           class="form-control radius-8 @error('portaria_designacao') is-invalid @enderror"
+                           placeholder="Ex: Portaria no 123/2026">
+                    @error('portaria_designacao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

@@ -45,6 +45,7 @@ class TenantService
             'ServidorSeeder',
             'ConfiguracaoLimiteAditivoSeeder',
             'ConfiguracaoAlertaSeeder',
+            'ConfiguracaoChecklistDocumentoSeeder',
             'ContratoSeeder',
             'DocumentoSeeder',
             'AditivoSeeder',

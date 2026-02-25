@@ -6,7 +6,9 @@ use App\Enums\AcaoLogDocumento;
 use App\Enums\StatusCompletudeDocumental;
 use App\Enums\StatusContrato;
 use App\Enums\StatusIntegridade;
+use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
+use App\Models\ConfiguracaoChecklistDocumento;
 use App\Models\Contrato;
 use App\Models\Documento;
 use App\Models\LogAcessoDocumento;
@@ -25,7 +27,7 @@ class DocumentoService
 {
     /**
      * Checklist de documentos obrigatorios por padrao (RN-129).
-     * Configuravel pelo admin no futuro.
+     * Usado como fallback quando a tabela configuracoes_checklist_documento esta vazia.
      */
     public const CHECKLIST_OBRIGATORIO = [
         TipoDocumentoContratual::ContratoOriginal,
@@ -33,6 +35,56 @@ class DocumentoService
         TipoDocumentoContratual::ParecerJuridico,
         TipoDocumentoContratual::NotaEmpenho,
     ];
+
+    /**
+     * Cache estatico por tipo de contrato para evitar N+1 no accessor do Model.
+     * Resetado a cada request (ciclo de vida PHP-FPM).
+     *
+     * @var array<string, TipoDocumentoContratual[]>
+     */
+    private static array $checklistCache = [];
+
+    /**
+     * Obtem o checklist configurado para um tipo de contrato especifico (RN-129).
+     * Fallback para CHECKLIST_OBRIGATORIO se tabela nao configurada.
+     *
+     * @return TipoDocumentoContratual[]
+     */
+    public static function obterChecklistPorTipo(TipoContrato $tipoContrato): array
+    {
+        $cacheKey = $tipoContrato->value;
+
+        if (isset(self::$checklistCache[$cacheKey])) {
+            return self::$checklistCache[$cacheKey];
+        }
+
+        try {
+            $configurados = ConfiguracaoChecklistDocumento::where('tipo_contrato', $tipoContrato)
+                ->where('is_ativo', true)
+                ->pluck('tipo_documento')
+                ->toArray();
+
+            if (! empty($configurados)) {
+                self::$checklistCache[$cacheKey] = $configurados;
+
+                return self::$checklistCache[$cacheKey];
+            }
+        } catch (\Throwable) {
+            // Tabela pode nao existir ainda (migrations nao rodadas) — usar fallback
+        }
+
+        self::$checklistCache[$cacheKey] = self::CHECKLIST_OBRIGATORIO;
+
+        return self::$checklistCache[$cacheKey];
+    }
+
+    /**
+     * Limpa o cache de checklist (necessario nos testes e apos salvar configuracoes).
+     */
+    public static function limparCacheChecklist(): void
+    {
+        self::$checklistCache = [];
+    }
 
     /**
      * Upload de documento com versionamento automatico (RN-120).
@@ -165,8 +217,12 @@ class DocumentoService
             ->where('is_versao_atual', true)
             ->whereNull('deleted_at');
 
+        $checklistTipos = $contrato->tipo instanceof TipoContrato
+            ? self::obterChecklistPorTipo($contrato->tipo)
+            : self::CHECKLIST_OBRIGATORIO;
+
         $checklist = [];
-        foreach (self::CHECKLIST_OBRIGATORIO as $tipo) {
+        foreach ($checklistTipos as $tipo) {
             $doc = $documentosAtuais->firstWhere('tipo_documento', $tipo);
             $checklist[] = [
                 'tipo' => $tipo,

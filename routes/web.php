@@ -18,6 +18,7 @@ use App\Http\Controllers\Tenant\ServidoresController;
 use App\Http\Controllers\Tenant\AlertasController;
 use App\Http\Controllers\Tenant\AuditoriaController;
 use App\Http\Controllers\Tenant\RelatoriosController;
+use App\Http\Controllers\Tenant\ConfiguracaoChecklistDocumentoController;
 use App\Http\Controllers\Tenant\LgpdController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -272,6 +273,15 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
     Route::put('perfis/{role}/permissoes', [PermissoesController::class, 'update'])
         ->name('tenant.permissoes.update')
         ->middleware('permission:configuracao.editar');
+
+    // Administracao — Configuracao Checklist Documentos (RN-129)
+    Route::get('configuracoes-checklist-documento', [ConfiguracaoChecklistDocumentoController::class, 'index'])
+        ->name('tenant.configuracoes-checklist.index')
+        ->middleware('permission:documento.configurar');
+
+    Route::put('configuracoes-checklist-documento', [ConfiguracaoChecklistDocumentoController::class, 'update'])
+        ->name('tenant.configuracoes-checklist.update')
+        ->middleware('permission:documento.configurar');
 
     // Administracao — LGPD (RN-213)
     Route::get('lgpd', [LgpdController::class, 'index'])

@@ -6,11 +6,13 @@ use App\Enums\CategoriaContrato;
 use App\Enums\CategoriaServico;
 use App\Enums\ModalidadeContratacao;
 use App\Enums\NivelRisco;
+use App\Enums\RegimeExecucao;
 use App\Enums\StatusCompletudeDocumental;
 use App\Enums\StatusContrato;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoPagamento;
+use App\Services\DocumentoService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,12 +46,16 @@ class Contrato extends Model
         'secretaria_id',
         'unidade_gestora',
         'data_inicio',
+        'data_assinatura',
         'data_fim',
         'prazo_meses',
         'prorrogacao_automatica',
         'valor_global',
         'valor_mensal',
         'tipo_pagamento',
+        'regime_execucao',
+        'condicoes_pagamento',
+        'garantias',
         'fonte_recurso',
         'dotacao_orcamentaria',
         'numero_empenho',
@@ -64,6 +70,9 @@ class Contrato extends Model
         'nivel_risco',
         'percentual_executado',
         'observacoes',
+        'data_publicacao',
+        'veiculo_publicacao',
+        'link_transparencia',
     ];
 
     protected function casts(): array
@@ -74,11 +83,14 @@ class Contrato extends Model
             'is_irregular' => 'boolean',
             'modalidade_contratacao' => ModalidadeContratacao::class,
             'tipo_pagamento' => TipoPagamento::class,
+            'regime_execucao' => RegimeExecucao::class,
             'categoria' => CategoriaContrato::class,
             'categoria_servico' => CategoriaServico::class,
             'nivel_risco' => NivelRisco::class,
             'data_inicio' => 'date',
+            'data_assinatura' => 'date',
             'data_fim' => 'date',
+            'data_publicacao' => 'date',
             'prorrogacao_automatica' => 'boolean',
             'valor_global' => 'decimal:2',
             'valor_mensal' => 'decimal:2',
@@ -110,7 +122,12 @@ class Contrato extends Model
 
     public function fiscalAtual(): HasOne
     {
-        return $this->hasOne(Fiscal::class)->where('is_atual', true);
+        return $this->hasOne(Fiscal::class)->where('is_atual', true)->where('tipo_fiscal', 'titular');
+    }
+
+    public function fiscalSubstituto(): HasOne
+    {
+        return $this->hasOne(Fiscal::class)->where('is_atual', true)->where('tipo_fiscal', 'substituto');
     }
 
     public function aditivos(): HasMany
@@ -162,6 +179,11 @@ class Contrato extends Model
 
     // Accessors
 
+    public function getPublicadoAttribute(): bool
+    {
+        return $this->data_publicacao !== null;
+    }
+
     public function getDiasParaVencimentoAttribute(): int
     {
         return (int) now()->startOfDay()->diffInDays($this->data_fim->startOfDay(), false);
@@ -169,17 +191,13 @@ class Contrato extends Model
 
     /**
      * Calcula a completude documental do contrato (RN-128).
-     *
-     * Checklist obrigatorio padrao: contrato_original, publicacao_oficial, parecer_juridico, nota_empenho (RN-129).
+     * Usa checklist configuravel por tipo de contrato (RN-129).
      */
     public function getStatusCompletudeAttribute(): StatusCompletudeDocumental
     {
-        $checklistObrigatorio = [
-            TipoDocumentoContratual::ContratoOriginal,
-            TipoDocumentoContratual::PublicacaoOficial,
-            TipoDocumentoContratual::ParecerJuridico,
-            TipoDocumentoContratual::NotaEmpenho,
-        ];
+        $checklistObrigatorio = $this->tipo instanceof TipoContrato
+            ? DocumentoService::obterChecklistPorTipo($this->tipo)
+            : DocumentoService::CHECKLIST_OBRIGATORIO;
 
         $tiposPresentes = $this->documentos
             ->where('is_versao_atual', true)

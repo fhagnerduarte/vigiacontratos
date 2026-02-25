@@ -161,6 +161,15 @@
                         <a href="{{ route('tenant.servidores.create') }}" target="_blank">Cadastrar novo servidor</a>
                     </small>
                 </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Assinatura</label>
+                    <input type="date" name="data_assinatura" value="{{ old('data_assinatura', $contrato->data_assinatura?->format('Y-m-d')) }}"
+                           class="form-control radius-8 @error('data_assinatura') is-invalid @enderror">
+                    @error('data_assinatura')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <hr class="my-16">
@@ -264,6 +273,43 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Regime de Execucao</label>
+                    <select name="regime_execucao"
+                            class="form-control radius-8 form-select select2 @error('regime_execucao') is-invalid @enderror"
+                            data-placeholder="Selecione o regime...">
+                        <option value=""></option>
+                        <option value="empreitada_integral" {{ old('regime_execucao', $contrato->regime_execucao) === 'empreitada_integral' ? 'selected' : '' }}>Empreitada Integral</option>
+                        <option value="preco_unitario" {{ old('regime_execucao', $contrato->regime_execucao) === 'preco_unitario' ? 'selected' : '' }}>Preco Unitario</option>
+                        <option value="preco_global" {{ old('regime_execucao', $contrato->regime_execucao) === 'preco_global' ? 'selected' : '' }}>Preco Global</option>
+                        <option value="tarefa" {{ old('regime_execucao', $contrato->regime_execucao) === 'tarefa' ? 'selected' : '' }}>Tarefa</option>
+                        <option value="contratacao_integrada" {{ old('regime_execucao', $contrato->regime_execucao) === 'contratacao_integrada' ? 'selected' : '' }}>Contratacao Integrada</option>
+                    </select>
+                    @error('regime_execucao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Condicoes de Pagamento</label>
+                    <textarea name="condicoes_pagamento" rows="3"
+                              class="form-control radius-8 @error('condicoes_pagamento') is-invalid @enderror"
+                              placeholder="Descreva as condicoes de pagamento previstas no contrato">{{ old('condicoes_pagamento', $contrato->condicoes_pagamento) }}</textarea>
+                    @error('condicoes_pagamento')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Garantias</label>
+                    <textarea name="garantias" rows="3"
+                              class="form-control radius-8 @error('garantias') is-invalid @enderror"
+                              placeholder="Descreva as garantias exigidas (caucao, seguro, fianca bancaria, etc.)">{{ old('garantias', $contrato->garantias) }}</textarea>
+                    @error('garantias')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <hr class="my-16">
@@ -308,6 +354,41 @@
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
                     <textarea name="observacoes" rows="3"
                               class="form-control radius-8">{{ old('observacoes', $contrato->observacoes) }}</textarea>
+                </div>
+            </div>
+
+            <hr class="my-16">
+
+            {{-- Publicacao --}}
+            <h6 class="fw-semibold text-primary-light mb-16">Publicacao</h6>
+            <div class="row gy-3 mb-24">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Publicacao</label>
+                    <input type="date" name="data_publicacao" value="{{ old('data_publicacao', $contrato->data_publicacao?->format('Y-m-d')) }}"
+                           class="form-control radius-8 @error('data_publicacao') is-invalid @enderror">
+                    @error('data_publicacao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Veiculo de Publicacao</label>
+                    <input type="text" name="veiculo_publicacao" value="{{ old('veiculo_publicacao', $contrato->veiculo_publicacao) }}"
+                           class="form-control radius-8 @error('veiculo_publicacao') is-invalid @enderror"
+                           placeholder="Ex: Diario Oficial do Municipio">
+                    @error('veiculo_publicacao')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Link Transparencia</label>
+                    <input type="url" name="link_transparencia" value="{{ old('link_transparencia', $contrato->link_transparencia) }}"
+                           class="form-control radius-8 @error('link_transparencia') is-invalid @enderror"
+                           placeholder="https://...">
+                    @error('link_transparencia')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
