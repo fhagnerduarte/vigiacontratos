@@ -94,6 +94,23 @@ class PermissionSeeder extends Seeder
             ['nome' => 'painel-risco.visualizar', 'descricao' => 'Visualizar painel de risco', 'grupo' => 'painel-risco'],
             ['nome' => 'painel-risco.exportar', 'descricao' => 'Exportar relatorio de risco TCE', 'grupo' => 'painel-risco'],
 
+            // Encerramento (IMP-052)
+            ['nome' => 'encerramento.visualizar', 'descricao' => 'Visualizar processo de encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.iniciar', 'descricao' => 'Iniciar processo de encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.verificar_financeiro', 'descricao' => 'Verificar situacao financeira no encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.registrar_termo', 'descricao' => 'Registrar termos de recebimento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.avaliar', 'descricao' => 'Registrar avaliacao fiscal no encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.quitar', 'descricao' => 'Registrar quitacao e finalizar encerramento', 'grupo' => 'encerramento'],
+
+            // Ocorrencia (IMP-054)
+            ['nome' => 'ocorrencia.visualizar', 'descricao' => 'Visualizar ocorrencias contratuais', 'grupo' => 'ocorrencia'],
+            ['nome' => 'ocorrencia.criar', 'descricao' => 'Registrar ocorrencias', 'grupo' => 'ocorrencia'],
+            ['nome' => 'ocorrencia.resolver', 'descricao' => 'Resolver ocorrencias pendentes', 'grupo' => 'ocorrencia'],
+
+            // Relatorio Fiscal (IMP-054)
+            ['nome' => 'relatorio_fiscal.visualizar', 'descricao' => 'Visualizar relatorios fiscais', 'grupo' => 'relatorio_fiscal'],
+            ['nome' => 'relatorio_fiscal.criar', 'descricao' => 'Registrar relatorios fiscais', 'grupo' => 'relatorio_fiscal'],
+
             // LGPD (RN-213)
             ['nome' => 'lgpd.visualizar', 'descricao' => 'Visualizar solicitacoes LGPD', 'grupo' => 'lgpd'],
             ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitacao LGPD', 'grupo' => 'lgpd'],
