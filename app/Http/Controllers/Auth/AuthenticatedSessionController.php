@@ -28,15 +28,19 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        // Verificar se o tenant tem MFA habilitado
+        $tenant = app()->bound('tenant') ? app('tenant') : null;
+        $mfaHabilitado = !$tenant || $tenant->isMfaHabilitado();
+
         // MFA habilitado — redirecionar para verificação
-        if ($user->isMfaEnabled()) {
+        if ($mfaHabilitado && $user->isMfaEnabled()) {
             $request->session()->put('mfa_pending', true);
 
             return redirect()->route('tenant.mfa.verify');
         }
 
         // MFA obrigatório mas não configurado — forçar setup
-        if ($user->isMfaRequired()) {
+        if ($mfaHabilitado && $user->isMfaRequired()) {
             return redirect()->route('tenant.mfa.setup');
         }
 
