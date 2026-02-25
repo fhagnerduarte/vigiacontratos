@@ -13,7 +13,7 @@ class SolicitacaoLaiSeeder extends Seeder
 {
     public function run(): void
     {
-        $tenantId = DB::connection('tenant')->table('tenants')->value('id');
+        $tenantId = DB::connection('mysql')->table('tenants')->value('id');
         if (!$tenantId) {
             $this->command->warn('Nenhum tenant encontrado. Pulando SolicitacaoLaiSeeder.');
             return;

@@ -44,7 +44,7 @@ class AdminUser extends Authenticatable
 
     public function isMfaRequired(): bool
     {
-        return true;
+        return false;
     }
 
     public function loginLogs(): HasMany
