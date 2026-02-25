@@ -143,18 +143,39 @@
             @endif
 
             {{-- TRANSPARENCIA --}}
-            @if (auth()->user()->hasPermission('lai.visualizar') || auth()->user()->hasPermission('classificacao.visualizar'))
+            @if (auth()->user()->hasPermission('lai.visualizar') || auth()->user()->hasPermission('lai.relatorio') || auth()->user()->hasPermission('classificacao.visualizar'))
                 <li class="sidebar-menu-group-title">Transparência</li>
 
-                @if (auth()->user()->hasPermission('lai.visualizar'))
-                    <li>
-                        <a href="{{ route('tenant.solicitacoes-lai.index') }}"
-                           class="{{ request()->routeIs('tenant.solicitacoes-lai.*') ? 'active-page' : '' }}">
-                            <iconify-icon icon="solar:eye-bold" class="menu-icon"></iconify-icon>
-                            <span>e-SIC / Solicitações LAI</span>
-                        </a>
-                    </li>
-                @endif
+                <li class="dropdown">
+                    <a href="javascript:void(0)"
+                       class="{{ request()->routeIs('tenant.solicitacoes-lai.*') || request()->routeIs('tenant.relatorios.lai') ? 'active-page' : '' }}">
+                        <iconify-icon icon="solar:eye-bold" class="menu-icon"></iconify-icon>
+                        <span>LAI / Transparência</span>
+                    </a>
+                    <ul class="sidebar-submenu">
+                        @if (auth()->user()->hasPermission('lai.visualizar'))
+                            <li>
+                                <a href="{{ route('tenant.solicitacoes-lai.index') }}"
+                                   class="{{ request()->routeIs('tenant.solicitacoes-lai.*') ? 'active-page' : '' }}">
+                                    <i class="ri-circle-fill circle-icon text-warning-600 w-auto"></i> e-SIC / Solicitações
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/{{ app('tenant')?->slug ?? '' }}/portal" target="_blank">
+                                    <i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Portal Público
+                                </a>
+                            </li>
+                        @endif
+                        @if (auth()->user()->hasPermission('lai.relatorio'))
+                            <li>
+                                <a href="{{ route('tenant.relatorios.lai') }}"
+                                   class="{{ request()->routeIs('tenant.relatorios.lai') ? 'active-page' : '' }}">
+                                    <i class="ri-circle-fill circle-icon text-info-600 w-auto"></i> Relatório LAI
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
             @endif
 
             {{-- ADMINISTRACAO --}}

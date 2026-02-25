@@ -179,6 +179,19 @@ class RelatoriosController extends Controller
     }
 
     /**
+     * LAI 12.527/2011: Gerar PDF do relatorio de transparencia.
+     */
+    public function transparenciaLaiPdf()
+    {
+        $dados = RelatorioService::dadosRelatorioLai();
+
+        $pdf = Pdf::loadView('tenant.relatorios.pdf.transparencia-lai', compact('dados'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('relatorio-transparencia-lai-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    /**
      * Exportar listagem de contratos em Excel.
      */
     public function contratosExcel(Request $request): BinaryFileResponse

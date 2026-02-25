@@ -198,6 +198,7 @@ class PainelRiscoService
             'documental' => 'Documental',
             'juridico' => 'Juridico',
             'operacional' => 'Operacional',
+            'transparencia' => 'Transparencia',
             default => ucfirst($categoria),
         };
     }
@@ -213,6 +214,7 @@ class PainelRiscoService
             'documental' => 'info',
             'juridico' => 'primary',
             'operacional' => 'secondary',
+            'transparencia' => 'success',
             default => 'dark',
         };
     }

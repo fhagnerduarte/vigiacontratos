@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CategoriaContrato;
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\FaseContratual;
 use App\Enums\NivelRisco;
 use App\Enums\TipoContrato;
@@ -28,8 +29,8 @@ class RiscoService
     }
 
     /**
-     * Calcula o score de risco expandido com 5 categorias (RN-136 a RN-142).
-     * Categorias: vencimento, financeiro, documental, juridico, operacional.
+     * Calcula o score de risco expandido com 6 categorias (RN-136 a RN-142, RN-434).
+     * Categorias: vencimento, financeiro, documental, juridico, operacional, transparencia.
      *
      * @return array{score: int, nivel: NivelRisco, categorias: array}
      */
@@ -41,6 +42,7 @@ class RiscoService
             'documental' => self::calcularRiscoDocumental($contrato),
             'juridico' => self::calcularRiscoJuridico($contrato),
             'operacional' => self::calcularRiscoOperacional($contrato),
+            'transparencia' => self::calcularRiscoTransparencia($contrato),
         ];
 
         $score = 0;
@@ -339,6 +341,38 @@ class RiscoService
         } elseif ($contrato->fiscalAtual && ! $contrato->fiscalAtual->data_ultimo_relatorio) {
             $score += 10;
             $criterios[] = 'Fiscal nunca registrou relatorio (+10pts)';
+        }
+
+        return ['score' => $score, 'criterios' => $criterios];
+    }
+
+    /**
+     * Categoria: Transparencia (RN-434, LAI 12.527/2011).
+     */
+    private static function calcularRiscoTransparencia(Contrato $contrato): array
+    {
+        $score = 0;
+        $criterios = [];
+
+        // Contrato publico nao publicado no portal: +10pts
+        if ($contrato->classificacao_sigilo === ClassificacaoSigilo::Publico
+            && ! $contrato->publicado_portal) {
+            $score += 10;
+            $criterios[] = 'Contrato publico nao publicado no portal (+10pts)';
+        }
+
+        // Classificacao de sigilo sem justificativa: +10pts
+        if ($contrato->classificacao_sigilo !== null
+            && $contrato->classificacao_sigilo !== ClassificacaoSigilo::Publico
+            && empty($contrato->justificativa_sigilo)) {
+            $score += 10;
+            $criterios[] = 'Classificacao de sigilo sem justificativa (+10pts)';
+        }
+
+        // Dados de publicacao incompletos: +5pts
+        if (empty($contrato->data_publicacao) || empty($contrato->veiculo_publicacao)) {
+            $score += 5;
+            $criterios[] = 'Dados de publicacao incompletos (+5pts)';
         }
 
         return ['score' => $score, 'criterios' => $criterios];

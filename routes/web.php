@@ -269,6 +269,11 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
         ->name('tenant.relatorios.efetividade-mensal.excel')
         ->middleware(['permission:relatorio.gerar', 'throttle:exportacoes']);
 
+    // LAI 12.527/2011: Relatorio de Transparencia (IMP-060)
+    Route::get('relatorios/transparencia-lai', [RelatoriosController::class, 'transparenciaLaiPdf'])
+        ->name('tenant.relatorios.lai')
+        ->middleware(['permission:lai.relatorio', 'throttle:exportacoes']);
+
     Route::get('contratos/{contrato}/relatorio-documentos', [RelatoriosController::class, 'documentosContratoPdf'])
         ->name('tenant.relatorios.documentos-contrato')
         ->middleware(['permission:documento.download', 'throttle:exportacoes']);

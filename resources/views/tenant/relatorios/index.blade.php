@@ -157,7 +157,38 @@
 </div>
 @endif
 
-{{-- SECAO 3: Exportar Listagens --}}
+{{-- SECAO 3: Transparencia LAI --}}
+@if (auth()->user()->hasPermission('lai.relatorio'))
+<div class="mb-24">
+    <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
+        <iconify-icon icon="solar:eye-bold" class="text-success-600 me-4"></iconify-icon>
+        Transparencia LAI — Lei 12.527/2011
+    </h6>
+    <div class="row g-16">
+        <div class="col-md-6 col-lg-4">
+            <div class="card radius-8 border-0 h-100">
+                <div class="card-body p-20">
+                    <div class="d-flex align-items-center gap-12 mb-16">
+                        <div class="w-40-px h-40-px bg-success-100 rounded-circle d-flex align-items-center justify-content-center">
+                            <iconify-icon icon="solar:eye-bold" class="text-success-600 text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold mb-0 text-sm">Relatorio de Transparencia</h6>
+                            <span class="text-neutral-500 text-xs">LAI 12.527/2011</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-500 text-sm mb-16">Indicadores de publicacao no portal, classificacao de sigilo e status das solicitacoes SIC/e-SIC.</p>
+                    <a href="{{ route('tenant.relatorios.lai') }}" class="btn btn-outline-success-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
+                        <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Gerar PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- SECAO 4: Exportar Listagens --}}
 <div class="mb-24">
     <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
         <iconify-icon icon="solar:chart-2-bold" class="text-info-600 me-4"></iconify-icon>

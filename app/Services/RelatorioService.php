@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\StatusContrato;
 use App\Enums\TipoAditivo;
 use App\Models\Aditivo;
@@ -10,6 +11,7 @@ use App\Models\Documento;
 use App\Models\HistoricoAlteracao;
 use App\Models\LoginLog;
 use App\Models\LogAcessoDocumento;
+use App\Models\Scopes\SecretariaScope;
 use App\Models\Secretaria;
 use App\Models\Tenant;
 use Carbon\Carbon;
@@ -389,6 +391,77 @@ class RelatorioService
             ],
             'por_secretaria' => $porSecretaria,
             'contratos' => $contratos,
+        ];
+    }
+
+    /**
+     * LAI 12.527/2011: Dados do relatorio de transparencia.
+     * Consolida indicadores de publicacao, classificacao de sigilo e SIC/e-SIC.
+     */
+    public static function dadosRelatorioLai(): array
+    {
+        $tenant = Tenant::where('is_ativo', true)->first();
+
+        $totalContratos = Contrato::withoutGlobalScope(SecretariaScope::class)->count();
+
+        $contratosPublicos = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)->count();
+
+        $publicadosPortal = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', true)->count();
+
+        $naoPublicados = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', false)->count();
+
+        $sigiloSemJustificativa = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('classificacao_sigilo', '!=', ClassificacaoSigilo::Publico->value)
+            ->where(fn ($q) => $q->whereNull('justificativa_sigilo')->orWhere('justificativa_sigilo', ''))
+            ->count();
+
+        $semDadosPublicacao = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->where('status', StatusContrato::Vigente->value)
+            ->where(fn ($q) => $q->whereNull('data_publicacao')->orWhereNull('veiculo_publicacao'))
+            ->count();
+
+        $porClassificacao = [];
+        foreach (ClassificacaoSigilo::cases() as $c) {
+            $porClassificacao[] = [
+                'classificacao' => $c->label(),
+                'icone' => $c->icone(),
+                'cor' => $c->cor(),
+                'total' => Contrato::withoutGlobalScope(SecretariaScope::class)
+                    ->where('classificacao_sigilo', $c->value)->count(),
+            ];
+        }
+
+        $resumoLai = ['total' => 0, 'pendentes' => 0, 'respondidas' => 0, 'vencidas' => 0, 'tempo_medio_resposta' => 0];
+        try {
+            $resumoLai = SolicitacaoLaiService::resumo();
+        } catch (\Throwable) {
+            // Tabela pode nao existir em tenants legados
+        }
+
+        return [
+            'municipio' => $tenant?->nome ?? 'Municipio',
+            'data_geracao' => now()->format('d/m/Y H:i'),
+            'resumo' => [
+                'total_contratos' => $totalContratos,
+                'contratos_publicos' => $contratosPublicos,
+                'publicados_portal' => $publicadosPortal,
+                'nao_publicados' => $naoPublicados,
+                'sigilo_sem_justificativa' => $sigiloSemJustificativa,
+                'sem_dados_publicacao' => $semDadosPublicacao,
+            ],
+            'classificacao' => $porClassificacao,
+            'sic' => [
+                'total_solicitacoes' => $resumoLai['total'],
+                'pendentes' => $resumoLai['pendentes'],
+                'respondidas' => $resumoLai['respondidas'],
+                'vencidas' => $resumoLai['vencidas'],
+                'tempo_medio_resposta' => $resumoLai['tempo_medio_resposta'],
+            ],
         ];
     }
 

@@ -385,12 +385,12 @@
 - [x] Testes: AlertaLaiTest (20 testes, 50 assertions) *(IMP-059)*
 - [x] Nota: SolicitacaoLaiVencendo/Vencida sao indicadores dashboard (sem contrato_id para tabela alertas) *(IMP-059)*
 
-**IMP-060: Integração Final + Testes E2E LAI** *(Pendente)*
-- [ ] RiscoService +1 categoria transparencia em calcularExpandido() *(IMP-060)*
-- [ ] Sidebar: itens Portal Publico + Solicitacoes LAI *(IMP-060)*
-- [ ] RelatorioService: relatorio transparencia LAI (PDF) *(IMP-060)*
-- [ ] Atualizar base conhecimento: remover "Nao e portal publico", adicionar portal LAI *(IMP-060)*
-- [ ] Testes E2E: LaiIntegracaoTest (~15 testes) — ciclo completo *(IMP-060)*
+**IMP-060: Integração Final + Testes E2E LAI** *(Concluído)*
+- [x] RiscoService +1 categoria transparencia em calcularExpandido() *(IMP-060)*
+- [x] Sidebar: itens Portal Publico + Solicitacoes LAI *(IMP-060)*
+- [x] RelatorioService: relatorio transparencia LAI (PDF) *(IMP-060)*
+- [x] Atualizar base conhecimento: remover "Nao e portal publico", adicionar portal LAI *(IMP-060)*
+- [x] Testes E2E: LaiIntegracaoTest (15 testes, 67 assertions) — ciclo completo *(IMP-060)*
 
 ### Geral
 - [x] Testes unitários Services: ContratoService, AlertaService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService, DocumentoService, PermissaoService, WorkflowService, FornecedorService, DashboardService, PainelRiscoService, MfaService *(IMP-027/028/030)*

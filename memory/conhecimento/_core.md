@@ -95,7 +95,8 @@ Não existe sistema legado. O controle contratual era feito de forma informal (s
 | Relatório para Tribunal de Contas | Relatório gerado automaticamente pelo sistema listando todos os documentos de um contrato com datas de upload, responsável e status de completude | "Relatório TCE gerado em PDF para o Contrato 001/2026 com 12 documentos listados" |
 | Painel de Risco Administrativo | Dashboard estratégico dedicado à análise e classificação de riscos contratuais, com indicadores visuais para Controladoria, Jurídico e Prefeito | "Painel de Risco mostra 8 contratos críticos na Secretaria de Obras" |
 | Categoria de Risco | Classificação do tipo de risco identificado em um contrato: vencimento, financeiro, documental, jurídico ou operacional | "Contrato com categorias de risco: financeiro + documental" |
-| Score de Risco Expandido | Pontuação 0-100 calculada automaticamente com base em 5 categorias de risco (vencimento, financeiro, documental, jurídico, operacional) — expansão do score_risco existente | "Score expandido: 72 (alto) — critérios: vencimento +15, documental +20, jurídico +15, operacional +20" |
+| Score de Risco Expandido | Pontuação 0-100 calculada automaticamente com base em 6 categorias de risco (vencimento, financeiro, documental, jurídico, operacional, transparência) — expansão do score_risco existente | "Score expandido: 72 (alto) — critérios: vencimento +15, documental +20, jurídico +15, operacional +20, transparência +5" |
+| Relatório de Transparência LAI | Relatório PDF com indicadores de publicação no portal, classificação de sigilo e status SIC/e-SIC — instrumento de conformidade LAI 12.527/2011 | "Relatório LAI gerado com 45 contratos publicados e 3 solicitações pendentes" |
 | Mapa de Risco por Secretaria | Visão agregada de risco por secretaria, mostrando total de contratos e quantidade de críticos por órgão | "Saúde → 12 contratos (3 críticos), Obras → 25 contratos (8 críticos)" |
 | Relatório de Risco para TCE | Relatório automatizado em PDF com lista de contratos monitorados, justificativa de risco, plano de ação e histórico de alertas — instrumento de defesa administrativa | "Relatório de Risco TCE gerado com 15 contratos monitorados e justificativas detalhadas" |
 | Alerta Preventivo Inteligente | Alerta contextualizado que descreve especificamente o risco identificado com mensagem acionável | "Contrato 015/2023 ultrapassou 25% de aditivo — ação necessária" |
@@ -250,6 +251,7 @@ Não existe sistema legado. O controle contratual era feito de forma informal (s
 | `documental` | Risco Documental | Falta de certidões, publicação, termo de fiscalização, relatório de execução ou documento vencido |
 | `juridico` | Risco Jurídico | Renovação irregular, prazo superior ao permitido, aditivos suspeitos, ausência de justificativa |
 | `operacional` | Risco Operacional | Contrato essencial vencendo, serviço continuado sem renovação formal |
+| `transparencia` | Risco de Transparência | Contrato público não publicado no portal, sigilo sem justificativa, dados de publicação incompletos |
 
 ### TipoAditivo
 
