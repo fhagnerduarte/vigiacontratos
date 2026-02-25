@@ -30,7 +30,7 @@
 - Não emite notas fiscais ou faz gestão financeira/pagamentos
 - Não faz gestão de almoxarifado ou patrimônio
 - Não substitui o sistema contábil da prefeitura
-- Não é um portal de transparência pública (é sistema interno)
+- Inclui portal de transparência pública integrado (LAI 12.527/2011) — acesso guest para consulta de contratos públicos, dados abertos e SIC/e-SIC (Fase 8)
 
 ### Para quem:
 - **Admin SaaS (Root/Superadmin)** — Proprietário/operador da plataforma SaaS. Opera exclusivamente no banco master. Gerencia tenants (prefeituras-clientes), provisiona novos municípios, ativa/desativa clientes e monitora a saúde da plataforma. Acessa o sistema por rota administrativa dedicada, sem vínculo a subdomínio de tenant.
@@ -354,5 +354,46 @@ Não existe sistema legado. O controle contratual era feito de forma informal (s
 | `termino_aditivo` | Término de Aditivo | Aditivo próximo do vencimento |
 | `prazo_garantia` | Prazo de Garantia | Prazo de garantia próximo do vencimento (se aplicável) |
 | `prazo_execucao_fisica` | Prazo de Execução Física | Prazo de execução de obra próximo do fim |
+
+### ClassificacaoSigilo (Fase 8 — LAI)
+
+| Valor (Enum) | Nome Exibido | Descrição | Prazo Máximo |
+|---|---|---|---|
+| `publico` | Público | Informação acessível a qualquer cidadão (default) | — |
+| `reservado` | Reservado | Informação com restrição temporária | 5 anos |
+| `secreto` | Secreto | Informação sigilosa | 15 anos |
+| `ultrassecreto` | Ultrassecreto | Informação de máximo sigilo | 25 anos |
+
+### StatusSolicitacaoLai (Fase 8 — LAI)
+
+| Valor (Enum) | Nome Exibido | Descrição |
+|---|---|---|
+| `recebida` | Recebida | Solicitação registrada, aguardando análise |
+| `em_analise` | Em Análise | Solicitação sendo analisada pelo responsável |
+| `respondida` | Respondida | Resposta registrada dentro do prazo |
+| `prorrogada` | Prorrogada | Prazo estendido em +10 dias com justificativa |
+| `indeferida` | Indeferida | Solicitação indeferida com justificativa |
+| `recurso` | Em Recurso | Cidadão interpôs recurso contra indeferimento |
+
+### ClassificacaoRespostaLai (Fase 8 — LAI)
+
+| Valor (Enum) | Nome Exibido | Descrição |
+|---|---|---|
+| `deferida` | Deferida | Informação fornecida integralmente |
+| `parcialmente_deferida` | Parcialmente Deferida | Parte da informação fornecida, parte indeferida |
+| `indeferida` | Indeferida | Informação negada com fundamentação legal |
+
+### Termos LAI (Fase 8)
+
+| Termo | Definição | Exemplo de Uso |
+|---|---|---|
+| Transparência Ativa | Publicação espontânea de informações pelo órgão público, sem necessidade de pedido | "Portal público exibe todos os contratos classificados como públicos" |
+| Transparência Passiva | Resposta a pedidos de informação feitos por cidadãos (SIC/e-SIC) | "Cidadão solicitou cópia do contrato via SIC — prazo de 20 dias" |
+| SIC (Serviço de Informação ao Cidadão) | Canal para recebimento e processamento de pedidos de acesso à informação (LAI art. 9º) | "Pedido LAI-2026-000042 registrado no SIC em 15/02/2026" |
+| e-SIC | Versão eletrônica do SIC, permitindo solicitações via sistema online | "Cidadão abriu pedido no e-SIC do portal da prefeitura" |
+| Classificação de Sigilo | Atribuição de grau de sigilo a informação pública (público, reservado, secreto, ultrassecreto) conforme LAI art. 24 | "Contrato classificado como reservado por conter estratégia de segurança" |
+| Desclassificação | Remoção do sigilo quando prazo legal expira ou autoridade competente determina | "Contrato desclassificado automaticamente após 5 anos" |
+| Dados Abertos | Dados públicos disponibilizados em formatos abertos e legíveis por máquina (JSON, CSV) | "Portal exporta contratos em JSON padrão dados.gov.br" |
+| Protocolo LAI | Identificador único de solicitação de informação no formato LAI-{ANO}-{SEQ} | "Protocolo LAI-2026-000042 — prazo até 07/03/2026" |
 
 ---

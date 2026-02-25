@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             Route::middleware('web')
                 ->group(base_path('routes/admin-saas.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/portal.php'));
         },
     )
     ->withSchedule(function (Schedule $schedule): void {
@@ -35,6 +38,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ->weeklyOn(0, '02:00')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/integridade-documentos.log'));
+
+        $schedule->command('lai:verificar-desclassificacao')
+            ->monthlyOn(1, '03:00')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/lai-desclassificacao.log'));
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
@@ -45,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'force.https' => \App\Http\Middleware\ForceHttps::class,
             'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'security.headers' => \App\Http\Middleware\SecurityHeaders::class,
+            'tenant.public' => \App\Http\Middleware\ResolveTenantPublic::class,
         ]);
 
         $middleware->appendToGroup('web', \App\Http\Middleware\SecurityHeaders::class);

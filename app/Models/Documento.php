@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\TipoDocumentoContratual;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,12 +35,15 @@ class Documento extends Model
         'versao',
         'is_versao_atual',
         'uploaded_by',
+        'classificacao_sigilo',
+        'justificativa_sigilo',
     ];
 
     protected function casts(): array
     {
         return [
             'tipo_documento' => TipoDocumentoContratual::class,
+            'classificacao_sigilo' => ClassificacaoSigilo::class,
             'is_versao_atual' => 'boolean',
             'integridade_comprometida' => 'boolean',
             'versao' => 'integer',

@@ -115,6 +115,12 @@ class PermissionSeeder extends Seeder
             ['nome' => 'lgpd.visualizar', 'descricao' => 'Visualizar solicitacoes LGPD', 'grupo' => 'lgpd'],
             ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitacao LGPD', 'grupo' => 'lgpd'],
             ['nome' => 'lgpd.processar', 'descricao' => 'Processar anonimizacao LGPD', 'grupo' => 'lgpd'],
+
+            // Classificacao de Sigilo (IMP-056 — LAI 12.527/2011)
+            ['nome' => 'classificacao.visualizar', 'descricao' => 'Visualizar classificacao de sigilo', 'grupo' => 'classificacao'],
+            ['nome' => 'classificacao.classificar', 'descricao' => 'Classificar/alterar sigilo de contrato', 'grupo' => 'classificacao'],
+            ['nome' => 'classificacao.desclassificar', 'descricao' => 'Desclassificar contrato para publico', 'grupo' => 'classificacao'],
+            ['nome' => 'classificacao.justificar', 'descricao' => 'Editar justificativa de sigilo', 'grupo' => 'classificacao'],
         ];
 
         foreach ($permissions as $permission) {

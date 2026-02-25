@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CategoriaContrato;
 use App\Enums\CategoriaServico;
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\ModalidadeContratacao;
 use App\Enums\NivelRisco;
 use App\Enums\RegimeExecucao;
@@ -75,6 +76,11 @@ class Contrato extends Model
         'data_publicacao',
         'veiculo_publicacao',
         'link_transparencia',
+        'classificacao_sigilo',
+        'classificado_por',
+        'data_classificacao',
+        'justificativa_sigilo',
+        'publicado_portal',
     ];
 
     protected function casts(): array
@@ -93,6 +99,9 @@ class Contrato extends Model
             'data_assinatura' => 'date',
             'data_fim' => 'date',
             'data_publicacao' => 'date',
+            'classificacao_sigilo' => ClassificacaoSigilo::class,
+            'data_classificacao' => 'date',
+            'publicado_portal' => 'boolean',
             'prorrogacao_automatica' => 'boolean',
             'valor_global' => 'decimal:2',
             'valor_mensal' => 'decimal:2',
@@ -201,11 +210,33 @@ class Contrato extends Model
         return $query->where('is_irregular', true);
     }
 
+    public function scopePublicos($query)
+    {
+        return $query->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value);
+    }
+
+    public function scopeVisivelNoPortal($query)
+    {
+        return $query->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', true);
+    }
+
     // Accessors
 
     public function getPublicadoAttribute(): bool
     {
         return $this->data_publicacao !== null;
+    }
+
+    public function getVisivelNoPortalAttribute(): bool
+    {
+        return $this->classificacao_sigilo === ClassificacaoSigilo::Publico
+            && $this->publicado_portal === true;
+    }
+
+    public function classificador(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'classificado_por');
     }
 
     public function getDiasParaVencimentoAttribute(): int
