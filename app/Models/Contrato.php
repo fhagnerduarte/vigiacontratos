@@ -69,6 +69,8 @@ class Contrato extends Model
         'score_risco',
         'nivel_risco',
         'percentual_executado',
+        'valor_empenhado',
+        'saldo_contratual',
         'observacoes',
         'data_publicacao',
         'veiculo_publicacao',
@@ -95,6 +97,8 @@ class Contrato extends Model
             'valor_global' => 'decimal:2',
             'valor_mensal' => 'decimal:2',
             'percentual_executado' => 'decimal:2',
+            'valor_empenhado' => 'decimal:2',
+            'saldo_contratual' => 'decimal:2',
         ];
     }
 
@@ -173,6 +177,21 @@ class Contrato extends Model
     public function conformidadeFases(): HasMany
     {
         return $this->hasMany(ContratoConformidadeFase::class);
+    }
+
+    public function encerramento(): HasOne
+    {
+        return $this->hasOne(Encerramento::class);
+    }
+
+    public function ocorrencias(): HasMany
+    {
+        return $this->hasMany(Ocorrencia::class);
+    }
+
+    public function relatoriosFiscais(): HasMany
+    {
+        return $this->hasMany(RelatorioFiscal::class);
     }
 
     // Scopes

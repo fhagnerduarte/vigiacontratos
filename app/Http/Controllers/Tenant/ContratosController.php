@@ -22,6 +22,8 @@ use App\Services\ContratoService;
 use App\Services\DocumentoService;
 use App\Services\ChecklistService;
 use App\Services\FiscalService;
+use App\Services\OcorrenciaService;
+use App\Services\RelatorioFiscalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -128,6 +130,13 @@ class ContratosController extends Controller
             'historicoAlteracoes' => fn ($q) => $q->orderBy('created_at', 'desc'),
             'historicoAlteracoes.user',
             'aditivos' => fn ($q) => $q->orderBy('numero_sequencial'),
+            'ocorrencias' => fn ($q) => $q->orderBy('data_ocorrencia', 'desc'),
+            'ocorrencias.fiscal',
+            'ocorrencias.registradoPor',
+            'ocorrencias.resolvidaPor',
+            'relatoriosFiscais' => fn ($q) => $q->orderBy('periodo_fim', 'desc'),
+            'relatoriosFiscais.fiscal',
+            'relatoriosFiscais.registradoPor',
         ]);
 
         // Dados para aba Documentos (Modulo 5)
@@ -143,6 +152,10 @@ class ContratosController extends Controller
         $conformidadeFases = ChecklistService::calcularConformidadeGeral($contrato);
         $percentualGlobal = ChecklistService::calcularPercentualGlobal($contrato);
 
+        // Resumo ocorrencias e relatorios fiscais (IMP-054)
+        $resumoOcorrencias = OcorrenciaService::resumo($contrato);
+        $resumoRelatoriosFiscais = RelatorioFiscalService::resumo($contrato);
+
         // Servidores ativos para form de designar/trocar fiscal
         $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
 
@@ -153,6 +166,8 @@ class ContratosController extends Controller
             'documentosPorTipo',
             'conformidadeFases',
             'percentualGlobal',
+            'resumoOcorrencias',
+            'resumoRelatoriosFiscais',
             'servidores',
         ));
     }

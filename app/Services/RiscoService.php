@@ -317,6 +317,30 @@ class RiscoService
             }
         }
 
+        // Ocorrencias pendentes vencidas: +5pts por ocorrencia (IMP-054, RN-141)
+        $ocorrenciasVencidas = $contrato->ocorrencias()
+            ->where('resolvida', false)
+            ->whereNotNull('prazo_providencia')
+            ->where('prazo_providencia', '<', now()->toDateString())
+            ->count();
+        if ($ocorrenciasVencidas > 0) {
+            $pontos = min(15, $ocorrenciasVencidas * 5);
+            $score += $pontos;
+            $criterios[] = "{$ocorrenciasVencidas} ocorrencia(s) com prazo vencido (+{$pontos}pts)";
+        }
+
+        // Fiscal sem relatorio recente (>60 dias): +10pts (IMP-054, RN-141)
+        if ($contrato->fiscalAtual && $contrato->fiscalAtual->data_ultimo_relatorio) {
+            $diasSemRelatorio = (int) $contrato->fiscalAtual->data_ultimo_relatorio->diffInDays(now());
+            if ($diasSemRelatorio > 60) {
+                $score += 10;
+                $criterios[] = "Fiscal sem relatorio ha {$diasSemRelatorio} dias (+10pts)";
+            }
+        } elseif ($contrato->fiscalAtual && ! $contrato->fiscalAtual->data_ultimo_relatorio) {
+            $score += 10;
+            $criterios[] = 'Fiscal nunca registrou relatorio (+10pts)';
+        }
+
         return ['score' => $score, 'criterios' => $criterios];
     }
 }

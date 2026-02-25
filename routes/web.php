@@ -19,7 +19,10 @@ use App\Http\Controllers\Tenant\AlertasController;
 use App\Http\Controllers\Tenant\AuditoriaController;
 use App\Http\Controllers\Tenant\RelatoriosController;
 use App\Http\Controllers\Tenant\ConfiguracaoChecklistDocumentoController;
+use App\Http\Controllers\Tenant\EncerramentosController;
 use App\Http\Controllers\Tenant\LgpdController;
+use App\Http\Controllers\Tenant\OcorrenciasController;
+use App\Http\Controllers\Tenant\RelatoriosFiscaisController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -83,6 +86,49 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
     Route::post('contratos/{contrato}/execucoes', [ExecucoesFinanceirasController::class, 'store'])
         ->name('tenant.contratos.execucoes.store')
         ->middleware('permission:financeiro.registrar_empenho');
+
+    // Gestao Contratual — Ocorrencias (IMP-054, aninhado ao contrato)
+    Route::post('contratos/{contrato}/ocorrencias', [OcorrenciasController::class, 'store'])
+        ->name('tenant.contratos.ocorrencias.store')
+        ->middleware('permission:ocorrencia.criar');
+
+    Route::post('ocorrencias/{ocorrencia}/resolver', [OcorrenciasController::class, 'resolver'])
+        ->name('tenant.ocorrencias.resolver')
+        ->middleware('permission:ocorrencia.resolver');
+
+    // Gestao Contratual — Relatorios Fiscais (IMP-054, aninhado ao contrato)
+    Route::post('contratos/{contrato}/relatorios-fiscais', [RelatoriosFiscaisController::class, 'store'])
+        ->name('tenant.contratos.relatorios-fiscais.store')
+        ->middleware('permission:relatorio_fiscal.criar');
+
+    // Gestao Contratual — Encerramento (IMP-052)
+    Route::get('contratos/{contrato}/encerramento', [EncerramentosController::class, 'show'])
+        ->name('tenant.contratos.encerramento.show')
+        ->middleware('permission:encerramento.visualizar');
+
+    Route::post('contratos/{contrato}/encerramento/iniciar', [EncerramentosController::class, 'iniciar'])
+        ->name('tenant.contratos.encerramento.iniciar')
+        ->middleware('permission:encerramento.iniciar');
+
+    Route::post('contratos/{contrato}/encerramento/verificar-financeiro', [EncerramentosController::class, 'verificarFinanceiro'])
+        ->name('tenant.contratos.encerramento.verificar-financeiro')
+        ->middleware('permission:encerramento.verificar_financeiro');
+
+    Route::post('contratos/{contrato}/encerramento/termo-provisorio', [EncerramentosController::class, 'termoProvisorio'])
+        ->name('tenant.contratos.encerramento.termo-provisorio')
+        ->middleware('permission:encerramento.registrar_termo');
+
+    Route::post('contratos/{contrato}/encerramento/avaliacao-fiscal', [EncerramentosController::class, 'avaliacaoFiscal'])
+        ->name('tenant.contratos.encerramento.avaliacao-fiscal')
+        ->middleware('permission:encerramento.avaliar');
+
+    Route::post('contratos/{contrato}/encerramento/termo-definitivo', [EncerramentosController::class, 'termoDefinitivo'])
+        ->name('tenant.contratos.encerramento.termo-definitivo')
+        ->middleware('permission:encerramento.registrar_termo');
+
+    Route::post('contratos/{contrato}/encerramento/quitacao', [EncerramentosController::class, 'quitacao'])
+        ->name('tenant.contratos.encerramento.quitacao')
+        ->middleware('permission:encerramento.quitar');
 
     // Gestao Contratual — Aditivos
     Route::get('aditivos', [AditivosController::class, 'index'])

@@ -72,6 +72,16 @@
                         <iconify-icon icon="lucide:edit" class="me-4"></iconify-icon> Editar
                     </a>
                 @endif
+                @if (auth()->user()->hasPermission('encerramento.visualizar') && in_array($contrato->status, [\App\Enums\StatusContrato::Vigente, \App\Enums\StatusContrato::Vencido]))
+                    <a href="{{ route('tenant.contratos.encerramento.show', $contrato) }}" class="btn btn-outline-secondary text-sm btn-sm px-12 py-8 radius-8">
+                        <iconify-icon icon="solar:lock-bold" class="me-4"></iconify-icon> Encerrar Contrato
+                    </a>
+                @endif
+                @if ($contrato->status === \App\Enums\StatusContrato::Encerrado && $contrato->encerramento)
+                    <a href="{{ route('tenant.contratos.encerramento.show', $contrato) }}" class="btn btn-outline-info text-sm btn-sm px-12 py-8 radius-8">
+                        <iconify-icon icon="solar:eye-bold" class="me-4"></iconify-icon> Ver Encerramento
+                    </a>
+                @endif
             </div>
         </div>
     </div>
@@ -85,6 +95,8 @@
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-fiscal">Fiscal</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-financeiro">Financeiro</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-documentos">Documentos</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ocorrencias">Ocorrencias @if($resumoOcorrencias['pendentes'] > 0)<span class="badge bg-warning-focus text-warning-main ms-4">{{ $resumoOcorrencias['pendentes'] }}</span>@endif</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-relatorios-fiscais">Rel. Fiscais</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-conformidade">Conformidade</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-aditivos">Aditivos</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-auditoria">Auditoria</a></li>
@@ -374,14 +386,50 @@
 
             {{-- ABA: Financeiro --}}
             <div class="tab-pane fade" id="tab-financeiro">
-                {{-- Percentual Executado --}}
-                <div class="mb-24">
-                    <div class="d-flex justify-content-between align-items-center mb-8">
-                        <strong>Percentual Executado</strong>
-                        <span class="fw-semibold {{ $contrato->percentual_executado > 100 ? 'text-danger-main' : 'text-primary-600' }}">
-                            {{ number_format($contrato->percentual_executado, 2, ',', '.') }}%
-                        </span>
+                {{-- Resumo Financeiro (IMP-053) --}}
+                <div class="row gy-3 mb-24">
+                    <div class="col-md-3">
+                        <div class="card border radius-8 p-16 text-center">
+                            <small class="text-secondary-light">Valor Global</small>
+                            <h6 class="fw-bold text-primary-600 mt-4">R$ {{ number_format($contrato->valor_global, 2, ',', '.') }}</h6>
+                        </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="card border radius-8 p-16 text-center">
+                            <small class="text-secondary-light">Valor Empenhado</small>
+                            <h6 class="fw-bold {{ ($contrato->valor_empenhado ?? 0) > 0 ? 'text-info-main' : 'text-secondary-light' }} mt-4">
+                                @if ($contrato->valor_empenhado)
+                                    R$ {{ number_format($contrato->valor_empenhado, 2, ',', '.') }}
+                                @else
+                                    Nao informado
+                                @endif
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border radius-8 p-16 text-center">
+                            <small class="text-secondary-light">Saldo Contratual</small>
+                            <h6 class="fw-bold {{ ($contrato->saldo_contratual ?? 0) < 0 ? 'text-danger-main' : 'text-success-main' }} mt-4">
+                                @if ($contrato->saldo_contratual !== null)
+                                    R$ {{ number_format($contrato->saldo_contratual, 2, ',', '.') }}
+                                @else
+                                    -
+                                @endif
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border radius-8 p-16 text-center">
+                            <small class="text-secondary-light">Executado</small>
+                            <h6 class="fw-bold {{ $contrato->percentual_executado > 100 ? 'text-danger-main' : 'text-primary-600' }} mt-4">
+                                {{ number_format($contrato->percentual_executado, 2, ',', '.') }}%
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Barra de progresso --}}
+                <div class="mb-24">
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar {{ $contrato->percentual_executado > 100 ? 'bg-danger' : 'bg-primary-600' }}"
                              role="progressbar"
@@ -393,6 +441,11 @@
                             Alerta: valor executado ultrapassou o valor contratado (RN-033).
                         </small>
                     @endif
+                    @if ($contrato->valor_empenhado && $contrato->saldo_contratual !== null && $contrato->saldo_contratual < 0)
+                        <small class="text-danger-main mt-4 d-block">
+                            Alerta: empenho insuficiente — pagamentos excedem o valor empenhado.
+                        </small>
+                    @endif
                 </div>
 
                 {{-- Lista de Execucoes --}}
@@ -401,9 +454,11 @@
                     <thead>
                         <tr>
                             <th class="px-16 py-12">Data</th>
+                            <th class="px-16 py-12">Tipo</th>
                             <th class="px-16 py-12">Descricao</th>
                             <th class="px-16 py-12">Valor</th>
                             <th class="px-16 py-12">Nota Fiscal</th>
+                            <th class="px-16 py-12">Competencia</th>
                             <th class="px-16 py-12">Registrado por</th>
                         </tr>
                     </thead>
@@ -411,14 +466,20 @@
                         @forelse ($contrato->execucoesFinanceiras as $exec)
                             <tr>
                                 <td class="px-16 py-12">{{ $exec->data_execucao->format('d/m/Y') }}</td>
+                                <td class="px-16 py-12">
+                                    <span class="badge bg-{{ $exec->tipo_execucao?->cor() ?? 'primary' }}-focus text-{{ $exec->tipo_execucao?->cor() ?? 'primary' }}-main px-12 py-6 radius-4 fw-medium text-xs">
+                                        {{ $exec->tipo_execucao?->label() ?? 'Pagamento' }}
+                                    </span>
+                                </td>
                                 <td class="px-16 py-12">{{ $exec->descricao }}</td>
                                 <td class="px-16 py-12">R$ {{ number_format($exec->valor, 2, ',', '.') }}</td>
                                 <td class="px-16 py-12">{{ $exec->numero_nota_fiscal ?? '-' }}</td>
+                                <td class="px-16 py-12">{{ $exec->competencia ?? '-' }}</td>
                                 <td class="px-16 py-12">{{ $exec->registrador->nome ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-secondary-light py-16">Nenhuma execucao financeira registrada.</td>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma execucao financeira registrada.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -431,7 +492,17 @@
                     <form action="{{ route('tenant.contratos.execucoes.store', $contrato) }}" method="POST">
                         @csrf
                         <div class="row gy-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Tipo</label>
+                                <select name="tipo_execucao" class="form-select select2 radius-8" data-placeholder="Selecione o tipo">
+                                    @foreach (\App\Enums\TipoExecucaoFinanceira::cases() as $tipo)
+                                        <option value="{{ $tipo->value }}" {{ $tipo === \App\Enums\TipoExecucaoFinanceira::Pagamento ? 'selected' : '' }}>
+                                            {{ $tipo->label() }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao <span class="text-danger-main">*</span></label>
                                 <input type="text" name="descricao" class="form-control radius-8" required>
                             </div>
@@ -443,12 +514,20 @@
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data <span class="text-danger-main">*</span></label>
                                 <input type="date" name="data_execucao" class="form-control radius-8" required>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">Nota Fiscal</label>
                                 <input type="text" name="numero_nota_fiscal" class="form-control radius-8">
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">Registrar Execucao</button>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">N. Empenho</label>
+                                <input type="text" name="numero_empenho" class="form-control radius-8">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Competencia</label>
+                                <input type="month" name="competencia" class="form-control radius-8">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8 w-100">Registrar</button>
                             </div>
                         </div>
                     </form>
@@ -620,6 +699,291 @@
                         </form>
                     </div>
                 </div>
+            </div>
+
+            {{-- ABA: Ocorrencias (IMP-054) --}}
+            <div class="tab-pane fade" id="tab-ocorrencias">
+                {{-- Resumo --}}
+                <div class="row gy-3 mb-24">
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center">
+                            <span class="text-secondary-light text-sm">Total</span>
+                            <h4 class="fw-bold mt-4 mb-0">{{ $resumoOcorrencias['total'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-warning-focus">
+                            <span class="text-secondary-light text-sm">Pendentes</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-warning-main">{{ $resumoOcorrencias['pendentes'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-success-focus">
+                            <span class="text-secondary-light text-sm">Resolvidas</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-success-main">{{ $resumoOcorrencias['resolvidas'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-danger-focus">
+                            <span class="text-secondary-light text-sm">Vencidas</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-danger-main">{{ $resumoOcorrencias['vencidas'] }}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tabela de Ocorrencias --}}
+                <table class="table table-hover mb-24">
+                    <thead>
+                        <tr>
+                            <th class="px-16 py-12">Data</th>
+                            <th class="px-16 py-12">Tipo</th>
+                            <th class="px-16 py-12">Descricao</th>
+                            <th class="px-16 py-12">Prazo</th>
+                            <th class="px-16 py-12 text-center">Status</th>
+                            <th class="px-16 py-12">Registrado por</th>
+                            @if (auth()->user()->hasPermission('ocorrencia.resolver'))
+                                <th class="px-16 py-12 text-center">Acao</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($contrato->ocorrencias as $ocorrencia)
+                            <tr>
+                                <td class="px-16 py-12 text-sm">{{ $ocorrencia->data_ocorrencia->format('d/m/Y') }}</td>
+                                <td class="px-16 py-12">
+                                    <span class="badge bg-{{ $ocorrencia->tipo_ocorrencia->cor() }}-focus text-{{ $ocorrencia->tipo_ocorrencia->cor() }}-main px-12 py-4 radius-4">
+                                        <iconify-icon icon="{{ $ocorrencia->tipo_ocorrencia->icone() }}" class="me-4"></iconify-icon>
+                                        {{ $ocorrencia->tipo_ocorrencia->label() }}
+                                    </span>
+                                </td>
+                                <td class="px-16 py-12 text-sm">{{ Str::limit($ocorrencia->descricao, 80) }}</td>
+                                <td class="px-16 py-12 text-sm">
+                                    @if ($ocorrencia->prazo_providencia)
+                                        <span class="{{ !$ocorrencia->resolvida && $ocorrencia->prazo_providencia->lt(now()) ? 'text-danger-main fw-bold' : '' }}">
+                                            {{ $ocorrencia->prazo_providencia->format('d/m/Y') }}
+                                        </span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                                <td class="px-16 py-12 text-center">
+                                    @if ($ocorrencia->resolvida)
+                                        <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Resolvida</span>
+                                        <br><small class="text-secondary-light">{{ $ocorrencia->resolvida_em?->format('d/m/Y') }} por {{ $ocorrencia->resolvidaPor?->nome ?? '-' }}</small>
+                                    @elseif ($ocorrencia->prazo_providencia && $ocorrencia->prazo_providencia->lt(now()))
+                                        <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">Vencida</span>
+                                    @else
+                                        <span class="badge bg-warning-focus text-warning-main px-12 py-4 radius-4">Pendente</span>
+                                    @endif
+                                </td>
+                                <td class="px-16 py-12 text-sm">{{ $ocorrencia->registradoPor?->nome ?? '-' }}</td>
+                                @if (auth()->user()->hasPermission('ocorrencia.resolver'))
+                                    <td class="px-16 py-12 text-center">
+                                        @if (!$ocorrencia->resolvida)
+                                            <form action="{{ route('tenant.ocorrencias.resolver', $ocorrencia) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success-600 text-sm btn-sm px-12 py-6 radius-4"
+                                                        onclick="return confirm('Confirma a resolucao desta ocorrencia?')">
+                                                    <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Resolver
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </td>
+                                @endif
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma ocorrencia registrada.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                {{-- Formulario de Nova Ocorrencia --}}
+                @if (auth()->user()->hasPermission('ocorrencia.criar') && $contrato->status !== \App\Enums\StatusContrato::Encerrado)
+                    <hr class="my-16">
+                    <h6 class="fw-semibold mb-12">Registrar Ocorrencia</h6>
+                    <form action="{{ route('tenant.contratos.ocorrencias.store', $contrato) }}" method="POST">
+                        @csrf
+                        <div class="row gy-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Tipo <span class="text-danger-main">*</span></label>
+                                <select name="tipo_ocorrencia" class="form-control radius-8 form-select select2 @error('tipo_ocorrencia') is-invalid @enderror"
+                                        data-placeholder="Selecione o tipo..." required>
+                                    <option value=""></option>
+                                    @foreach (\App\Enums\TipoOcorrencia::cases() as $tipo)
+                                        <option value="{{ $tipo->value }}">{{ $tipo->label() }}</option>
+                                    @endforeach
+                                </select>
+                                @error('tipo_ocorrencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data da Ocorrencia <span class="text-danger-main">*</span></label>
+                                <input type="date" name="data_ocorrencia" value="{{ old('data_ocorrencia', date('Y-m-d')) }}"
+                                       class="form-control radius-8 @error('data_ocorrencia') is-invalid @enderror" required>
+                                @error('data_ocorrencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Prazo para Providencia</label>
+                                <input type="date" name="prazo_providencia" value="{{ old('prazo_providencia') }}"
+                                       class="form-control radius-8 @error('prazo_providencia') is-invalid @enderror">
+                                @error('prazo_providencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao <span class="text-danger-main">*</span></label>
+                                <textarea name="descricao" rows="3" class="form-control radius-8 @error('descricao') is-invalid @enderror"
+                                          placeholder="Descreva a ocorrencia detalhadamente (min. 10 caracteres)..." required>{{ old('descricao') }}</textarea>
+                                @error('descricao') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Providencia Recomendada</label>
+                                <textarea name="providencia" rows="2" class="form-control radius-8 @error('providencia') is-invalid @enderror"
+                                          placeholder="Providencia a ser tomada...">{{ old('providencia') }}</textarea>
+                                @error('providencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
+                                    <iconify-icon icon="solar:add-circle-bold" class="me-4"></iconify-icon> Registrar Ocorrencia
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                @endif
+            </div>
+
+            {{-- ABA: Relatorios Fiscais (IMP-054) --}}
+            <div class="tab-pane fade" id="tab-relatorios-fiscais">
+                {{-- Resumo --}}
+                <div class="row gy-3 mb-24">
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center">
+                            <span class="text-secondary-light text-sm">Total Relatorios</span>
+                            <h4 class="fw-bold mt-4 mb-0">{{ $resumoRelatoriosFiscais['total'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-success-focus">
+                            <span class="text-secondary-light text-sm">Conformes</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-success-main">{{ $resumoRelatoriosFiscais['conformes'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-danger-focus">
+                            <span class="text-secondary-light text-sm">Nao Conformes</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-danger-main">{{ $resumoRelatoriosFiscais['nao_conformes'] }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-16 border rounded text-center bg-primary-focus">
+                            <span class="text-secondary-light text-sm">Nota Media</span>
+                            <h4 class="fw-bold mt-4 mb-0 text-primary-main">{{ $resumoRelatoriosFiscais['nota_media'] ?? '—' }}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tabela de Relatorios Fiscais --}}
+                <table class="table table-hover mb-24">
+                    <thead>
+                        <tr>
+                            <th class="px-16 py-12">Periodo</th>
+                            <th class="px-16 py-12">Fiscal</th>
+                            <th class="px-16 py-12">Atividades</th>
+                            <th class="px-16 py-12 text-center">Conformidade</th>
+                            <th class="px-16 py-12 text-center">Nota</th>
+                            <th class="px-16 py-12 text-center">Ocorrencias</th>
+                            <th class="px-16 py-12">Registrado por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($contrato->relatoriosFiscais as $relatorio)
+                            <tr>
+                                <td class="px-16 py-12 text-sm">
+                                    {{ $relatorio->periodo_inicio->format('d/m/Y') }} a {{ $relatorio->periodo_fim->format('d/m/Y') }}
+                                </td>
+                                <td class="px-16 py-12 text-sm">{{ $relatorio->fiscal?->nome ?? '-' }}</td>
+                                <td class="px-16 py-12 text-sm">{{ Str::limit($relatorio->descricao_atividades, 80) }}</td>
+                                <td class="px-16 py-12 text-center">
+                                    @if ($relatorio->conformidade_geral)
+                                        <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Conforme</span>
+                                    @else
+                                        <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">Nao Conforme</span>
+                                    @endif
+                                </td>
+                                <td class="px-16 py-12 text-center fw-bold">
+                                    @if ($relatorio->nota_desempenho)
+                                        <span class="text-{{ $relatorio->nota_desempenho >= 7 ? 'success' : ($relatorio->nota_desempenho >= 5 ? 'warning' : 'danger') }}-main">
+                                            {{ $relatorio->nota_desempenho }}/10
+                                        </span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                                <td class="px-16 py-12 text-center">{{ $relatorio->ocorrencias_no_periodo }}</td>
+                                <td class="px-16 py-12 text-sm">{{ $relatorio->registradoPor?->nome ?? '-' }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhum relatorio fiscal registrado.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                {{-- Formulario de Novo Relatorio Fiscal --}}
+                @if (auth()->user()->hasPermission('relatorio_fiscal.criar') && $contrato->status !== \App\Enums\StatusContrato::Encerrado)
+                    <hr class="my-16">
+                    <h6 class="fw-semibold mb-12">Registrar Relatorio Fiscal</h6>
+                    <form action="{{ route('tenant.contratos.relatorios-fiscais.store', $contrato) }}" method="POST">
+                        @csrf
+                        <div class="row gy-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Periodo Inicio <span class="text-danger-main">*</span></label>
+                                <input type="date" name="periodo_inicio" value="{{ old('periodo_inicio') }}"
+                                       class="form-control radius-8 @error('periodo_inicio') is-invalid @enderror" required>
+                                @error('periodo_inicio') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Periodo Fim <span class="text-danger-main">*</span></label>
+                                <input type="date" name="periodo_fim" value="{{ old('periodo_fim') }}"
+                                       class="form-control radius-8 @error('periodo_fim') is-invalid @enderror" required>
+                                @error('periodo_fim') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Nota de Desempenho (1-10)</label>
+                                <input type="number" name="nota_desempenho" value="{{ old('nota_desempenho') }}" min="1" max="10"
+                                       class="form-control radius-8 @error('nota_desempenho') is-invalid @enderror" placeholder="1 a 10">
+                                @error('nota_desempenho') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao das Atividades <span class="text-danger-main">*</span></label>
+                                <textarea name="descricao_atividades" rows="3" class="form-control radius-8 @error('descricao_atividades') is-invalid @enderror"
+                                          placeholder="Descreva as atividades fiscalizadas no periodo (min. 10 caracteres)..." required>{{ old('descricao_atividades') }}</textarea>
+                                @error('descricao_atividades') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Conformidade Geral <span class="text-danger-main">*</span></label>
+                                <select name="conformidade_geral" class="form-control radius-8 form-select select2 @error('conformidade_geral') is-invalid @enderror"
+                                        data-placeholder="Conforme?" required>
+                                    <option value=""></option>
+                                    <option value="1" {{ old('conformidade_geral') == '1' ? 'selected' : '' }}>Conforme</option>
+                                    <option value="0" {{ old('conformidade_geral') == '0' ? 'selected' : '' }}>Nao Conforme</option>
+                                </select>
+                                @error('conformidade_geral') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                                <textarea name="observacoes" rows="2" class="form-control radius-8 @error('observacoes') is-invalid @enderror"
+                                          placeholder="Observacoes adicionais...">{{ old('observacoes') }}</textarea>
+                                @error('observacoes') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
+                                    <iconify-icon icon="solar:document-add-bold" class="me-4"></iconify-icon> Registrar Relatorio
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                @endif
             </div>
 
             {{-- ABA: Conformidade por Fase (IMP-050) --}}
