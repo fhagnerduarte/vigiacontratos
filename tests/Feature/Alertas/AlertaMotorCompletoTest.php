@@ -314,11 +314,12 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_regra4_contrato_vencido_nao_gera_alerta(): void
     {
-        Contrato::factory()->vencido()->create();
+        $contrato = Contrato::factory()->vencido()->create();
 
         AlertaService::verificarContratosSemFiscal();
 
         $this->assertDatabaseMissing('alertas', [
+            'contrato_id' => $contrato->id,
             'tipo_evento' => TipoEventoAlerta::ContratoSemFiscal->value,
         ]);
     }
@@ -636,13 +637,14 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_regra10_contrato_vencido_nao_gera_alerta(): void
     {
-        Contrato::factory()->vencido()->create([
+        $contrato = Contrato::factory()->vencido()->create([
             'data_inicio' => now()->subYear(),
         ]);
 
         AlertaService::verificarContratosParados();
 
         $this->assertDatabaseMissing('alertas', [
+            'contrato_id' => $contrato->id,
             'tipo_evento' => TipoEventoAlerta::ContratoParado->value,
         ]);
     }
@@ -692,24 +694,28 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_regra_desativada_nao_gera_alertas(): void
     {
-        ConfiguracaoAlertaAvancado::firstOrCreate(
+        $config = ConfiguracaoAlertaAvancado::firstOrCreate(
             ['tipo_evento' => TipoEventoAlerta::ContratoSemFiscal->value],
             ['is_ativo' => false]
         );
+        $config->update(['is_ativo' => false]);
 
-        Contrato::factory()->vigente()->create();
+        $contrato = Contrato::factory()->vigente()->create();
 
         $alertas = AlertaService::verificarContratosSemFiscal();
 
         $this->assertEquals(0, $alertas);
         $this->assertDatabaseMissing('alertas', [
+            'contrato_id' => $contrato->id,
             'tipo_evento' => TipoEventoAlerta::ContratoSemFiscal->value,
         ]);
     }
 
     public function test_regra_sem_configuracao_considera_ativa(): void
     {
-        // Sem nenhuma ConfiguracaoAlertaAvancado criada, a regra deve estar ativa por padrao
+        // Deletar config existente (seeder pode ter criado)
+        ConfiguracaoAlertaAvancado::where('tipo_evento', TipoEventoAlerta::ContratoSemFiscal->value)->delete();
+
         $contrato = Contrato::factory()->vigente()->create();
 
         $alertas = AlertaService::verificarContratosSemFiscal();
@@ -723,11 +729,11 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_model_configuracao_alerta_avancado_criacao(): void
     {
-        $config = ConfiguracaoAlertaAvancado::create([
-            'tipo_evento' => TipoEventoAlerta::ContratoParado->value,
-            'dias_inatividade' => 90,
-            'is_ativo' => true,
-        ]);
+        $config = ConfiguracaoAlertaAvancado::firstOrCreate(
+            ['tipo_evento' => TipoEventoAlerta::ContratoParado->value],
+            ['dias_inatividade' => 90, 'is_ativo' => true]
+        );
+        $config->update(['dias_inatividade' => 90, 'is_ativo' => true]);
 
         $this->assertDatabaseHas('configuracoes_alerta_avancado', [
             'tipo_evento' => 'contrato_parado',
@@ -740,14 +746,23 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_model_scope_ativos(): void
     {
-        ConfiguracaoAlertaAvancado::create([
-            'tipo_evento' => TipoEventoAlerta::ContratoParado->value,
-            'is_ativo' => true,
-        ]);
-        ConfiguracaoAlertaAvancado::create([
-            'tipo_evento' => TipoEventoAlerta::ContratoSemFiscal->value,
-            'is_ativo' => false,
-        ]);
+        $ativo = ConfiguracaoAlertaAvancado::firstOrCreate(
+            ['tipo_evento' => TipoEventoAlerta::ContratoParado->value],
+            ['is_ativo' => true]
+        );
+        $ativo->update(['is_ativo' => true]);
+
+        $inativo = ConfiguracaoAlertaAvancado::firstOrCreate(
+            ['tipo_evento' => TipoEventoAlerta::ContratoSemFiscal->value],
+            ['is_ativo' => false]
+        );
+        $inativo->update(['is_ativo' => false]);
+
+        // Desativar todos os outros para um teste limpo
+        ConfiguracaoAlertaAvancado::whereNotIn('tipo_evento', [
+            TipoEventoAlerta::ContratoParado->value,
+            TipoEventoAlerta::ContratoSemFiscal->value,
+        ])->update(['is_ativo' => false]);
 
         $ativos = ConfiguracaoAlertaAvancado::ativos()->count();
         $this->assertEquals(1, $ativos);
@@ -755,11 +770,11 @@ class AlertaMotorCompletoTest extends TestCase
 
     public function test_model_scope_por_tipo(): void
     {
-        ConfiguracaoAlertaAvancado::create([
-            'tipo_evento' => TipoEventoAlerta::FiscalSemRelatorio->value,
-            'dias_sem_relatorio' => 60,
-            'is_ativo' => true,
-        ]);
+        $config = ConfiguracaoAlertaAvancado::firstOrCreate(
+            ['tipo_evento' => TipoEventoAlerta::FiscalSemRelatorio->value],
+            ['dias_sem_relatorio' => 60, 'is_ativo' => true]
+        );
+        $config->update(['dias_sem_relatorio' => 60, 'is_ativo' => true]);
 
         $config = ConfiguracaoAlertaAvancado::porTipo(TipoEventoAlerta::FiscalSemRelatorio)->first();
 

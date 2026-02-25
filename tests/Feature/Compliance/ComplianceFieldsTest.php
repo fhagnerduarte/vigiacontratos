@@ -3,6 +3,7 @@
 namespace Tests\Feature\Compliance;
 
 use App\Enums\RegimeExecucao;
+use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
 use App\Enums\TipoFiscal;
 use App\Models\Contrato;
@@ -491,6 +492,7 @@ class ComplianceFieldsTest extends TestCase
 
         $contrato = Contrato::factory()->vigente()->create([
             'secretaria_id' => $secretaria->id,
+            'tipo' => TipoContrato::Servico,
             'data_inicio' => '2026-02-01',
             'modalidade_contratacao' => 'pregao_eletronico',
         ]);

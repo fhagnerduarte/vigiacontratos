@@ -15,7 +15,7 @@ class OcorrenciasController extends Controller
     public function store(StoreOcorrenciaRequest $request, Contrato $contrato): RedirectResponse
     {
         $dados = $request->validated();
-        $resultado = OcorrenciaService::registrar($contrato, $dados, $request->user());
+        $resultado = OcorrenciaService::registrar($contrato, $dados, $request->user(), $request->ip());
 
         $mensagem = 'Ocorrencia registrada com sucesso.';
         $tipo = 'success';
@@ -38,7 +38,8 @@ class OcorrenciasController extends Controller
         OcorrenciaService::resolver(
             $ocorrencia,
             $request->user(),
-            $request->input('observacoes')
+            $request->input('observacoes'),
+            $request->ip()
         );
 
         return redirect()->route('tenant.contratos.show', $ocorrencia->contrato)

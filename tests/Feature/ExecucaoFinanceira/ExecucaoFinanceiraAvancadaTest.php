@@ -26,6 +26,7 @@ class ExecucaoFinanceiraAvancadaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpTenant();
         $this->seedBaseData();
         Queue::fake();
     }

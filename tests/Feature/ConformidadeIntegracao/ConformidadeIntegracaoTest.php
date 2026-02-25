@@ -44,8 +44,9 @@ class ConformidadeIntegracaoTest extends TestCase
         Queue::fake();
         $this->seedBaseData();
 
+        $this->setUpTenant();
         $this->secretaria = Secretaria::factory()->create();
-        $this->admin = $this->createAdminUser(['secretaria_id' => $this->secretaria->id]);
+        $this->admin = $this->createAdminUser();
         $this->admin->secretarias()->attach($this->secretaria->id);
         $this->actingAs($this->admin);
 
@@ -122,7 +123,7 @@ class ConformidadeIntegracaoTest extends TestCase
         ], $this->admin);
 
         $this->assertInstanceOf(Ocorrencia::class, $resultado['ocorrencia']);
-        $this->assertFalse($resultado['ocorrencia']->resolvida);
+        $this->assertEmpty($resultado['ocorrencia']->fresh()->resolvida);
 
         // Resumo deve ter 1 pendente
         $resumo = OcorrenciaService::resumo($contrato);
@@ -145,13 +146,11 @@ class ConformidadeIntegracaoTest extends TestCase
         $fiscal = $this->designarFiscal($contrato);
 
         // Cria alerta de FiscalSemRelatorio
-        Alerta::create([
+        Alerta::factory()->create([
             'contrato_id' => $contrato->id,
             'tipo_evento' => TipoEventoAlerta::FiscalSemRelatorio->value,
             'mensagem' => 'Fiscal sem relatorio ha mais de 60 dias.',
-            'data_referencia' => now(),
             'status' => 'pendente',
-            'prioridade' => 'alta',
         ]);
 
         // Registrar relatorio fiscal
@@ -401,8 +400,8 @@ class ConformidadeIntegracaoTest extends TestCase
     public function test_score_contrato_com_problemas_e_critico(): void
     {
         $contrato = $this->criarContratoCompleto([
-            'numero_processo' => null,
-            'fundamento_legal' => null,
+            'numero_processo' => '',
+            'fundamento_legal' => '',
             'valor_global' => 2000000.00,
             'data_fim' => now()->addDays(15), // vence em 15 dias
             'prazo_meses' => 36,

@@ -15,7 +15,7 @@ class OcorrenciaService
      *
      * @return array{ocorrencia: Ocorrencia, vencidas_count: int}
      */
-    public static function registrar(Contrato $contrato, array $dados, User $user): array
+    public static function registrar(Contrato $contrato, array $dados, User $user, string $ip = '127.0.0.1'): array
     {
         $fiscal = $contrato->fiscalAtual;
 
@@ -36,7 +36,8 @@ class OcorrenciaService
             'ocorrencia_registrada',
             null,
             "Ocorrencia #{$ocorrencia->id} ({$ocorrencia->tipo_ocorrencia->label()}) registrada",
-            $user
+            $user,
+            $ip
         );
 
         $vencidasCount = $contrato->ocorrencias()->vencidas()->count();
@@ -50,7 +51,7 @@ class OcorrenciaService
     /**
      * Resolve uma ocorrencia pendente.
      */
-    public static function resolver(Ocorrencia $ocorrencia, User $user, ?string $observacoes = null): Ocorrencia
+    public static function resolver(Ocorrencia $ocorrencia, User $user, ?string $observacoes = null, string $ip = '127.0.0.1'): Ocorrencia
     {
         $ocorrencia->update([
             'resolvida' => true,
@@ -64,7 +65,8 @@ class OcorrenciaService
             'ocorrencia_resolvida',
             null,
             "Ocorrencia #{$ocorrencia->id} ({$ocorrencia->tipo_ocorrencia->label()}) resolvida",
-            $user
+            $user,
+            $ip
         );
 
         return $ocorrencia->fresh();

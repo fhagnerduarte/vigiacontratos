@@ -451,9 +451,10 @@ class EncerramentoTest extends TestCase
         $response = $this->post(route('tenant.contratos.encerramento.iniciar', $contrato));
 
         $response->assertRedirect(route('tenant.contratos.encerramento.show', $contrato));
-        $this->assertDatabaseHas('encerramentos', [
-            'contrato_id' => $contrato->id,
-        ]);
+        $this->assertNotNull(
+            Encerramento::where('contrato_id', $contrato->id)->first(),
+            'Encerramento deveria ter sido criado para o contrato'
+        );
     }
 
     public function test_controller_verificar_financeiro(): void
@@ -471,17 +472,16 @@ class EncerramentoTest extends TestCase
         );
 
         $response->assertRedirect(route('tenant.contratos.encerramento.show', $contrato));
-        $this->assertDatabaseHas('encerramentos', [
-            'contrato_id' => $contrato->id,
-            'etapa_atual' => 'termo_provisorio',
-        ]);
+        $enc = Encerramento::where('contrato_id', $contrato->id)->first();
+        $this->assertNotNull($enc);
+        $this->assertEquals(EtapaEncerramento::TermoProvisorio, $enc->etapa_atual);
     }
 
     public function test_controller_termo_provisorio(): void
     {
         $this->actingAs($this->admin);
         $contrato = Contrato::factory()->vigente()->create();
-        $enc = Encerramento::factory()->etapa(EtapaEncerramento::TermoProvisorio)
+        Encerramento::factory()->etapa(EtapaEncerramento::TermoProvisorio)
             ->create(['contrato_id' => $contrato->id]);
 
         $response = $this->post(
@@ -490,10 +490,9 @@ class EncerramentoTest extends TestCase
         );
 
         $response->assertRedirect(route('tenant.contratos.encerramento.show', $contrato));
-        $this->assertDatabaseHas('encerramentos', [
-            'contrato_id' => $contrato->id,
-            'etapa_atual' => 'avaliacao_fiscal',
-        ]);
+        $enc = Encerramento::where('contrato_id', $contrato->id)->first();
+        $this->assertNotNull($enc);
+        $this->assertEquals(EtapaEncerramento::AvaliacaoFiscal, $enc->etapa_atual);
     }
 
     public function test_controller_avaliacao_fiscal(): void
@@ -512,10 +511,9 @@ class EncerramentoTest extends TestCase
         );
 
         $response->assertRedirect(route('tenant.contratos.encerramento.show', $contrato));
-        $this->assertDatabaseHas('encerramentos', [
-            'contrato_id' => $contrato->id,
-            'etapa_atual' => 'termo_definitivo',
-        ]);
+        $enc = Encerramento::where('contrato_id', $contrato->id)->first();
+        $this->assertNotNull($enc);
+        $this->assertEquals(EtapaEncerramento::TermoDefinitivo, $enc->etapa_atual);
     }
 
     public function test_controller_termo_definitivo(): void
@@ -530,10 +528,9 @@ class EncerramentoTest extends TestCase
         );
 
         $response->assertRedirect(route('tenant.contratos.encerramento.show', $contrato));
-        $this->assertDatabaseHas('encerramentos', [
-            'contrato_id' => $contrato->id,
-            'etapa_atual' => 'quitacao',
-        ]);
+        $enc = Encerramento::where('contrato_id', $contrato->id)->first();
+        $this->assertNotNull($enc);
+        $this->assertEquals(EtapaEncerramento::Quitacao, $enc->etapa_atual);
     }
 
     public function test_controller_quitacao_encerra_contrato(): void

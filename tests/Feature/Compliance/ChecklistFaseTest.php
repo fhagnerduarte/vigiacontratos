@@ -384,37 +384,38 @@ class ChecklistFaseTest extends TestCase
 
     public function test_configuracao_checklist_scope_fase(): void
     {
-        ConfiguracaoChecklistDocumento::create([
+        ConfiguracaoChecklistDocumento::firstOrCreate([
             'fase' => FaseContratual::Formalizacao->value,
             'tipo_contrato' => 'servico',
             'tipo_documento' => TipoDocumentoContratual::ContratoOriginal->value,
-            'is_ativo' => true,
-        ]);
-        ConfiguracaoChecklistDocumento::create([
+        ], ['is_ativo' => true]);
+        ConfiguracaoChecklistDocumento::firstOrCreate([
             'fase' => FaseContratual::Publicacao->value,
             'tipo_contrato' => 'servico',
             'tipo_documento' => TipoDocumentoContratual::PublicacaoOficial->value,
-            'is_ativo' => true,
-        ]);
+        ], ['is_ativo' => true]);
 
         $formalizacao = ConfiguracaoChecklistDocumento::fase(FaseContratual::Formalizacao)->get();
-        $this->assertCount(1, $formalizacao);
+        $this->assertGreaterThanOrEqual(1, $formalizacao->count());
+        $this->assertTrue($formalizacao->every(fn ($c) => $c->fase === FaseContratual::Formalizacao));
     }
 
     public function test_configuracao_checklist_scope_ativos(): void
     {
-        ConfiguracaoChecklistDocumento::create([
+        ConfiguracaoChecklistDocumento::firstOrCreate([
             'fase' => FaseContratual::Formalizacao->value,
             'tipo_contrato' => 'servico',
             'tipo_documento' => TipoDocumentoContratual::ContratoOriginal->value,
-            'is_ativo' => true,
-        ]);
-        ConfiguracaoChecklistDocumento::create([
+        ], ['is_ativo' => true]);
+
+        // Usar tipo_documento unico que nao exista no seeder
+        $inativo = ConfiguracaoChecklistDocumento::firstOrCreate([
             'fase' => FaseContratual::Formalizacao->value,
             'tipo_contrato' => 'servico',
             'tipo_documento' => TipoDocumentoContratual::ParecerJuridico->value,
-            'is_ativo' => false,
-        ]);
+        ], ['is_ativo' => false]);
+        // Garantir que esteja inativo (pode ter sido criado pelo seeder como ativo)
+        $inativo->update(['is_ativo' => false]);
 
         $ativos = ConfiguracaoChecklistDocumento::ativos()->get();
         $this->assertTrue($ativos->every(fn ($c) => $c->is_ativo));

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\OcorrenciaRelatorioFiscal;
 
+use App\Enums\StatusAlerta;
 use App\Enums\StatusContrato;
 use App\Enums\TipoEventoAlerta;
 use App\Enums\TipoOcorrencia;
@@ -27,6 +28,7 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpTenant();
         Queue::fake();
         $this->seedBaseData();
     }
@@ -34,7 +36,7 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
     private function criarContratoComFiscal(array $overrides = []): array
     {
         $secretaria = Secretaria::factory()->create();
-        $user = $this->createAdminUser(['secretaria_id' => $secretaria->id]);
+        $user = $this->createAdminUser();
         $user->secretarias()->attach($secretaria->id);
         $this->actingAs($user);
 
@@ -313,13 +315,11 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
         [$contrato, $fiscal, $user] = $this->criarContratoComFiscal();
 
         // Cria alerta de FiscalSemRelatorio pendente
-        Alerta::create([
+        Alerta::factory()->create([
             'contrato_id' => $contrato->id,
             'tipo_evento' => TipoEventoAlerta::FiscalSemRelatorio->value,
             'mensagem' => 'Fiscal sem relatorio ha mais de 60 dias.',
-            'data_referencia' => now(),
             'status' => 'pendente',
-            'prioridade' => 'alta',
         ]);
 
         $resultado = RelatorioFiscalService::registrar($contrato, [
@@ -334,7 +334,7 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
         $alerta = Alerta::where('contrato_id', $contrato->id)
             ->where('tipo_evento', TipoEventoAlerta::FiscalSemRelatorio->value)
             ->first();
-        $this->assertEquals('resolvido', $alerta->status);
+        $this->assertEquals(StatusAlerta::Resolvido, $alerta->status);
     }
 
     public function test_relatorio_fiscal_service_resumo(): void
@@ -379,10 +379,10 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
         $response->assertRedirect(route('tenant.contratos.show', $contrato));
         $response->assertSessionHas('success');
 
-        $this->assertDatabaseHas('ocorrencias', [
-            'contrato_id' => $contrato->id,
-            'tipo_ocorrencia' => 'notificacao',
-        ]);
+        $ocorrencia = Ocorrencia::where('contrato_id', $contrato->id)
+            ->where('tipo_ocorrencia', 'notificacao')
+            ->first();
+        $this->assertNotNull($ocorrencia, 'Ocorrencia deveria ter sido criada via controller');
     }
 
     public function test_controller_store_ocorrencia_valida_campos_obrigatorios(): void
@@ -435,11 +435,10 @@ class OcorrenciaRelatorioFiscalTest extends TestCase
         $response->assertRedirect(route('tenant.contratos.show', $contrato));
         $response->assertSessionHas('success');
 
-        $this->assertDatabaseHas('relatorios_fiscais', [
-            'contrato_id' => $contrato->id,
-            'conformidade_geral' => true,
-            'nota_desempenho' => 7,
-        ]);
+        $relatorio = RelatorioFiscal::where('contrato_id', $contrato->id)->first();
+        $this->assertNotNull($relatorio, 'Relatorio fiscal deveria ter sido criado via controller');
+        $this->assertTrue($relatorio->conformidade_geral);
+        $this->assertEquals(7, (int) $relatorio->nota_desempenho);
     }
 
     public function test_controller_store_relatorio_fiscal_valida_campos(): void

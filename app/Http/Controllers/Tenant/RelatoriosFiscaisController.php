@@ -13,7 +13,7 @@ class RelatoriosFiscaisController extends Controller
     public function store(StoreRelatorioFiscalRequest $request, Contrato $contrato): RedirectResponse
     {
         $dados = $request->validated();
-        $resultado = RelatorioFiscalService::registrar($contrato, $dados, $request->user());
+        $resultado = RelatorioFiscalService::registrar($contrato, $dados, $request->user(), $request->ip());
 
         $mensagem = 'Relatorio fiscal registrado com sucesso.';
         $tipo = 'success';

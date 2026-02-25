@@ -14,7 +14,7 @@ class RelatorioFiscalService
      *
      * @return array{relatorio: RelatorioFiscal, alerta_resolvido: bool}
      */
-    public static function registrar(Contrato $contrato, array $dados, User $user): array
+    public static function registrar(Contrato $contrato, array $dados, User $user, string $ip = '127.0.0.1'): array
     {
         $fiscalId = $dados['fiscal_id'] ?? $contrato->fiscalAtual?->id;
 
@@ -51,7 +51,8 @@ class RelatorioFiscalService
             'relatorio_fiscal_registrado',
             null,
             "Relatorio fiscal #{$relatorio->id} registrado (periodo {$relatorio->periodo_inicio->format('d/m/Y')} a {$relatorio->periodo_fim->format('d/m/Y')})",
-            $user
+            $user,
+            $ip
         );
 
         return [
