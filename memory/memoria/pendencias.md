@@ -347,35 +347,35 @@
 
 ### Módulo: Conformidade LAI — Lei 12.527/2011 (Fase 8)
 
-**IMP-056: Classificação de Sigilo + Campos LAI** *(Pendente)*
-- [ ] Migration 000046: contratos +5 campos (classificacao_sigilo, classificado_por, data_classificacao, justificativa_sigilo, publicado_portal), documentos +2 campos *(IMP-056)*
-- [ ] Enum ClassificacaoSigilo (publico/reservado/secreto/ultrassecreto) com prazo_anos() LAI art. 24 *(IMP-056)*
-- [ ] ClassificacaoService: classificar/desclassificar com auditoria, desclassificacao automatica *(IMP-056)*
-- [ ] Command lai:verificar-desclassificacao (schedule mensal) *(IMP-056)*
-- [ ] Model Contrato: scopes publicos/visivelNoPortal, accessor visivelNoPortal *(IMP-056)*
-- [ ] 4 permissoes novas: classificacao.visualizar/classificar/desclassificar/justificar *(IMP-056)*
-- [ ] Views: campos classificacao no formulario edit contrato *(IMP-056)*
-- [ ] Testes: ClassificacaoSigiloTest (~20 testes) *(IMP-056)*
+**IMP-056: Classificação de Sigilo + Campos LAI** *(Concluído)*
+- [x] Migration 000046: contratos +5 campos (classificacao_sigilo, classificado_por, data_classificacao, justificativa_sigilo, publicado_portal), documentos +2 campos *(IMP-056)*
+- [x] Enum ClassificacaoSigilo (publico/reservado/secreto/ultrassecreto) com prazo_anos() LAI art. 24 *(IMP-056)*
+- [x] ClassificacaoService: classificar/desclassificar com auditoria, desclassificacao automatica *(IMP-056)*
+- [x] Command lai:verificar-desclassificacao (schedule mensal) *(IMP-056)*
+- [x] Model Contrato: scopes publicos/visivelNoPortal, accessor visivelNoPortal *(IMP-056)*
+- [x] 4 permissoes novas: classificacao.visualizar/classificar/desclassificar/justificar *(IMP-056)*
+- [x] Views: campos classificacao no formulario edit contrato *(IMP-056)*
+- [x] Testes: ClassificacaoSigiloTest (24 testes, 62 assertions) *(IMP-056)*
 
-**IMP-057: Portal Público de Contratos (Transparência Ativa)** *(Pendente)*
-- [ ] routes/portal.php: rotas guest /{slug}/portal/* (contratos, fornecedores, dados-abertos) *(IMP-057)*
-- [ ] Middleware ResolveTenantPublic: resolve tenant pelo slug sem autenticacao *(IMP-057)*
-- [ ] PortalController: index, contratos, contratoDetalhe, fornecedores, dadosAbertos *(IMP-057)*
-- [ ] DadosAbertosService: exportarContratosJson/Csv, obterIndicadoresPublicos *(IMP-057)*
-- [ ] Views portal/: layout publico, home, listagem contratos, detalhe, fornecedores, dados abertos *(IMP-057)*
-- [ ] Integracao LGPDService: mascaramento CPF/dados pessoais no portal *(IMP-057)*
-- [ ] Testes: PortalPublicoTest (~25 testes) *(IMP-057)*
+**IMP-057: Portal Público de Contratos (Transparência Ativa)** *(Concluído)*
+- [x] routes/portal.php: rotas guest /{slug}/portal/* (contratos, fornecedores, dados-abertos) *(IMP-057)*
+- [x] Middleware ResolveTenantPublic: resolve tenant pelo slug sem autenticacao *(IMP-057)*
+- [x] PortalController: index, contratos, contratoDetalhe, fornecedores, dadosAbertos *(IMP-057)*
+- [x] DadosAbertosService: exportarContratosJson/Csv, obterIndicadoresPublicos *(IMP-057)*
+- [x] Views portal/: layout publico, home, listagem contratos, detalhe, fornecedores, dados abertos *(IMP-057)*
+- [x] Integracao LGPDService: mascaramento CPF/dados pessoais no portal *(IMP-057)*
+- [x] Testes: PortalPublicoTest (16 testes, 44 assertions) *(IMP-057)*
 
-**IMP-058: Módulo SIC/e-SIC (Transparência Passiva)** *(Pendente)*
-- [ ] Migration 000047: tabelas solicitacoes_lai + historico_solicitacoes_lai (append-only + trigger) *(IMP-058)*
-- [ ] Enums StatusSolicitacaoLai (6 cases) + ClassificacaoRespostaLai (3 cases) *(IMP-058)*
-- [ ] Models SolicitacaoLai + HistoricoSolicitacaoLai (imutavel) *(IMP-058)*
-- [ ] SolicitacaoLaiService: criar, analisar, responder, prorrogar, indeferir, resumo *(IMP-058)*
-- [ ] SolicitacaoLaiPublicController: rotas publicas (formulario, store, consultar, show) *(IMP-058)*
-- [ ] SolicitacoesLaiController: rotas internas (index, show, analisar, responder, prorrogar) *(IMP-058)*
-- [ ] 6 permissoes novas: lai.visualizar/analisar/responder/prorrogar/indeferir/relatorio *(IMP-058)*
-- [ ] Views portal/lai/ + solicitacoes-lai/ *(IMP-058)*
-- [ ] Testes: SolicitacaoLaiTest (~30 testes) *(IMP-058)*
+**IMP-058: Módulo SIC/e-SIC (Transparência Passiva)** *(Concluído)*
+- [x] Migration 000047: tabelas solicitacoes_lai + historico_solicitacoes_lai (append-only via booted()) *(IMP-058)*
+- [x] Enums StatusSolicitacaoLai (6 cases) + ClassificacaoRespostaLai (3 cases) *(IMP-058)*
+- [x] Models SolicitacaoLai + HistoricoSolicitacaoLai (imutavel via booted()) *(IMP-058)*
+- [x] SolicitacaoLaiService: criar, analisar, responder, prorrogar, indeferir, resumo *(IMP-058)*
+- [x] SolicitacaoLaiPublicController: rotas publicas (formulario, store, consultar, show) *(IMP-058)*
+- [x] SolicitacoesLaiController: rotas internas (index, show, analisar, responder, prorrogar, indeferir) *(IMP-058)*
+- [x] 6 permissoes novas: lai.visualizar/analisar/responder/prorrogar/indeferir/relatorio *(IMP-058)*
+- [x] Views portal/lai/ + solicitacoes-lai/ *(IMP-058)*
+- [x] Testes: SolicitacaoLaiTest (32 testes, 139 assertions) *(IMP-058)*
 
 **IMP-059: Alertas LAI + Publicação Automatizada** *(Pendente)*
 - [ ] TipoEventoAlerta +4 cases LAI (ContratoNaoPublicadoPortal, SolicitacaoLaiVencendo, SolicitacaoLaiVencida, ClassificacaoSemJustificativa) *(IMP-059)*
