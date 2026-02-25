@@ -19,12 +19,6 @@
                 A autenticação em dois fatores é obrigatória para administradores. Escaneie o QR code com seu aplicativo autenticador.
             </p>
 
-            @if (session('error'))
-                <div class="alert alert-danger radius-8 mb-16">
-                    <p class="mb-0 text-sm">{{ session('error') }}</p>
-                </div>
-            @endif
-
             @if ($errors->any())
                 <div class="alert alert-danger radius-8 mb-16">
                     @foreach ($errors->all() as $error)

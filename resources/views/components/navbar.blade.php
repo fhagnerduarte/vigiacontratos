@@ -9,10 +9,17 @@
                 <button type="button" class="sidebar-mobile-toggle">
                     <iconify-icon icon="heroicons:bars-3-solid" class="icon"></iconify-icon>
                 </button>
-                <form class="navbar-search">
-                    <input type="text" name="search" placeholder="Buscar...">
+                @auth
+                <form class="navbar-search position-relative" id="globalSearchForm" autocomplete="off">
+                    <input type="text" name="search" id="globalSearchInput"
+                           placeholder="Buscar contratos, fornecedores..."
+                           data-search-url="{{ route('tenant.busca') }}"
+                           autocomplete="off">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                    <kbd class="search-shortcut-hint position-absolute top-50 translate-middle-y bg-neutral-200 text-neutral-600 px-6 py-2 radius-4" style="right: 12px;">/</kbd>
+                    <div id="globalSearchResults" class="dropdown-menu w-100 p-0 shadow-lg" style="display: none; max-height: 400px; overflow-y: auto;"></div>
                 </form>
+                @endauth
             </div>
         </div>
         <div class="col-auto">

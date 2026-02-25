@@ -17,22 +17,9 @@
     @endif
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
@@ -84,7 +71,8 @@
                                 @endif
                                 @if (auth()->user()->hasPermission('configuracao.editar') && ! $role->is_padrao && $role->users_count === 0)
                                     <form action="{{ route('tenant.roles.destroy', $role) }}" method="POST"
-                                          onsubmit="return confirm('Tem certeza que deseja remover este perfil?')">
+                                          data-confirm="Tem certeza que deseja remover este perfil?"
+                                          data-confirm-title="Remover perfil">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -104,6 +92,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 

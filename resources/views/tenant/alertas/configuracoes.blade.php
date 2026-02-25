@@ -15,13 +15,6 @@
     </a>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-header">
         <h6 class="card-title mb-0">Prazos de Alerta (RN-015)</h6>

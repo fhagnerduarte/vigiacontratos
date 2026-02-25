@@ -17,15 +17,9 @@
     @endif
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
@@ -80,7 +74,8 @@
                                 @endif
                                 @if (auth()->user()->hasPermission('usuario.desativar') && $user->is_ativo && $user->id !== auth()->id())
                                     <form action="{{ route('tenant.users.destroy', $user) }}" method="POST"
-                                          onsubmit="return confirm('Tem certeza que deseja desativar este usuario?')">
+                                          data-confirm="Tem certeza que deseja desativar este usuario?"
+                                          data-confirm-title="Desativar usuario">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -100,6 +95,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 

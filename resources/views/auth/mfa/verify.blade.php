@@ -19,12 +19,6 @@
                 Insira o código de 6 dígitos gerado pelo seu aplicativo autenticador.
             </p>
 
-            @if (session('error'))
-                <div class="alert alert-danger radius-8 mb-16">
-                    <p class="mb-0 text-sm">{{ session('error') }}</p>
-                </div>
-            @endif
-
             @if ($errors->any())
                 <div class="alert alert-danger radius-8 mb-16">
                     @foreach ($errors->all() as $error)

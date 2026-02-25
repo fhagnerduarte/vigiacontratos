@@ -21,13 +21,6 @@
     </a>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <form action="{{ route('tenant.permissoes.update', $role) }}" method="POST">
     @csrf
     @method('PUT')

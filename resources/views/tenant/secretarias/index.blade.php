@@ -15,13 +15,6 @@
     </a>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
@@ -51,7 +44,8 @@
                                     <iconify-icon icon="lucide:edit"></iconify-icon>
                                 </a>
                                 <form action="{{ route('tenant.secretarias.destroy', $secretaria) }}" method="POST"
-                                      onsubmit="return confirm('Tem certeza que deseja remover esta secretaria?')">
+                                      data-confirm="Tem certeza que deseja remover esta secretaria?"
+                                      data-confirm-title="Remover secretaria">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

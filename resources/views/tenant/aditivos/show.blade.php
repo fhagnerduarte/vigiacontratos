@@ -9,28 +9,6 @@
 
 @section('content')
 
-{{-- Flash Messages --}}
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('warning'))
-    <div class="alert alert-warning alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('warning') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 {{-- Header Card --}}
 <div class="card radius-8 border-0 mb-24">
     <div class="card-body p-24">
@@ -75,7 +53,8 @@
 @if ($aditivo->status->value === 'vigente' && auth()->user()->hasPermission('aditivo.aprovar'))
     <div class="d-flex justify-content-end mb-24">
         <form action="{{ route('tenant.aditivos.cancelar', $aditivo) }}" method="POST"
-              onsubmit="return confirm('Tem certeza que deseja cancelar este aditivo? Os valores do contrato serao recalculados. Esta acao nao pode ser desfeita.');">
+              data-confirm="Tem certeza que deseja cancelar este aditivo? Os valores do contrato serao recalculados. Esta acao nao pode ser desfeita."
+              data-confirm-title="Cancelar aditivo">
             @csrf
             <button type="submit" class="btn btn-outline-danger-600 radius-8">
                 <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon> Cancelar Aditivo

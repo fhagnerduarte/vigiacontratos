@@ -8,6 +8,48 @@
     if (typeof dashboardData === 'undefined') return;
 
     // ============================================
+    // 0. RadialBar — Score de Gestao (RN-075 a RN-077)
+    // ============================================
+    if (document.getElementById('chartScoreGestao') && dashboardData.score) {
+        var scoreData = dashboardData.score;
+        var optionsScore = {
+            series: [scoreData.score],
+            chart: {
+                type: 'radialBar',
+                height: 200,
+                fontFamily: 'inherit'
+            },
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '60%' },
+                    track: { background: '#e5e7eb', strokeWidth: '100%' },
+                    dataLabels: {
+                        name: {
+                            show: true,
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            offsetY: -8,
+                            color: scoreData.cor_hex
+                        },
+                        value: {
+                            show: true,
+                            fontSize: '28px',
+                            fontWeight: 700,
+                            offsetY: 4,
+                            formatter: function (val) { return Math.round(val); }
+                        }
+                    }
+                }
+            },
+            labels: [scoreData.classificacao],
+            colors: [scoreData.cor_hex],
+            stroke: { lineCap: 'round' }
+        };
+
+        new ApexCharts(document.getElementById('chartScoreGestao'), optionsScore).render();
+    }
+
+    // ============================================
     // 1. Donut — Mapa de Risco (RN-062 a RN-065)
     // ============================================
     if (document.getElementById('chartMapaRisco') && dashboardData.risco) {
@@ -20,7 +62,17 @@
                 chart: {
                     type: 'donut',
                     height: 260,
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    events: {
+                        dataPointSelection: function (event, chartContext, config) {
+                            var niveis = ['baixo', 'medio', 'alto'];
+                            var nivel = niveis[config.dataPointIndex];
+                            if (nivel) {
+                                window.location.href = window.location.pathname.replace(/\/$/, '')
+                                    .replace(/\/[^\/]*$/, '') + '/contratos?nivel_risco=' + nivel;
+                            }
+                        }
+                    }
                 },
                 labels: ['Baixo', 'Medio', 'Alto'],
                 colors: ['#22c55e', '#f59e0b', '#ef4444'],
@@ -54,6 +106,13 @@
                         return Math.round(val) + '%';
                     }
                 },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + ' contrato(s) — clique para filtrar';
+                        }
+                    }
+                },
                 responsive: [{
                     breakpoint: 480,
                     options: {
@@ -82,7 +141,17 @@
                 type: 'bar',
                 height: 300,
                 fontFamily: 'inherit',
-                toolbar: { show: false }
+                toolbar: { show: false },
+                events: {
+                    dataPointSelection: function (event, chartContext, config) {
+                        var janelas = ['0-30', '31-60', '61-90', '91-120', '120+'];
+                        var janela = janelas[config.dataPointIndex];
+                        if (janela) {
+                            window.location.href = window.location.pathname.replace(/\/$/, '')
+                                .replace(/\/[^\/]*$/, '') + '/painel-risco';
+                        }
+                    }
+                }
             },
             plotOptions: {
                 bar: {
@@ -108,7 +177,7 @@
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return val + ' contrato(s)';
+                        return val + ' contrato(s) — clique para ver detalhes';
                     }
                 }
             },

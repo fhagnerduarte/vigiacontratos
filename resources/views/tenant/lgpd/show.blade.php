@@ -16,20 +16,6 @@
     </a>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
 <div class="card">
     <div class="card-body p-24">
         <div class="row gy-3">
@@ -106,7 +92,9 @@
             <h6 class="card-title mb-0">Processar Solicitacao</h6>
         </div>
         <div class="card-body p-24">
-            <form action="{{ route('tenant.lgpd.processar', $solicitacao) }}" method="POST">
+            <form action="{{ route('tenant.lgpd.processar', $solicitacao) }}" method="POST"
+                  data-confirm="Tem certeza que deseja marcar esta solicitacao como processada? Esta acao nao pode ser desfeita."
+                  data-confirm-title="Processar solicitacao LGPD">
                 @csrf
                 <div class="mb-16">
                     <label for="observacao" class="form-label fw-semibold">
@@ -121,8 +109,7 @@
                     @enderror
                     <small class="text-neutral-500">Registre o que foi feito para atender a solicitacao do titular dos dados.</small>
                 </div>
-                <button type="submit" class="btn btn-success-600 d-flex align-items-center gap-4"
-                        onclick="return confirm('Tem certeza que deseja marcar esta solicitacao como processada? Esta acao nao pode ser desfeita.')">
+                <button type="submit" class="btn btn-success-600 d-flex align-items-center gap-4">
                     <iconify-icon icon="solar:check-circle-bold" class="text-lg"></iconify-icon>
                     Marcar como Processado
                 </button>

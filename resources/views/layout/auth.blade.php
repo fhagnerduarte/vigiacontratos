@@ -7,6 +7,8 @@
 
     @yield('content')
 
+    <x-toast />
+
     <x-script />
 
 </body>

@@ -9,13 +9,6 @@
 
 @section('content')
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 {{-- Cards de Indicadores de Completude (RN-132) --}}
 <div class="row row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4 mb-24">
     <div class="col">

@@ -11,20 +11,6 @@
 
 @section('content')
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 {{-- Header --}}
 <div class="card radius-8 border-0 mb-24">
     <div class="card-body p-24">
@@ -58,10 +44,10 @@
                 verificacao financeira, termo provisorio, avaliacao fiscal, termo definitivo, quitacao e conclusao.
             </p>
             @if (auth()->user()->hasPermission('encerramento.iniciar'))
-                <form action="{{ route('tenant.contratos.encerramento.iniciar', $contrato) }}" method="POST" class="d-inline">
+                <form action="{{ route('tenant.contratos.encerramento.iniciar', $contrato) }}" method="POST" class="d-inline"
+                      data-confirm="Deseja iniciar o processo de encerramento deste contrato?">
                     @csrf
-                    <button type="submit" class="btn btn-primary radius-8"
-                            onclick="return confirm('Deseja iniciar o processo de encerramento deste contrato?')">
+                    <button type="submit" class="btn btn-primary radius-8">
                         <iconify-icon icon="solar:play-bold" class="me-4"></iconify-icon> Iniciar Processo de Encerramento
                     </button>
                 </form>
@@ -232,10 +218,10 @@
                     </p>
 
                     @if (auth()->user()->hasPermission('encerramento.registrar_termo'))
-                        <form action="{{ route('tenant.contratos.encerramento.termo-definitivo', $contrato) }}" method="POST">
+                        <form action="{{ route('tenant.contratos.encerramento.termo-definitivo', $contrato) }}" method="POST"
+                              data-confirm="Confirma o registro do termo de recebimento definitivo?">
                             @csrf
-                            <button type="submit" class="btn btn-primary radius-8"
-                                    onclick="return confirm('Confirma o registro do termo de recebimento definitivo?')">
+                            <button type="submit" class="btn btn-primary radius-8">
                                 <iconify-icon icon="solar:document-add-bold" class="me-4"></iconify-icon> Registrar Termo Definitivo
                             </button>
                         </form>
@@ -248,15 +234,16 @@
                     </div>
 
                     @if (auth()->user()->hasPermission('encerramento.quitar'))
-                        <form action="{{ route('tenant.contratos.encerramento.quitacao', $contrato) }}" method="POST">
+                        <form action="{{ route('tenant.contratos.encerramento.quitacao', $contrato) }}" method="POST"
+                              data-confirm="Confirma a quitacao e encerramento formal do contrato? Esta acao nao pode ser desfeita."
+                              data-confirm-title="Encerrar contrato">
                             @csrf
                             <div class="mb-16">
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes da Quitacao</label>
                                 <textarea name="quitacao_obs" class="form-control radius-8" rows="3" maxlength="2000"
                                           placeholder="Observacoes finais sobre a quitacao..."></textarea>
                             </div>
-                            <button type="submit" class="btn btn-success radius-8"
-                                    onclick="return confirm('Confirma a quitacao e encerramento formal do contrato? Esta acao nao pode ser desfeita.')">
+                            <button type="submit" class="btn btn-success radius-8">
                                 <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Registrar Quitacao e Encerrar
                             </button>
                         </form>

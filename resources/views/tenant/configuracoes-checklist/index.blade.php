@@ -16,13 +16,6 @@
     </div>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
 <form method="POST" action="{{ route('tenant.configuracoes-checklist.update') }}">
     @csrf
     @method('PUT')

@@ -9,27 +9,6 @@
 
 @section('content')
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('warning'))
-    <div class="alert alert-warning alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('warning') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 {{-- Banner IRREGULAR (RN-046) --}}
 @if ($contrato->is_irregular)
     <div class="alert alert-danger radius-8 mb-24 d-flex align-items-start gap-3" role="alert">
@@ -626,22 +605,23 @@
                                             </a>
                                         @endif
                                         @if (auth()->user()->hasPermission('auditoria.verificar_integridade'))
-                                            <form action="{{ route('tenant.documentos.verificar-integridade', $doc) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('tenant.documentos.verificar-integridade', $doc) }}" method="POST" class="d-inline"
+                                                  data-confirm="Verificar integridade deste documento?">
                                                 @csrf
                                                 <button type="submit"
                                                    class="w-32-px h-32-px bg-warning-focus text-warning-main rounded-circle d-inline-flex align-items-center justify-content-center border-0"
-                                                   onclick="return confirm('Verificar integridade deste documento?')"
                                                    title="Verificar integridade">
                                                     <iconify-icon icon="solar:shield-check-bold"></iconify-icon>
                                                 </button>
                                             </form>
                                         @endif
                                         @if (auth()->user()->hasPermission('documento.excluir') && $doc->is_versao_atual)
-                                            <form action="{{ route('tenant.documentos.destroy', $doc) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('tenant.documentos.destroy', $doc) }}" method="POST" class="d-inline"
+                                                  data-confirm="Excluir este documento?"
+                                                  data-confirm-title="Excluir documento">
                                                 @csrf @method('DELETE')
                                                 <button type="submit"
                                                    class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0"
-                                                   onclick="return confirm('Excluir este documento?')"
                                                    title="Excluir">
                                                     <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
                                                 </button>
@@ -780,10 +760,10 @@
                                 @if (auth()->user()->hasPermission('ocorrencia.resolver'))
                                     <td class="px-16 py-12 text-center">
                                         @if (!$ocorrencia->resolvida)
-                                            <form action="{{ route('tenant.ocorrencias.resolver', $ocorrencia) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('tenant.ocorrencias.resolver', $ocorrencia) }}" method="POST" class="d-inline"
+                                                  data-confirm="Confirma a resolucao desta ocorrencia?">
                                                 @csrf
-                                                <button type="submit" class="btn btn-success-600 text-sm btn-sm px-12 py-6 radius-4"
-                                                        onclick="return confirm('Confirma a resolucao desta ocorrencia?')">
+                                                <button type="submit" class="btn btn-success-600 text-sm btn-sm px-12 py-6 radius-4">
                                                     <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Resolver
                                                 </button>
                                             </form>

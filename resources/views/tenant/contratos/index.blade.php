@@ -60,20 +60,6 @@
     </div>
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -135,7 +121,8 @@
                                     @endif
                                     @if (auth()->user()->hasPermission('contrato.excluir'))
                                         <form action="{{ route('tenant.contratos.destroy', $contrato) }}" method="POST"
-                                              onsubmit="return confirm('Tem certeza que deseja remover este contrato?')">
+                                              data-confirm="Tem certeza que deseja remover este contrato?"
+                                              data-confirm-title="Remover contrato">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

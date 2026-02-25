@@ -23,6 +23,7 @@ use App\Http\Controllers\Tenant\EncerramentosController;
 use App\Http\Controllers\Tenant\LgpdController;
 use App\Http\Controllers\Tenant\OcorrenciasController;
 use App\Http\Controllers\Tenant\RelatoriosFiscaisController;
+use App\Http\Controllers\Tenant\GlobalSearchController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,11 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
         ->name('tenant.dashboard.atualizar')
         ->middleware('permission:dashboard.atualizar');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('tenant.logout');
+
+    // Busca global (AJAX)
+    Route::get('busca', [GlobalSearchController::class, 'search'])
+        ->name('tenant.busca')
+        ->middleware('throttle:60,1');
 
     // Monitoramento — Painel de Risco (RN-143)
     Route::get('painel-risco', [PainelRiscoController::class, 'index'])

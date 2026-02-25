@@ -16,7 +16,7 @@
 
     @if ($alerta->status !== \App\Enums\StatusAlerta::Resolvido && auth()->user()->hasPermission('alerta.resolver'))
         <form method="POST" action="{{ route('tenant.alertas.resolver', $alerta) }}" class="d-inline"
-              onsubmit="return confirm('Tem certeza que deseja resolver este alerta manualmente?')">
+              data-confirm="Tem certeza que deseja resolver este alerta manualmente?">
             @csrf
             <button type="submit" class="btn btn-sm btn-success-600">
                 <iconify-icon icon="solar:check-circle-bold" class="me-1"></iconify-icon> Resolver Alerta
@@ -24,20 +24,6 @@
         </form>
     @endif
 </div>
-
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mb-24" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
 
 <div class="row gy-4">
     {{-- Header do Alerta --}}

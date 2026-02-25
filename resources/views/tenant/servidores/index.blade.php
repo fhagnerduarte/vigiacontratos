@@ -17,13 +17,6 @@
     @endif
 </div>
 
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show radius-8 mb-24" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-@endif
-
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -42,11 +35,11 @@
                 <tbody>
                     @forelse ($servidores as $servidor)
                         <tr>
-                            <td class="px-24 py-16 fw-medium">{{ $servidor->nome }}</td>
+                            <td class="px-24 py-16 fw-medium text-truncate-col" title="{{ $servidor->nome }}">{{ $servidor->nome }}</td>
                             <td class="px-24 py-16"><code>{{ $servidor->matricula }}</code></td>
-                            <td class="px-24 py-16">{{ $servidor->cargo }}</td>
-                            <td class="px-24 py-16">{{ $servidor->secretaria->nome ?? '-' }}</td>
-                            <td class="px-24 py-16">{{ $servidor->email ?? '-' }}</td>
+                            <td class="px-24 py-16 text-truncate-col" title="{{ $servidor->cargo }}">{{ $servidor->cargo }}</td>
+                            <td class="px-24 py-16 text-truncate-col" title="{{ $servidor->secretaria->nome ?? '-' }}">{{ $servidor->secretaria->nome ?? '-' }}</td>
+                            <td class="px-24 py-16 text-truncate-col" title="{{ $servidor->email ?? '-' }}">{{ $servidor->email ?? '-' }}</td>
                             <td class="px-24 py-16 text-center">
                                 @if ($servidor->is_ativo)
                                     <span class="badge bg-success-focus text-success-main px-16 py-6 radius-4">Ativo</span>
@@ -65,7 +58,8 @@
                                     @endif
                                     @if (auth()->user()->hasPermission('servidor.excluir'))
                                         <form action="{{ route('tenant.servidores.destroy', $servidor) }}" method="POST"
-                                              onsubmit="return confirm('Tem certeza que deseja remover este servidor?')">
+                                              data-confirm="Tem certeza que deseja remover este servidor?"
+                                              data-confirm-title="Remover servidor">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

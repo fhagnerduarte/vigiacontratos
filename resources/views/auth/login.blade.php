@@ -25,12 +25,6 @@
                 </div>
             @endif
 
-            @if (session('status'))
-                <div class="alert alert-success radius-8 mb-16">
-                    <p class="mb-0 text-sm">{{ session('status') }}</p>
-                </div>
-            @endif
-
             <form method="POST" action="{{ route('tenant.login') }}">
                 @csrf
 

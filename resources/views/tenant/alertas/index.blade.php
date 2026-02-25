@@ -171,13 +171,6 @@
 {{-- Tabela de Alertas --}}
 <div class="card radius-8 border-0">
     <div class="card-body p-0">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show m-16" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
         <div class="table-responsive">
             <table class="table bordered-table mb-0">
                 <thead>

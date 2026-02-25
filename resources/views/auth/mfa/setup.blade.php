@@ -19,12 +19,6 @@
                 Escaneie o QR code abaixo com o seu aplicativo autenticador (Google Authenticator, Authy, etc.)
             </p>
 
-            @if (session('error'))
-                <div class="alert alert-danger radius-8 mb-16">
-                    <p class="mb-0 text-sm">{{ session('error') }}</p>
-                </div>
-            @endif
-
             @if ($errors->any())
                 <div class="alert alert-danger radius-8 mb-16">
                     @foreach ($errors->all() as $error)

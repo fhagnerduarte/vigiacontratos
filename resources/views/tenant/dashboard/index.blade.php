@@ -15,31 +15,38 @@
     <div class="col-lg-4">
         <div class="card shadow-none border h-100">
             <div class="card-body p-24 text-center">
-                <h6 class="fw-semibold text-primary-light mb-16">Score de Gestao</h6>
-                <div class="position-relative d-inline-block mb-16">
-                    <div class="w-120-px h-120-px rounded-circle d-flex align-items-center justify-content-center border border-3 border-{{ $dados['score_gestao']['cor'] }}">
-                        <h2 class="mb-0 text-{{ $dados['score_gestao']['cor'] }}-main fw-bold">{{ $dados['score_gestao']['score'] }}</h2>
-                    </div>
-                </div>
-                <div>
-                    <span class="badge bg-{{ $dados['score_gestao']['cor'] }}-focus text-{{ $dados['score_gestao']['cor'] }}-main px-16 py-8 radius-4 fw-semibold text-md">
-                        {{ $dados['score_gestao']['classificacao'] }}
-                    </span>
-                </div>
-                <div class="progress mt-16" style="height: 8px;">
-                    <div class="progress-bar bg-{{ $dados['score_gestao']['cor'] }}" role="progressbar" style="width: {{ $dados['score_gestao']['score'] }}%"></div>
-                </div>
+                <h6 class="fw-semibold text-primary-light mb-8">Score de Gestao</h6>
+                <div id="chartScoreGestao"></div>
                 <p class="text-secondary-light text-sm mt-8 mb-0">
                     Atualizado em {{ $dados['data_agregacao'] ?? now()->format('d/m/Y H:i') }}
                 </p>
                 @if ($isControlador && auth()->user()->hasPermission('dashboard.atualizar'))
-                    <form action="{{ route('tenant.dashboard.atualizar') }}" method="POST" class="mt-12">
+                    <form id="formAtualizarDashboard" action="{{ route('tenant.dashboard.atualizar') }}" method="POST" class="mt-12">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-outline-primary">
-                            <iconify-icon icon="solar:refresh-bold" class="me-1"></iconify-icon> Atualizar dados
+                        <button type="submit" class="btn btn-sm btn-outline-primary" id="btnAtualizarDashboard">
+                            <span class="spinner-border spinner-border-sm d-none me-1" role="status"></span>
+                            <iconify-icon icon="solar:refresh-bold" class="me-1 btn-icon"></iconify-icon> Atualizar dados
                         </button>
                     </form>
                 @endif
+                {{-- Acoes rapidas --}}
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-12">
+                    @if (auth()->user()->hasPermission('contrato.criar'))
+                        <a href="{{ route('tenant.contratos.create') }}" class="btn btn-sm btn-primary-600">
+                            <iconify-icon icon="ic:baseline-plus" class="me-1"></iconify-icon> Novo Contrato
+                        </a>
+                    @endif
+                    @if (auth()->user()->hasPermission('alerta.visualizar'))
+                        <a href="{{ route('tenant.alertas.index') }}" class="btn btn-sm btn-outline-warning">
+                            <iconify-icon icon="solar:bell-bold" class="me-1"></iconify-icon> Alertas
+                        </a>
+                    @endif
+                    @if (auth()->user()->hasPermission('relatorio.visualizar'))
+                        <a href="{{ route('tenant.relatorios.index') }}" class="btn btn-sm btn-outline-info">
+                            <iconify-icon icon="solar:chart-bold" class="me-1"></iconify-icon> Relatorios
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -100,12 +107,12 @@
 {{-- Bloco 2 — Indicadores Financeiros (RN-058 a RN-061) --}}
 <div class="row row-cols-xxxl-5 row-cols-lg-5 row-cols-sm-2 row-cols-1 gy-4 mb-24">
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-1 h-100">
+        <div class="card shadow-none border bg-gradient-start-1 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Contratos com status Vigente">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Contratos Ativos</p>
-                        <h6 class="mb-0">{{ $dados['financeiros']['total_contratos_ativos'] }}</h6>
+                        <h6 class="mb-0" data-countup="{{ $dados['financeiros']['total_contratos_ativos'] }}">{{ $dados['financeiros']['total_contratos_ativos'] }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-primary-600 rounded-circle d-flex justify-content-center align-items-center">
                         <iconify-icon icon="solar:document-bold" class="text-white text-2xl"></iconify-icon>
@@ -115,12 +122,12 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-2 h-100">
+        <div class="card shadow-none border bg-gradient-start-2 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Soma do valor global de todos os contratos vigentes">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Valor Contratado</p>
-                        <h6 class="mb-0">R$ {{ number_format($dados['financeiros']['valor_total_contratado'], 2, ',', '.') }}</h6>
+                        <h6 class="mb-0" data-countup="{{ $dados['financeiros']['valor_total_contratado'] }}" data-countup-prefix="R$ " data-countup-decimals="2">R$ {{ number_format($dados['financeiros']['valor_total_contratado'], 2, ',', '.') }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-success-main rounded-circle d-flex justify-content-center align-items-center">
                         <iconify-icon icon="solar:wallet-bold" class="text-white text-2xl"></iconify-icon>
@@ -130,12 +137,12 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-3 h-100">
+        <div class="card shadow-none border bg-gradient-start-3 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor ja executado com base no percentual de execucao">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Valor Executado</p>
-                        <h6 class="mb-0">R$ {{ number_format($dados['financeiros']['valor_total_executado'], 2, ',', '.') }}</h6>
+                        <h6 class="mb-0" data-countup="{{ $dados['financeiros']['valor_total_executado'] }}" data-countup-prefix="R$ " data-countup-decimals="2">R$ {{ number_format($dados['financeiros']['valor_total_executado'], 2, ',', '.') }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-info-main rounded-circle d-flex justify-content-center align-items-center">
                         <iconify-icon icon="solar:chart-bold" class="text-white text-2xl"></iconify-icon>
@@ -145,12 +152,12 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-4 h-100">
+        <div class="card shadow-none border bg-gradient-start-4 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Diferenca entre valor contratado e executado">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Saldo Remanescente</p>
-                        <h6 class="mb-0">R$ {{ number_format($dados['financeiros']['saldo_remanescente'], 2, ',', '.') }}</h6>
+                        <h6 class="mb-0" data-countup="{{ $dados['financeiros']['saldo_remanescente'] }}" data-countup-prefix="R$ " data-countup-decimals="2">R$ {{ number_format($dados['financeiros']['saldo_remanescente'], 2, ',', '.') }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-warning-main rounded-circle d-flex justify-content-center align-items-center">
                         <iconify-icon icon="solar:safe-circle-bold" class="text-white text-2xl"></iconify-icon>
@@ -160,12 +167,12 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-5 h-100">
+        <div class="card shadow-none border bg-gradient-start-5 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor medio por contrato vigente">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
                         <p class="fw-medium text-primary-light mb-1">Ticket Medio</p>
-                        <h6 class="mb-0">R$ {{ number_format($dados['financeiros']['ticket_medio'], 2, ',', '.') }}</h6>
+                        <h6 class="mb-0" data-countup="{{ $dados['financeiros']['ticket_medio'] }}" data-countup-prefix="R$ " data-countup-decimals="2">R$ {{ number_format($dados['financeiros']['ticket_medio'], 2, ',', '.') }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-danger-main rounded-circle d-flex justify-content-center align-items-center">
                         <iconify-icon icon="solar:tag-price-bold" class="text-white text-2xl"></iconify-icon>
@@ -459,13 +466,22 @@
 
 @endsection
 
+@php
+    $corHexMap = ['success' => '#22c55e', 'info' => '#3b82f6', 'warning' => '#f59e0b', 'danger' => '#ef4444'];
+    $scoreComHex = array_merge($dados['score_gestao'], [
+        'cor_hex' => $corHexMap[$dados['score_gestao']['cor']] ?? '#6b7280',
+    ]);
+@endphp
+
 @push('scripts')
 <script>
     var dashboardData = {
         risco: @json($dados['mapa_risco']),
         vencimentos: @json($dados['vencimentos']),
-        tendencias: @json($dados['tendencias_mensais'] ?? [])
+        tendencias: @json($dados['tendencias_mensais'] ?? []),
+        score: @json($scoreComHex)
     };
 </script>
 <script src="{{ asset('assets/js/dashboard-charts.js') }}"></script>
+<script src="{{ asset('assets/js/dashboard-enhancements.js') }}"></script>
 @endpush

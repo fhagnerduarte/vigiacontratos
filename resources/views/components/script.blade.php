@@ -32,6 +32,16 @@
     <script src="{{ asset('assets/js/input-masks.js') }}"></script>
     <!-- Select2 init -->
     <script src="{{ asset('assets/js/select2-init.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('assets/js/lib/sweetalert2.all.min.js') }}"></script>
+    <!-- Toast init -->
+    <script src="{{ asset('assets/js/toast-init.js') }}"></script>
+    <!-- Confirm dialog (SweetAlert2) -->
+    <script src="{{ asset('assets/js/confirm-dialog.js') }}"></script>
+    <!-- Global search -->
+    <script src="{{ asset('assets/js/global-search.js') }}"></script>
+    <!-- Keyboard shortcuts -->
+    <script src="{{ asset('assets/js/keyboard-shortcuts.js') }}"></script>
 
     {!! isset($script) ? $script : '' !!}
     @stack('scripts')
