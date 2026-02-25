@@ -17,11 +17,24 @@ class ExecucoesFinanceirasController extends Controller
         $resultado = ExecucaoFinanceiraService::registrar($contrato, $dados, $request->user());
 
         $mensagem = 'Execucao financeira registrada com sucesso.';
+        $tipo = 'success';
+
         if ($resultado['alerta']) {
             $mensagem .= ' ATENCAO: O valor executado ultrapassou o valor contratado (RN-033).';
+            $tipo = 'warning';
+        }
+
+        if ($resultado['alerta_empenho']) {
+            $mensagem .= ' ALERTA: Empenho insuficiente — pagamentos excedem o valor empenhado.';
+            $tipo = 'warning';
+        }
+
+        if ($resultado['alerta_vencimento']) {
+            $mensagem .= ' CRITICO: Execucao registrada apos o vencimento do contrato.';
+            $tipo = 'danger';
         }
 
         return redirect()->route('tenant.contratos.show', $contrato)
-            ->with($resultado['alerta'] ? 'warning' : 'success', $mensagem);
+            ->with($tipo, $mensagem);
     }
 }
