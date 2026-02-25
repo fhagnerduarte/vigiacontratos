@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CategoriaContrato;
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\PrioridadeAlerta;
 use App\Enums\StatusAlerta;
 use App\Enums\StatusContrato;
@@ -18,6 +19,7 @@ use App\Models\Contrato;
 use App\Models\Documento;
 use App\Models\ExecucaoFinanceira;
 use App\Models\HistoricoAlteracao;
+use App\Models\SolicitacaoLai;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -40,7 +42,11 @@ class AlertaService
         // 1. Marcar contratos vencidos automaticamente (RN-008)
         $resultado['contratos_vencidos'] = self::marcarContratosVencidos();
 
-        // 2. Buscar configuracoes ativas
+        // 2. Alertas LAI — Lei 12.527/2011 (IMP-059) — executam independente de configuracoes
+        $resultado['alertas_gerados'] += self::verificarContratosNaoPublicados();
+        $resultado['alertas_gerados'] += self::verificarSigiloSemJustificativa();
+
+        // 3. Buscar configuracoes ativas para alertas de vencimento
         $configuracoes = ConfiguracaoAlerta::where('is_ativo', true)
             ->orderByDesc('dias_antecedencia')
             ->get();
@@ -912,6 +918,118 @@ class AlertaService
         }
 
         return $alertasGerados;
+    }
+
+    // --- Alertas LAI — Lei 12.527/2011 (IMP-059) ---
+
+    /**
+     * Verifica contratos publicos que deveriam estar publicados no portal
+     * mas nao estao (LAI art. 8 — transparencia ativa).
+     */
+    public static function verificarContratosNaoPublicados(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::ContratoNaoPublicadoPortal)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $contratos = Contrato::withoutGlobalScopes()
+            ->where('status', StatusContrato::Vigente->value)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', false)
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $alerta = self::gerarAlertaDocumental(
+                $contrato,
+                TipoEventoAlerta::ContratoNaoPublicadoPortal,
+                "Contrato {$contrato->numero} e publico (classificacao: publico) " .
+                "mas nao foi publicado no portal de transparencia. " .
+                "A LAI (art. 8) exige publicacao proativa de informacoes publicas."
+            );
+
+            if ($alerta) {
+                $alertasGerados++;
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Verifica contratos com classificacao de sigilo (reservado/secreto/ultrassecreto)
+     * que nao possuem justificativa (LAI art. 24 — obrigatoriedade de fundamentacao).
+     */
+    public static function verificarSigiloSemJustificativa(): int
+    {
+        if (!self::isRegraAtiva(TipoEventoAlerta::SigiloSemJustificativa)) {
+            return 0;
+        }
+
+        $alertasGerados = 0;
+
+        $contratos = Contrato::withoutGlobalScopes()
+            ->whereNotNull('classificacao_sigilo')
+            ->where('classificacao_sigilo', '!=', ClassificacaoSigilo::Publico->value)
+            ->where(function ($q) {
+                $q->whereNull('justificativa_sigilo')
+                    ->orWhere('justificativa_sigilo', '');
+            })
+            ->get();
+
+        foreach ($contratos as $contrato) {
+            $classificacao = $contrato->classificacao_sigilo instanceof ClassificacaoSigilo
+                ? $contrato->classificacao_sigilo
+                : ClassificacaoSigilo::tryFrom($contrato->classificacao_sigilo);
+            $label = $classificacao?->label() ?? (string) $contrato->classificacao_sigilo;
+
+            $alerta = self::gerarAlertaDocumental(
+                $contrato,
+                TipoEventoAlerta::SigiloSemJustificativa,
+                "Contrato {$contrato->numero} possui classificacao de sigilo '{$label}' " .
+                "mas nao tem justificativa registrada. " .
+                "A LAI (art. 24) exige fundamentacao para toda classificacao de sigilo."
+            );
+
+            if ($alerta) {
+                $alertasGerados++;
+            }
+        }
+
+        return $alertasGerados;
+    }
+
+    /**
+     * Indicadores LAI para dashboard (IMP-059).
+     * Solicitacoes LAI nao geram alertas na tabela (sem contrato_id),
+     * mas sao exibidas como indicadores no dashboard.
+     *
+     * @return array{solicitacoes_pendentes: int, solicitacoes_vencidas: int, contratos_nao_publicados: int}
+     */
+    public static function indicadoresLai(): array
+    {
+        $solicitacoesPendentes = 0;
+        $solicitacoesVencidas = 0;
+
+        try {
+            $solicitacoesPendentes = SolicitacaoLai::pendentes()->count();
+            $solicitacoesVencidas = SolicitacaoLai::vencidas()->count();
+        } catch (\Throwable) {
+            // Tabela pode nao existir em tenants antigos
+        }
+
+        $contratosNaoPublicados = Contrato::withoutGlobalScopes()
+            ->where('status', StatusContrato::Vigente->value)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', false)
+            ->count();
+
+        return [
+            'solicitacoes_pendentes' => $solicitacoesPendentes,
+            'solicitacoes_vencidas' => $solicitacoesVencidas,
+            'contratos_nao_publicados' => $contratosNaoPublicados,
+        ];
     }
 
     // --- Metodos privados ---

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CategoriaContrato;
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\NivelRisco;
 use App\Enums\StatusContrato;
 use App\Models\Contrato;
@@ -10,6 +11,7 @@ use App\Models\DashboardAgregado;
 use App\Models\Fornecedor;
 use App\Models\HistoricoAlteracao;
 use App\Models\Secretaria;
+use App\Models\SolicitacaoLai;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -384,6 +386,41 @@ class DashboardService
      * Orquestra a agregacao completa e salva em dashboard_agregados (ADR-019/021).
      * Invalida cache Redis apos salvar (ADR-020).
      */
+    /**
+     * Indicadores de transparencia LAI — Lei 12.527/2011 (IMP-059).
+     */
+    public static function indicadoresLai(): array
+    {
+        $solicitacoesPendentes = 0;
+        $solicitacoesVencidas = 0;
+        $tempoMedioResposta = 0;
+
+        try {
+            $solicitacoesPendentes = SolicitacaoLai::pendentes()->count();
+            $solicitacoesVencidas = SolicitacaoLai::vencidas()->count();
+
+            $tempoMedio = SolicitacaoLai::whereNotNull('data_resposta')
+                ->selectRaw('AVG(DATEDIFF(data_resposta, created_at)) as media')
+                ->value('media');
+            $tempoMedioResposta = round((float) $tempoMedio, 1);
+        } catch (\Throwable) {
+            // Tabela pode nao existir em tenants antigos
+        }
+
+        $contratosNaoPublicados = Contrato::withoutGlobalScopes()
+            ->where('status', StatusContrato::Vigente->value)
+            ->where('classificacao_sigilo', ClassificacaoSigilo::Publico->value)
+            ->where('publicado_portal', false)
+            ->count();
+
+        return [
+            'solicitacoes_pendentes' => $solicitacoesPendentes,
+            'solicitacoes_vencidas' => $solicitacoesVencidas,
+            'contratos_nao_publicados' => $contratosNaoPublicados,
+            'tempo_medio_resposta' => $tempoMedioResposta,
+        ];
+    }
+
     public static function agregar(): DashboardAgregado
     {
         $financeiros = self::indicadoresFinanceiros();
@@ -479,6 +516,7 @@ class DashboardService
                     'tendencias_mensais' => $dadosCompletos['tendencias_mensais'] ?? [],
                     'ranking_fornecedores' => $dadosCompletos['ranking_fornecedores'] ?? [],
                     'visao_controlador' => $dadosCompletos['visao_controlador'] ?? [],
+                    'indicadores_lai' => self::indicadoresLai(),
                     'data_agregacao' => $agregado->data_agregacao->format('d/m/Y H:i'),
                 ];
             }
@@ -505,6 +543,7 @@ class DashboardService
             'tendencias_mensais' => self::tendenciasMensais(),
             'ranking_fornecedores' => self::rankingFornecedores(),
             'visao_controlador' => self::visaoControlador(),
+            'indicadores_lai' => self::indicadoresLai(),
             'data_agregacao' => now()->format('d/m/Y H:i'),
         ];
     }

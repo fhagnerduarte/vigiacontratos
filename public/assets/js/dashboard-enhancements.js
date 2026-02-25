@@ -5,58 +5,22 @@
     'use strict';
 
     // ============================================
-    // 1. Counters animados (count-up)
+    // 1. Counters — exibicao direta (sem animacao)
     // ============================================
-    function animateCounter(el) {
+    document.querySelectorAll('[data-countup]').forEach(function (el) {
         var target = parseFloat(el.dataset.countup);
         var prefix = el.dataset.countupPrefix || '';
         var decimals = parseInt(el.dataset.countupDecimals) || 0;
-        var duration = 1500; // ms
-        var start = 0;
-        var startTime = null;
 
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var progress = Math.min((timestamp - startTime) / duration, 1);
-            // easeOutExpo
-            var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            var current = start + (target - start) * eased;
-
-            if (decimals > 0) {
-                el.textContent = prefix + current.toLocaleString('pt-BR', {
-                    minimumFractionDigits: decimals,
-                    maximumFractionDigits: decimals
-                });
-            } else {
-                el.textContent = prefix + Math.round(current).toLocaleString('pt-BR');
-            }
-
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            }
-        }
-
-        requestAnimationFrame(step);
-    }
-
-    // Observer para iniciar animacao quando visivel
-    if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    animateCounter(entry.target);
-                    observer.unobserve(entry.target);
-                }
+        if (decimals > 0) {
+            el.textContent = prefix + target.toLocaleString('pt-BR', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
             });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('[data-countup]').forEach(function (el) {
-            observer.observe(el);
-        });
-    } else {
-        // Fallback sem observer
-        document.querySelectorAll('[data-countup]').forEach(animateCounter);
-    }
+        } else {
+            el.textContent = prefix + Math.round(target).toLocaleString('pt-BR');
+        }
+    });
 
     // ============================================
     // 2. Async Dashboard Refresh

@@ -377,12 +377,13 @@
 - [x] Views portal/lai/ + solicitacoes-lai/ *(IMP-058)*
 - [x] Testes: SolicitacaoLaiTest (32 testes, 139 assertions) *(IMP-058)*
 
-**IMP-059: Alertas LAI + Publicação Automatizada** *(Pendente)*
-- [ ] TipoEventoAlerta +4 cases LAI (ContratoNaoPublicadoPortal, SolicitacaoLaiVencendo, SolicitacaoLaiVencida, ClassificacaoSemJustificativa) *(IMP-059)*
-- [ ] AlertaService +3 metodos: verificarContratosNaoPublicados, verificarPrazosLai, verificarClassificacoesSemJustificativa *(IMP-059)*
-- [ ] Command lai:publicar-automatico (schedule diario 07:00) *(IMP-059)*
-- [ ] Dashboard LAI: indicadores solicitacoes pendentes/vencidas, contratos nao publicados *(IMP-059)*
-- [ ] Testes: AlertaLaiTest (~20 testes) *(IMP-059)*
+**IMP-059: Alertas LAI + Publicação Automatizada** *(Concluído)*
+- [x] TipoEventoAlerta +4 cases LAI (ContratoNaoPublicadoPortal, SolicitacaoLaiVencendo, SolicitacaoLaiVencida, SigiloSemJustificativa) *(IMP-059)*
+- [x] AlertaService +2 metodos: verificarContratosNaoPublicados, verificarSigiloSemJustificativa + indicadoresLai() *(IMP-059)*
+- [x] Command lai:publicar-automatico (schedule diario 07:00) + PublicacaoAutomaticaService *(IMP-059)*
+- [x] Dashboard LAI: indicadores solicitacoes pendentes/vencidas, contratos nao publicados, tempo medio resposta *(IMP-059)*
+- [x] Testes: AlertaLaiTest (20 testes, 50 assertions) *(IMP-059)*
+- [x] Nota: SolicitacaoLaiVencendo/Vencida sao indicadores dashboard (sem contrato_id para tabela alertas) *(IMP-059)*
 
 **IMP-060: Integração Final + Testes E2E LAI** *(Pendente)*
 - [ ] RiscoService +1 categoria transparencia em calcularExpandido() *(IMP-060)*

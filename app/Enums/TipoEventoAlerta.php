@@ -23,6 +23,12 @@ enum TipoEventoAlerta: string
     // IMP-053: Execucao Financeira Avancada
     case EmpenhoInsuficiente = 'empenho_insuficiente';
 
+    // IMP-059: Alertas LAI (Lei 12.527/2011)
+    case ContratoNaoPublicadoPortal = 'contrato_nao_publicado';
+    case SolicitacaoLaiVencendo = 'solicitacao_lai_vencendo';
+    case SolicitacaoLaiVencida = 'solicitacao_lai_vencida';
+    case SigiloSemJustificativa = 'sigilo_sem_justificativa';
+
     public function label(): string
     {
         return match ($this) {
@@ -40,6 +46,10 @@ enum TipoEventoAlerta: string
             self::ProrrogacaoForaDoPrazo => 'Prorrogacao Fora do Prazo',
             self::ContratoParado => 'Contrato sem Movimentacao',
             self::EmpenhoInsuficiente => 'Empenho Insuficiente',
+            self::ContratoNaoPublicadoPortal => 'Contrato Nao Publicado no Portal',
+            self::SolicitacaoLaiVencendo => 'Solicitacao LAI Vencendo',
+            self::SolicitacaoLaiVencida => 'Solicitacao LAI Vencida',
+            self::SigiloSemJustificativa => 'Sigilo sem Justificativa',
         };
     }
 
@@ -47,8 +57,8 @@ enum TipoEventoAlerta: string
     {
         return match ($this) {
             self::ExecucaoAposVencimento, self::AditivoAcimaLimite, self::EmpenhoInsuficiente => 'critica',
-            self::ContratoSemFiscal, self::ProrrogacaoForaDoPrazo => 'alta',
-            self::FiscalSemRelatorio, self::ContratoParado => 'media',
+            self::ContratoSemFiscal, self::ProrrogacaoForaDoPrazo, self::SolicitacaoLaiVencida => 'alta',
+            self::FiscalSemRelatorio, self::ContratoParado, self::SolicitacaoLaiVencendo, self::SigiloSemJustificativa => 'media',
             default => 'padrao',
         };
     }

@@ -60,6 +60,35 @@ class ConfiguracaoAlertaAvancadoSeeder extends Seeder
                 'percentual_limite_valor' => null,
                 'is_ativo' => true,
             ],
+            // IMP-059: Alertas LAI
+            [
+                'tipo_evento' => TipoEventoAlerta::ContratoNaoPublicadoPortal->value,
+                'dias_inatividade' => null,
+                'dias_sem_relatorio' => null,
+                'percentual_limite_valor' => null,
+                'is_ativo' => true,
+            ],
+            [
+                'tipo_evento' => TipoEventoAlerta::SigiloSemJustificativa->value,
+                'dias_inatividade' => null,
+                'dias_sem_relatorio' => null,
+                'percentual_limite_valor' => null,
+                'is_ativo' => true,
+            ],
+            [
+                'tipo_evento' => TipoEventoAlerta::SolicitacaoLaiVencendo->value,
+                'dias_inatividade' => null,
+                'dias_sem_relatorio' => null,
+                'percentual_limite_valor' => null,
+                'is_ativo' => true,
+            ],
+            [
+                'tipo_evento' => TipoEventoAlerta::SolicitacaoLaiVencida->value,
+                'dias_inatividade' => null,
+                'dias_sem_relatorio' => null,
+                'percentual_limite_valor' => null,
+                'is_ativo' => true,
+            ],
         ];
 
         foreach ($configuracoes as $config) {

@@ -52,55 +52,41 @@
     </div>
 
     {{-- Filtros inteligentes (RN-073/074) --}}
-    <div class="col-lg-8">
-        <div class="card shadow-none border h-100">
-            <div class="card-body p-16">
-                <h6 class="fw-semibold text-primary-light mb-12">Filtros</h6>
-                <form method="GET" action="{{ route('tenant.dashboard') }}" class="row g-12 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-4">Secretaria</label>
-                        <select name="secretaria_id" class="form-control radius-8 form-select select2" data-placeholder="Todas">
-                            <option value="">Todas</option>
-                            @foreach ($secretarias as $sec)
-                                <option value="{{ $sec->id }}" {{ ($filtros['secretaria_id'] ?? '') == $sec->id ? 'selected' : '' }}>
-                                    {{ $sec->sigla ? $sec->sigla . ' - ' : '' }}{{ $sec->nome }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-4">Tipo Contrato</label>
-                        <select name="tipo_contrato" class="form-control radius-8 form-select select2" data-placeholder="Todos">
-                            <option value="">Todos</option>
-                            @foreach ($tiposContrato as $tipo)
-                                <option value="{{ $tipo->value }}" {{ ($filtros['tipo_contrato'] ?? '') == $tipo->value ? 'selected' : '' }}>
-                                    {{ $tipo->label() }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-4">Nivel de Risco</label>
-                        <select name="nivel_risco" class="form-control radius-8 form-select select2" data-placeholder="Todos">
-                            <option value="">Todos</option>
-                            @foreach ($niveisRisco as $nivel)
-                                <option value="{{ $nivel->value }}" {{ ($filtros['nivel_risco'] ?? '') == $nivel->value ? 'selected' : '' }}>
-                                    {{ $nivel->label() }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary-600 w-100">
-                            <iconify-icon icon="ion:search-outline"></iconify-icon>
-                        </button>
-                        <a href="{{ route('tenant.dashboard') }}" class="btn btn-outline-secondary w-100">
-                            <iconify-icon icon="solar:close-circle-bold"></iconify-icon>
-                        </a>
-                    </div>
-                </form>
+    <div class="col-lg-8 d-flex align-items-center">
+        <form method="GET" action="{{ route('tenant.dashboard') }}" class="d-flex flex-wrap align-items-center gap-2 w-100">
+            <select name="secretaria_id" class="form-control radius-8 form-select select2" data-placeholder="Secretaria" style="min-width: 200px; flex: 1;">
+                <option value="">Secretaria</option>
+                @foreach ($secretarias as $sec)
+                    <option value="{{ $sec->id }}" {{ ($filtros['secretaria_id'] ?? '') == $sec->id ? 'selected' : '' }}>
+                        {{ $sec->sigla ? $sec->sigla . ' - ' : '' }}{{ $sec->nome }}
+                    </option>
+                @endforeach
+            </select>
+            <select name="tipo_contrato" class="form-control radius-8 form-select select2" data-placeholder="Tipo Contrato" style="min-width: 160px; flex: 1;">
+                <option value="">Tipo Contrato</option>
+                @foreach ($tiposContrato as $tipo)
+                    <option value="{{ $tipo->value }}" {{ ($filtros['tipo_contrato'] ?? '') == $tipo->value ? 'selected' : '' }}>
+                        {{ $tipo->label() }}
+                    </option>
+                @endforeach
+            </select>
+            <select name="nivel_risco" class="form-control radius-8 form-select select2" data-placeholder="Nivel de Risco" style="min-width: 150px; flex: 1;">
+                <option value="">Nivel de Risco</option>
+                @foreach ($niveisRisco as $nivel)
+                    <option value="{{ $nivel->value }}" {{ ($filtros['nivel_risco'] ?? '') == $nivel->value ? 'selected' : '' }}>
+                        {{ $nivel->label() }}
+                    </option>
+                @endforeach
+            </select>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary-600">
+                    <iconify-icon icon="ion:search-outline"></iconify-icon>
+                </button>
+                <a href="{{ route('tenant.dashboard') }}" class="btn btn-outline-secondary">
+                    <iconify-icon icon="solar:close-circle-bold"></iconify-icon>
+                </a>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -457,6 +443,64 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- Bloco 8 — Indicadores LAI / Transparencia (IMP-059) --}}
+@if (auth()->user()->hasPermission('lai.visualizar') && !empty($dados['indicadores_lai']))
+<div class="card shadow-none border mb-24">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center gap-2">
+        <iconify-icon icon="solar:eye-bold" class="text-info-main text-xl"></iconify-icon>
+        <h6 class="text-lg fw-semibold mb-0">Transparencia LAI</h6>
+    </div>
+    <div class="card-body p-24">
+        <div class="row gy-3">
+            <div class="col-sm-6 col-lg-3">
+                <div class="d-flex align-items-center gap-12 p-16 bg-warning-focus radius-8">
+                    <div class="w-44-px h-44-px bg-warning-main rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:inbox-bold" class="text-white text-xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <span class="text-warning-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['solicitacoes_pendentes'] }}</span>
+                        <span class="text-sm text-secondary-light">Solicitacoes Pendentes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="d-flex align-items-center gap-12 p-16 bg-danger-focus radius-8">
+                    <div class="w-44-px h-44-px bg-danger-main rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:danger-triangle-bold" class="text-white text-xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <span class="text-danger-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['solicitacoes_vencidas'] }}</span>
+                        <span class="text-sm text-secondary-light">Solicitacoes Vencidas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="d-flex align-items-center gap-12 p-16 bg-info-focus radius-8">
+                    <div class="w-44-px h-44-px bg-info-main rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:eye-closed-bold" class="text-white text-xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <span class="text-info-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['contratos_nao_publicados'] }}</span>
+                        <span class="text-sm text-secondary-light">Contratos Nao Publicados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="d-flex align-items-center gap-12 p-16 bg-primary-focus radius-8">
+                    <div class="w-44-px h-44-px bg-primary-600 rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:clock-circle-bold" class="text-white text-xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <span class="text-primary-600 fw-bold text-xl d-block">{{ $dados['indicadores_lai']['tempo_medio_resposta'] }} dias</span>
+                        <span class="text-sm text-secondary-light">Tempo Medio Resposta</span>
+                    </div>
                 </div>
             </div>
         </div>

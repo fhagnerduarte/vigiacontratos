@@ -43,6 +43,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ->monthlyOn(1, '03:00')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/lai-desclassificacao.log'));
+
+        $schedule->command('lai:publicar-automatico')
+            ->dailyAt('07:00')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/lai-publicacao-automatica.log'));
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
