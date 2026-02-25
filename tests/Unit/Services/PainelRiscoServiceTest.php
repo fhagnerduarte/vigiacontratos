@@ -75,6 +75,26 @@ class PainelRiscoServiceTest extends TestCase
 
         $this->assertArrayHasKey('resumo', $dados);
         $this->assertArrayHasKey('contratos', $dados);
+        $this->assertArrayHasKey('municipio', $dados);
+        $this->assertArrayHasKey('data_geracao', $dados);
+    }
+
+    public function test_dados_relatorio_tce_resumo_contadores(): void
+    {
+        Contrato::factory()->vigente()->create();
+
+        $dados = $this->service->dadosRelatorioTCE();
+
+        $resumo = $dados['resumo'];
+        $this->assertArrayHasKey('total_monitorados', $resumo);
+        $this->assertArrayHasKey('alto_risco', $resumo);
+        $this->assertArrayHasKey('medio_risco', $resumo);
+        $this->assertArrayHasKey('baixo_risco', $resumo);
+
+        // Contadores devem somar ao total
+        $soma = $resumo['alto_risco'] + $resumo['medio_risco'] + $resumo['baixo_risco'];
+        $this->assertEquals($resumo['total_monitorados'], $soma);
+        $this->assertGreaterThanOrEqual(1, $resumo['total_monitorados']);
     }
 
     public function test_label_categoria(): void

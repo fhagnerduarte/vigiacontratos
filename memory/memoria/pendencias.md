@@ -15,13 +15,13 @@
 
 ### Módulo: Multi-Tenant (Database-per-Tenant)
 - [x] Migration banco master: tabela `tenants` (nome, slug, database_name, database_host, is_ativo, plano) *(IMP-012)*
-- [ ] Migration banco master: tabela `tenant_users` (user_id, tenant_id, role) — *adiada: sem necessidade concreta na Fase 1a*
+- ~~Migration banco master: tabela `tenant_users` (user_id, tenant_id, role)~~ — *descartada V1: sem necessidade concreta, opera single-user-per-tenant*
 - [x] Model: Tenant (banco master) *(IMP-012)*
 - [x] Middleware: SetTenantConnection (resolve tenant e configura connection MySQL) *(IMP-012)*
 - [x] Comando artisan: `tenant:create` (provisionar novo tenant: criar banco, aplicar migrations, seeder admin) *(IMP-012)*
 - [x] Comando artisan: `tenant:migrate` (aplicar migrations pendentes em todos os tenants ativos) *(IMP-012)*
 - [x] Configuração dinâmica de connection MySQL em runtime *(IMP-012)*
-- [ ] Configuração de storage isolado por tenant (prefixo S3 por slug)
+- [x] Configuração de storage isolado por tenant (prefixo S3 por slug) *(IMP-044 — path prefix {slug}/documentos/, validarTenantPath())*
 - [x] Configuração de cache Redis com prefixo por tenant *(IMP-012)*
 
 ### Módulo: Painel Administrativo SaaS (Gestão de Tenants)
@@ -64,13 +64,13 @@
 - [x] Enums: StatusContrato, TipoContrato, ModalidadeContratacao, TipoPagamento, CategoriaContrato, CategoriaServico, NivelRisco, TipoDocumentoContratual *(IMP-016)*
 - [x] Models: Contrato, Fiscal, ExecucaoFinanceira, HistoricoAlteracao, Documento *(IMP-016)*
 - [x] Services: ContratoService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService *(IMP-016)*
-- [ ] Observer: ContratoObserver (audit trail + recálculo de score) — *opcional, logica em ContratoService*
+- ~~Observer: ContratoObserver (audit trail + recálculo de score)~~ — *descartada: logica em ContratoService/AuditoriaService*
 - [x] Formulário multi-etapa (wizard) para cadastro de contrato *(IMP-016)*
 - [x] Tela de detalhes do contrato com abas (dados, fiscal, financeiro, documentos, auditoria) *(IMP-016)*
 - [x] CRUD de fiscais (com troca e histórico) *(IMP-016)*
 - [x] Registro de execuções financeiras *(IMP-016)*
-- [ ] Upload múltiplo de documentos com classificação por tipo — *movido para Fase 3b*
-- [ ] Versionamento de documentos — *movido para Fase 3b*
+- [x] Upload múltiplo de documentos com classificação por tipo *(IMP-017)*
+- [x] Versionamento de documentos *(IMP-017)*
 - [x] Validação de CNPJ (digito verificador — FornecedorService + CnpjValido Rule) *(IMP-014)*
 - [x] Validações condicionais por modalidade (dispensa → fundamento legal, obra → resp. técnico) *(IMP-016)*
 - [x] Cálculo automático de score de risco *(IMP-016)*
@@ -91,7 +91,7 @@
 - [x] AditivoService (geração numero_sequencial, cálculo percentual_acumulado, verificação limite legal, atualização contrato pai, cancelar, processarReequilibrio) *(IMP-020)*
 - [x] WorkflowService (criarFluxo 5 etapas, aprovar sequencial, reprovar com parecer, decided_at) *(IMP-020)*
 - [x] RiscoService expandido (novos critérios: RN-106, RN-107, RN-108) *(IMP-020)*
-- [ ] Atualizar AditivoResource (novos campos) — *pendente para API*
+- ~~Atualizar AditivoResource (novos campos)~~ — *adiado para Fase API REST*
 - [x] Formulário de criação de aditivo com campos condicionais por tipo + Select2 + máscaras *(IMP-020)*
 - [x] Exibição em tempo real de percentual acumulado e limite legal no formulário *(IMP-020)*
 - [x] Alerta visual de limite legal ultrapassado (is_bloqueante e modo alerta) *(IMP-020)*
@@ -175,30 +175,30 @@
 - [x] DocumentosController: Central de Documentos com busca inteligente e filtros combinados (RN-131) *(IMP-017)*
 
 **Autorização e Validação:**
-- [ ] Novo: DocumentoPolicy (view, create, download, delete) — *autorização feita via middleware permission + hasPermission no controller; Policy formal pendente*
+- [x] DocumentoPolicy (view, create, download, delete) *(IMP-044 — 7 metodos, $this->authorize() em todos os 5 metodos do controller)*
 - [x] StoreDocumentoRequest: validação (mimes:pdf, max:20480 KB, tipo_documento Enum) *(IMP-017)*
-- [ ] DocumentoResource: atualizar (incluir versao, is_versao_atual, nome_original, nome_arquivo, tipo_documento label) — *pendente para API*
+- ~~DocumentoResource: atualizar (incluir versao, is_versao_atual, nome_original, nome_arquivo, tipo_documento label)~~ — *adiado para Fase API REST*
 
 **Observer:**
-- [ ] DocumentoObserver (novo): ao criar/excluir documento → recalcular completude do contrato (ADR-036) — *completude calculada via accessor; Observer opcional para cache*
+- ~~DocumentoObserver (novo): ao criar/excluir documento → recalcular completude do contrato (ADR-036)~~ — *descartada: completude via accessor/cache, ADR-036 resolve*
 
 **Relatório:**
-- [ ] RelatorioService: método gerarRelatorioTCEContrato(Contrato) — lista documentos com tipo, nome, versão, data upload, responsável, status (RN-133). Exportar em PDF
+- [x] RelatorioService: método gerarRelatorioTCEContrato(Contrato) — lista documentos com tipo, nome, versão, data upload, responsável, status (RN-133). Exportar em PDF *(IMP-047 — alias dadosDocumentosContrato(), rota documentos-contrato, view PDF, 6 testes)*
 
 **Views:**
 - [x] `documentos/index.blade.php`: Central de Documentos standalone (4 cards indicadores + busca + filtros + listagem com completude) *(IMP-017)*
 - [x] Atualizar `contratos/show.blade.php` (aba Documentos): exibir completude, checklist obrigatório, lista agrupada por tipo com versões, botão download, botão excluir, modal upload *(IMP-017)*
-- [ ] Atualizar wizard step 6 (contratos/create.blade.php): zona de upload com seleção de tipo, feedback de completude — *upload disponível após salvar na tela de detalhes*
-- [ ] `documentos/dashboard.blade.php`: dashboard dedicado de documentos — *indicadores integrados na Central de Documentos*
+- ~~Atualizar wizard step 6 (contratos/create.blade.php): zona de upload com seleção de tipo, feedback de completude~~ — *descartada: upload disponivel apos salvar na tela de detalhes (UX deliberada)*
+- ~~`documentos/dashboard.blade.php`: dashboard dedicado de documentos~~ — *descartada: indicadores integrados na Central de Documentos (index.blade.php)*
 
 **Testes:**
 - [x] DocumentoFactory (novo) — para testes *(IMP-028)*
 - [x] DocumentoServiceTest: upload, versionamento automático, cálculo de completude, nomes padronizados, log de acesso *(IMP-028)*
 - [x] DocumentoTest: fluxo completo Feature upload → completude → score → log *(IMP-041)*
 - [x] Teste de imutabilidade do log_acesso_documentos *(IMP-028)*
-- [ ] Teste de autorização por perfil (DocumentoPolicy)
+- [x] Teste de autorização por perfil (DocumentoPolicy) *(IMP-044 — DocumentoPolicyTest 18 testes)*
 - [x] DocumentosRelatorioTest: relatório documentos contrato (PDF, permissão, vazio) *(IMP-043)*
-- [ ] DocumentoRelatorioTest: relatório TCE completo (geração PDF) — *pendente: metodo gerarRelatorioTCEContrato() nao implementado*
+- [x] DocumentoRelatorioTest: relatório TCE completo (geração PDF) *(IMP-047 — DocumentosRelatorioTest 6 testes cobrindo PDF, permissao, dados, alias, campos RN-133)*
 
 ### Módulo: Painel de Risco Administrativo (Módulo 6 — Grande Diferencial Estratégico)
 

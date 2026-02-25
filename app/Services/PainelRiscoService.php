@@ -170,9 +170,9 @@ class PainelRiscoService
 
         // Resumo
         $totalContratos = count($contratos);
-        $altoRisco = collect($contratos)->where('nivel', 'Alto')->count();
-        $medioRisco = collect($contratos)->where('nivel', 'Medio')->count();
-        $baixoRisco = collect($contratos)->where('nivel', 'Baixo')->count();
+        $altoRisco = collect($contratos)->where('nivel', NivelRisco::Alto->label())->count();
+        $medioRisco = collect($contratos)->where('nivel', NivelRisco::Medio->label())->count();
+        $baixoRisco = collect($contratos)->where('nivel', NivelRisco::Baixo->label())->count();
 
         return [
             'municipio' => $tenant?->nome ?? 'Municipio',
