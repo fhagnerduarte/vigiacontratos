@@ -20,6 +20,7 @@ use App\Models\Secretaria;
 use App\Models\Servidor;
 use App\Services\ContratoService;
 use App\Services\DocumentoService;
+use App\Services\ChecklistService;
 use App\Services\FiscalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -138,6 +139,10 @@ class ContratosController extends Controller
             fn ($doc) => $doc->tipo_documento->label()
         );
 
+        // Conformidade por fase contratual (IMP-050)
+        $conformidadeFases = ChecklistService::calcularConformidadeGeral($contrato);
+        $percentualGlobal = ChecklistService::calcularPercentualGlobal($contrato);
+
         // Servidores ativos para form de designar/trocar fiscal
         $servidores = Servidor::where('is_ativo', true)->orderBy('nome')->get();
 
@@ -146,6 +151,8 @@ class ContratosController extends Controller
             'checklistObrigatorio',
             'tiposDocumento',
             'documentosPorTipo',
+            'conformidadeFases',
+            'percentualGlobal',
             'servidores',
         ));
     }

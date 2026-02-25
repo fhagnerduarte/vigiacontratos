@@ -170,6 +170,11 @@ class Contrato extends Model
         return $this->hasMany(Alerta::class)->whereIn('status', ['pendente', 'enviado', 'visualizado']);
     }
 
+    public function conformidadeFases(): HasMany
+    {
+        return $this->hasMany(ContratoConformidadeFase::class);
+    }
+
     // Scopes
 
     public function scopeIrregulares($query)

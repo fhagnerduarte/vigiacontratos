@@ -288,6 +288,62 @@
 - [x] RateLimiter (10/min) para exports *(IMP-029)*
 - [x] 9 rotas de relatórios + sidebar link *(IMP-029)*
 
+### Módulo: Conformidade Legal — Lei 14.133/2021 (Fase 7)
+
+**IMP-049: Campos Compliance + Fiscal Substituto** *(Concluído)*
+- [x] Migration 000040: contratos +7 campos compliance, fiscais +3 campos *(IMP-049)*
+- [x] Enums: RegimeExecucao (5 cases), TipoFiscal (titular/substituto) *(IMP-049)*
+- [x] TipoDocumentoContratual +3 novos (15 total) *(IMP-049)*
+- [x] Fiscal substituto: relationship, designarSubstituto(), Lei 14.133 art. 117 *(IMP-049)*
+- [x] Publicacao: data_publicacao, veiculo, link_transparencia, accessor publicado *(IMP-049)*
+- [x] Views create/edit/show com campos compliance *(IMP-049)*
+- [x] Testes: ComplianceFieldsTest 22 testes *(IMP-049)*
+
+**IMP-050: Checklist por Fase Contratual** *(Em andamento)*
+- [x] Migration 000041: +fase/descricao/ordem em checklist, tabela contrato_conformidade_fases *(IMP-050)*
+- [x] Enum FaseContratual (7 fases) *(IMP-050)*
+- [x] Model ContratoConformidadeFase + scopes ConfiguracaoChecklistDocumento *(IMP-050)*
+- [x] ChecklistService: obterChecklistPorFase, calcularConformidade, semaforo, cache *(IMP-050)*
+- [x] Seeder: 15 docs distribuidos por 7 fases com descricoes Lei 14.133 *(IMP-050)*
+- [x] Views: aba Conformidade no show (accordion), config checklist por fase *(IMP-050)*
+- [x] Integracao RiscoService: criterio fases criticas incompletas *(IMP-050)*
+- [ ] Testes: ChecklistFaseTest (~30 testes) — pendente execucao *(IMP-050)*
+
+**IMP-051: Motor de Alertas Completo (Regras 2-10)** *(Pendente)*
+- [ ] 6 novos TipoEventoAlerta: ExecucaoAposVencimento, AditivoAcimaLimite, ContratoSemFiscal, FiscalSemRelatorio, ProrrogacaoForaDoPrazo, ContratoParado
+- [ ] Migration 000042: configuracoes_alerta_avancado (tipo_evento, dias_inatividade, dias_sem_relatorio)
+- [ ] AlertaService: 6 novos metodos verificacao integrados ao verificarVencimentos()
+- [ ] ExecucaoFinanceiraService: alerta imediato data_execucao > contrato.data_fim
+- [ ] Testes: ~50 testes estimados
+
+**IMP-052: Encerramento Contratual (Workflow)** *(Pendente — depende 049+050)*
+- [ ] Enum EtapaEncerramento (6 etapas)
+- [ ] Migration 000043: tabela encerramentos (one-to-one com contrato)
+- [ ] Model Encerramento + EncerramentoService (iniciar→verificar→termo provisorio→avaliacao→definitivo→quitacao)
+- [ ] Controller EncerramentosController (nested: contratos/{contrato}/encerramento)
+- [ ] 5 permissoes novas: encerramento.iniciar/verificar_financeiro/registrar_termo/avaliar/quitar
+- [ ] Views: wizard step-by-step com progresso
+- [ ] Testes: ~35 testes estimados
+
+**IMP-053: Execucao Financeira Avancada** *(Pendente — depende 049)*
+- [ ] Migration 000044: contratos +valor_empenhado/saldo_contratual, execucoes_financeiras +tipo_execucao/numero_empenho/competencia
+- [ ] Enum TipoExecucaoFinanceira (pagamento, liquidacao, empenho_adicional)
+- [ ] ExecucaoFinanceiraService: calcularSaldo(), alerta EmpenhoInsuficiente
+- [ ] Testes: ~20 testes estimados
+
+**IMP-054: Ocorrencias + Relatorios Fiscais** *(Pendente — depende 049)*
+- [ ] Migration 000045: tabelas ocorrencias + relatorios_fiscais
+- [ ] Enum TipoOcorrencia (atraso, inconformidade, notificacao, medicao, outros)
+- [ ] Models Ocorrencia/RelatorioFiscal + Services + Controllers (nested sob contratos)
+- [ ] 5 permissoes novas: ocorrencia.registrar/resolver/visualizar, relatorio-fiscal.registrar/visualizar
+- [ ] Integracao: RelatorioFiscalService atualiza fiscal.data_ultimo_relatorio
+- [ ] Testes: ~25 testes estimados
+
+**IMP-055: Score + Session Encryption + Testes Integracao** *(Pendente — depende todos)*
+- [ ] SESSION_ENCRYPT=true + config/session.php
+- [ ] Testes E2E ciclo completo: criar→fiscal→docs→execucao→aditivo→alertas→encerrar→score
+- [ ] Testes: ~20 testes estimados
+
 ### Geral
 - [x] Testes unitários Services: ContratoService, AlertaService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService, DocumentoService, PermissaoService, WorkflowService, FornecedorService, DashboardService, PainelRiscoService, MfaService *(IMP-027/028/030)*
 - [x] Testes unitários validação de CNPJ + CPF *(IMP-028)*

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CategoriaContrato;
+use App\Enums\FaseContratual;
 use App\Enums\NivelRisco;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
@@ -187,6 +188,16 @@ class RiscoService
         if ($tiposPresentes->isEmpty()) {
             $score += 10;
             $criterios[] = 'Nenhum documento anexado (+10pts)';
+        }
+
+        // Conformidade por fase critica (IMP-050, RN-139)
+        $fasesCriticas = [FaseContratual::Formalizacao, FaseContratual::Publicacao];
+        foreach ($fasesCriticas as $faseCritica) {
+            $conformidade = ChecklistService::calcularConformidadeFase($contrato, $faseCritica);
+            if ($conformidade['total_obrigatorios'] > 0 && $conformidade['percentual'] < 100) {
+                $score += 5;
+                $criterios[] = "Fase {$faseCritica->label()} incompleta ({$conformidade['total_presentes']}/{$conformidade['total_obrigatorios']}) (+5pts)";
+            }
         }
 
         return ['score' => $score, 'criterios' => $criterios];

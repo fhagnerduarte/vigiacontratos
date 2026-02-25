@@ -85,6 +85,7 @@
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-fiscal">Fiscal</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-financeiro">Financeiro</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-documentos">Documentos</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-conformidade">Conformidade</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-aditivos">Aditivos</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-auditoria">Auditoria</a></li>
         </ul>
@@ -618,6 +619,101 @@
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+
+            {{-- ABA: Conformidade por Fase (IMP-050) --}}
+            <div class="tab-pane fade" id="tab-conformidade">
+                {{-- Barra de Conformidade Global --}}
+                <div class="d-flex align-items-center justify-content-between mb-20 p-16 border rounded
+                    bg-{{ $percentualGlobal >= 80 ? 'success' : ($percentualGlobal >= 50 ? 'warning' : 'danger') }}-focus">
+                    <div class="d-flex align-items-center gap-12">
+                        <iconify-icon icon="solar:shield-check-bold" class="text-{{ $percentualGlobal >= 80 ? 'success' : ($percentualGlobal >= 50 ? 'warning' : 'danger') }}-main text-2xl"></iconify-icon>
+                        <div>
+                            <span class="fw-semibold text-{{ $percentualGlobal >= 80 ? 'success' : ($percentualGlobal >= 50 ? 'warning' : 'danger') }}-main">
+                                Conformidade Global: {{ number_format($percentualGlobal, 1, ',', '.') }}%
+                            </span>
+                            <p class="text-sm text-secondary-light mb-0">Lei 14.133/2021 — 7 fases do ciclo contratual</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress mb-24" style="height: 10px;">
+                    <div class="progress-bar bg-{{ $percentualGlobal >= 80 ? 'success' : ($percentualGlobal >= 50 ? 'warning' : 'danger') }}"
+                         role="progressbar"
+                         style="width: {{ $percentualGlobal }}%">
+                    </div>
+                </div>
+
+                {{-- Accordion por Fase --}}
+                <div class="accordion" id="accordionConformidade">
+                    @foreach ($conformidadeFases as $faseKey => $dados)
+                        @php
+                            $corSemaforo = match ($dados['semaforo']) {
+                                'verde' => 'success',
+                                'amarelo' => 'warning',
+                                default => 'danger',
+                            };
+                        @endphp
+                        <div class="card border-0 mb-8">
+                            <div class="card-header p-0 bg-transparent" id="headingConf{{ $loop->index }}">
+                                <button class="btn w-100 text-start d-flex align-items-center gap-12 p-12 collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapseConf{{ $loop->index }}"
+                                        aria-expanded="false">
+                                    {{-- Semaforo --}}
+                                    <span class="d-inline-block rounded-circle flex-shrink-0"
+                                          style="width: 12px; height: 12px; background: var(--bs-{{ $corSemaforo }});">
+                                    </span>
+                                    <iconify-icon icon="{{ $dados['icone'] }}" class="text-primary-600 text-lg"></iconify-icon>
+                                    <span class="fw-medium text-sm">{{ $dados['fase']->ordem() }}. {{ $dados['label'] }}</span>
+
+                                    {{-- Badge de conformidade --}}
+                                    <span class="badge bg-{{ $corSemaforo }}-focus text-{{ $corSemaforo }}-main ms-auto px-12 py-4 radius-4">
+                                        {{ $dados['total_presentes'] }}/{{ $dados['total_obrigatorios'] }}
+                                        ({{ number_format($dados['percentual'], 0) }}%)
+                                    </span>
+                                </button>
+                            </div>
+                            <div id="collapseConf{{ $loop->index }}" class="collapse" data-bs-parent="#accordionConformidade">
+                                <div class="card-body py-8 px-16">
+                                    @if ($dados['total_obrigatorios'] > 0)
+                                        <div class="progress mb-12" style="height: 6px;">
+                                            <div class="progress-bar bg-{{ $corSemaforo }}"
+                                                 style="width: {{ $dados['percentual'] }}%"></div>
+                                        </div>
+                                        @php
+                                            $checklistFase = \App\Services\ChecklistService::obterChecklistPorFase($contrato, $dados['fase']);
+                                        @endphp
+                                        <div class="row gy-2">
+                                            @foreach ($checklistFase as $item)
+                                                <div class="col-md-6">
+                                                    <div class="d-flex align-items-center gap-8 p-8 border rounded">
+                                                        @if ($item['presente'])
+                                                            <iconify-icon icon="ic:baseline-check-circle" class="text-success-main text-lg flex-shrink-0"></iconify-icon>
+                                                        @else
+                                                            <iconify-icon icon="ic:baseline-cancel" class="text-danger-main text-lg flex-shrink-0"></iconify-icon>
+                                                        @endif
+                                                        <span class="text-sm {{ $item['presente'] ? 'text-neutral-700' : 'text-danger-main fw-medium' }}">
+                                                            {{ $item['label'] }}
+                                                        </span>
+                                                        @if ($item['presente'])
+                                                            <span class="badge bg-neutral-100 text-neutral-600 ms-auto text-xs">v{{ $item['versao'] }}</span>
+                                                        @else
+                                                            <span class="badge bg-danger-focus text-danger-main ms-auto text-xs">Pendente</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-secondary-light mb-0">Nenhum documento obrigatorio configurado para esta fase.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
