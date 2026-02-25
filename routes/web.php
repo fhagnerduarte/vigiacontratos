@@ -23,6 +23,7 @@ use App\Http\Controllers\Tenant\EncerramentosController;
 use App\Http\Controllers\Tenant\LgpdController;
 use App\Http\Controllers\Tenant\OcorrenciasController;
 use App\Http\Controllers\Tenant\RelatoriosFiscaisController;
+use App\Http\Controllers\Tenant\SolicitacoesLaiController;
 use App\Http\Controllers\Tenant\GlobalSearchController;
 use App\Http\Controllers\Tenant\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -334,6 +335,31 @@ Route::middleware(['tenant', 'auth', 'user.active', 'mfa.verified'])->group(func
     Route::put('configuracoes-checklist-documento', [ConfiguracaoChecklistDocumentoController::class, 'update'])
         ->name('tenant.configuracoes-checklist.update')
         ->middleware('permission:documento.configurar');
+
+    // Transparencia — Solicitacoes LAI / SIC (IMP-058)
+    Route::get('solicitacoes-lai', [SolicitacoesLaiController::class, 'index'])
+        ->name('tenant.solicitacoes-lai.index')
+        ->middleware('permission:lai.visualizar');
+
+    Route::get('solicitacoes-lai/{solicitacao}', [SolicitacoesLaiController::class, 'show'])
+        ->name('tenant.solicitacoes-lai.show')
+        ->middleware('permission:lai.visualizar');
+
+    Route::post('solicitacoes-lai/{solicitacao}/analisar', [SolicitacoesLaiController::class, 'analisar'])
+        ->name('tenant.solicitacoes-lai.analisar')
+        ->middleware('permission:lai.analisar');
+
+    Route::post('solicitacoes-lai/{solicitacao}/responder', [SolicitacoesLaiController::class, 'responder'])
+        ->name('tenant.solicitacoes-lai.responder')
+        ->middleware('permission:lai.responder');
+
+    Route::post('solicitacoes-lai/{solicitacao}/prorrogar', [SolicitacoesLaiController::class, 'prorrogar'])
+        ->name('tenant.solicitacoes-lai.prorrogar')
+        ->middleware('permission:lai.prorrogar');
+
+    Route::post('solicitacoes-lai/{solicitacao}/indeferir', [SolicitacoesLaiController::class, 'indeferir'])
+        ->name('tenant.solicitacoes-lai.indeferir')
+        ->middleware('permission:lai.indeferir');
 
     // Administracao — LGPD (RN-213)
     Route::get('lgpd', [LgpdController::class, 'index'])

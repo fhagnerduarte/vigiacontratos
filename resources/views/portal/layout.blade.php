@@ -34,6 +34,7 @@
             <a href="{{ route('portal.contratos', $tenant->slug) }}" class="{{ request()->routeIs('portal.contratos*') ? 'active' : '' }}">Contratos</a>
             <a href="{{ route('portal.fornecedores', $tenant->slug) }}" class="{{ request()->routeIs('portal.fornecedores') ? 'active' : '' }}">Fornecedores</a>
             <a href="{{ route('portal.dados-abertos', $tenant->slug) }}" class="{{ request()->routeIs('portal.dados-abertos') ? 'active' : '' }}">Dados Abertos</a>
+            <a href="{{ route('portal.lai.create', $tenant->slug) }}" class="{{ request()->routeIs('portal.lai.*') ? 'active' : '' }}">e-SIC</a>
         </div>
     </nav>
 

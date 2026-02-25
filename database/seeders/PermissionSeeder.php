@@ -116,6 +116,14 @@ class PermissionSeeder extends Seeder
             ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitacao LGPD', 'grupo' => 'lgpd'],
             ['nome' => 'lgpd.processar', 'descricao' => 'Processar anonimizacao LGPD', 'grupo' => 'lgpd'],
 
+            // SIC/e-SIC — Solicitacoes LAI (IMP-058)
+            ['nome' => 'lai.visualizar', 'descricao' => 'Visualizar solicitacoes LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.analisar', 'descricao' => 'Marcar solicitacao LAI em analise', 'grupo' => 'lai'],
+            ['nome' => 'lai.responder', 'descricao' => 'Registrar resposta a solicitacao LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.prorrogar', 'descricao' => 'Prorrogar prazo de solicitacao LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.indeferir', 'descricao' => 'Indeferir solicitacao LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.relatorio', 'descricao' => 'Gerar relatorio de transparencia LAI', 'grupo' => 'lai'],
+
             // Classificacao de Sigilo (IMP-056 — LAI 12.527/2011)
             ['nome' => 'classificacao.visualizar', 'descricao' => 'Visualizar classificacao de sigilo', 'grupo' => 'classificacao'],
             ['nome' => 'classificacao.classificar', 'descricao' => 'Classificar/alterar sigilo de contrato', 'grupo' => 'classificacao'],

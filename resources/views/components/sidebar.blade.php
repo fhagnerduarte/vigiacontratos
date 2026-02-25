@@ -142,6 +142,21 @@
                 @endif
             @endif
 
+            {{-- TRANSPARENCIA --}}
+            @if (auth()->user()->hasPermission('lai.visualizar') || auth()->user()->hasPermission('classificacao.visualizar'))
+                <li class="sidebar-menu-group-title">Transparência</li>
+
+                @if (auth()->user()->hasPermission('lai.visualizar'))
+                    <li>
+                        <a href="{{ route('tenant.solicitacoes-lai.index') }}"
+                           class="{{ request()->routeIs('tenant.solicitacoes-lai.*') ? 'active-page' : '' }}">
+                            <iconify-icon icon="solar:eye-bold" class="menu-icon"></iconify-icon>
+                            <span>e-SIC / Solicitações LAI</span>
+                        </a>
+                    </li>
+                @endif
+            @endif
+
             {{-- ADMINISTRACAO --}}
             @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar') || auth()->user()->hasPermission('lgpd.visualizar'))
                 <li class="sidebar-menu-group-title">Administração</li>
