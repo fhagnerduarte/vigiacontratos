@@ -28,4 +28,5 @@ Route::prefix('admin-saas')->name('admin-saas.')->middleware(['auth:admin', 'adm
     Route::post('tenants/{tenant}/deactivate', [TenantController::class, 'deactivate'])->name('tenants.deactivate');
     Route::put('tenants/{tenant}/mfa', [TenantController::class, 'updateMfaConfig'])->name('tenants.mfa.update');
     Route::put('tenants/{tenant}/branding', [TenantController::class, 'updateBranding'])->name('tenants.branding.update');
+    Route::get('tenants/{tenant}/logo', [TenantController::class, 'showLogo'])->name('tenants.logo');
 });

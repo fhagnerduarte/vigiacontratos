@@ -7,6 +7,7 @@ use App\Http\Requests\AdminSaaS\StoreTenantRequest;
 use App\Models\Tenant;
 use App\Services\TenantService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TenantController extends Controller
 {
@@ -59,6 +60,13 @@ class TenantController extends Controller
             'logo' => ['nullable', 'image', 'max:2048'],
             'cor_primaria' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'cor_secundaria' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'cep' => ['nullable', 'string', 'max:9'],
+            'logradouro' => ['nullable', 'string', 'max:255'],
+            'numero' => ['nullable', 'string', 'max:20'],
+            'complemento' => ['nullable', 'string', 'max:100'],
+            'bairro' => ['nullable', 'string', 'max:255'],
+            'cidade' => ['nullable', 'string', 'max:255'],
+            'uf' => ['nullable', 'string', 'size:2'],
             'endereco' => ['nullable', 'string', 'max:255'],
             'telefone' => ['nullable', 'string', 'max:20'],
             'email_contato' => ['nullable', 'email', 'max:255'],
@@ -68,14 +76,29 @@ class TenantController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('tenants/' . $tenant->slug . '/branding', 's3');
+            if ($tenant->logo_path) {
+                Storage::disk('s3')->delete($tenant->logo_path);
+            }
+            $path = $request->file('logo')->store("tenants/{$tenant->slug}/branding", 's3');
             $validated['logo_path'] = $path;
+        } elseif ($request->input('remover_logo') === '1' && $tenant->logo_path) {
+            Storage::disk('s3')->delete($tenant->logo_path);
+            $validated['logo_path'] = null;
         }
 
-        unset($validated['logo']);
+        unset($validated['logo'], $validated['remover_logo']);
         $tenant->update($validated);
 
         return back()->with('success', 'Configuracoes do portal atualizadas com sucesso.');
+    }
+
+    public function showLogo(Tenant $tenant)
+    {
+        if (! $tenant->logo_path || ! Storage::disk('s3')->exists($tenant->logo_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('s3')->response($tenant->logo_path);
     }
 
     public function updateMfaConfig(Request $request, Tenant $tenant)

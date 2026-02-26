@@ -105,12 +105,32 @@
                         {{-- Logo --}}
                         <div class="col-lg-6">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">Logo / Brasão</label>
-                            @if($tenant->logo_path)
-                                <div class="mb-12">
-                                    <img src="{{ $tenant->logo_url }}" alt="Logo atual" style="max-height: 60px; border-radius: 6px; border: 1px solid #dee2e6; padding: 4px;">
+
+                            {{-- Preview da logo atual --}}
+                            <div id="logoPreviewContainer" class="mb-16 p-16 border radius-8 bg-neutral-50 {{ $tenant->logo_path ? '' : 'd-none' }}">
+                                <div class="d-flex align-items-center gap-16">
+                                    <div class="border radius-8 bg-white p-8 d-flex align-items-center justify-content-center" style="min-width: 100px; min-height: 100px;">
+                                        <img id="logoPreviewImg"
+                                             src="{{ route('admin-saas.tenants.logo', $tenant) }}"
+                                             alt="Logo {{ $tenant->nome }}"
+                                             style="max-height: 88px; max-width: 160px; object-fit: contain;">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="fw-semibold text-sm d-block mb-4">Logo atual</span>
+                                        @if($tenant->logo_path)
+                                            <span class="text-secondary-light text-xs d-block mb-8">{{ basename($tenant->logo_path) }}</span>
+                                        @endif
+                                        <span id="logoPreviewNewLabel" class="text-success-main text-xs d-none">Nova imagem selecionada</span>
+                                        <button type="button" id="btnRemoverLogo" class="btn btn-outline-danger text-xs btn-sm px-12 py-4 radius-4 mt-4 {{ $tenant->logo_path ? '' : 'd-none' }}">
+                                            <iconify-icon icon="mdi:trash-can-outline" class="me-4"></iconify-icon>Remover logo
+                                        </button>
+                                    </div>
                                 </div>
-                            @endif
-                            <input type="file" class="form-control radius-8 @error('logo') is-invalid @enderror" name="logo" accept="image/*">
+                            </div>
+
+                            {{-- Input de upload --}}
+                            <input type="file" class="form-control radius-8 @error('logo') is-invalid @enderror" name="logo" id="logoInput" accept="image/*">
+                            <input type="hidden" name="remover_logo" id="removerLogoFlag" value="0">
                             <span class="text-secondary-light text-xs mt-4 d-block">PNG, JPG ou SVG. Máximo 2MB.</span>
                             @error('logo')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -141,7 +161,7 @@
                         <div class="col-lg-6">
                             <label for="branding_cnpj" class="form-label fw-semibold text-primary-light text-sm mb-8">CNPJ</label>
                             <input type="text" class="form-control radius-8 @error('cnpj') is-invalid @enderror"
-                                   id="branding_cnpj" name="cnpj" value="{{ old('cnpj', $tenant->cnpj) }}" placeholder="00.000.000/0000-00">
+                                   id="branding_cnpj" name="cnpj" value="{{ old('cnpj', $tenant->cnpj) }}" placeholder="00.000.000/0000-00" maxlength="18">
                             @error('cnpj') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-lg-6">
@@ -151,17 +171,76 @@
                             @error('gestor_nome') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Endereço Estruturado --}}
+                        <div class="col-12">
+                            <hr class="my-8">
+                            <h6 class="fw-semibold text-sm text-primary-light mb-0">Endereço</h6>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="cep" class="form-label fw-semibold text-primary-light text-sm mb-8">CEP</label>
+                            <div class="position-relative">
+                                <input type="text" class="form-control radius-8 @error('cep') is-invalid @enderror"
+                                       id="cep" name="cep" value="{{ old('cep', $tenant->cep) }}" placeholder="00000-000" maxlength="9">
+                                <span id="cepSpinner" class="position-absolute top-50 end-0 translate-middle-y me-12 d-none">
+                                    <span class="spinner-border spinner-border-sm text-primary-main" role="status"></span>
+                                </span>
+                            </div>
+                            <span id="cepFeedback" class="text-xs mt-4 d-block"></span>
+                            @error('cep') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="logradouro" class="form-label fw-semibold text-primary-light text-sm mb-8">Logradouro</label>
+                            <input type="text" class="form-control radius-8 @error('logradouro') is-invalid @enderror"
+                                   id="logradouro" name="logradouro" value="{{ old('logradouro', $tenant->logradouro) }}" placeholder="Rua, Avenida, Praça...">
+                            @error('logradouro') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="numero" class="form-label fw-semibold text-primary-light text-sm mb-8">Número</label>
+                            <input type="text" class="form-control radius-8 @error('numero') is-invalid @enderror"
+                                   id="numero" name="numero" value="{{ old('numero', $tenant->numero) }}" placeholder="S/N">
+                            @error('numero') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="complemento" class="form-label fw-semibold text-primary-light text-sm mb-8">Complemento</label>
+                            <input type="text" class="form-control radius-8 @error('complemento') is-invalid @enderror"
+                                   id="complemento" name="complemento" value="{{ old('complemento', $tenant->complemento) }}" placeholder="Sala, Andar...">
+                            @error('complemento') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="bairro" class="form-label fw-semibold text-primary-light text-sm mb-8">Bairro</label>
+                            <input type="text" class="form-control radius-8 @error('bairro') is-invalid @enderror"
+                                   id="bairro" name="bairro" value="{{ old('bairro', $tenant->bairro) }}" placeholder="Bairro">
+                            @error('bairro') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="cidade" class="form-label fw-semibold text-primary-light text-sm mb-8">Cidade</label>
+                            <input type="text" class="form-control radius-8 @error('cidade') is-invalid @enderror"
+                                   id="cidade" name="cidade" value="{{ old('cidade', $tenant->cidade) }}" placeholder="Cidade">
+                            @error('cidade') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="uf" class="form-label fw-semibold text-primary-light text-sm mb-8">UF</label>
+                            <select class="form-select radius-8 @error('uf') is-invalid @enderror" id="uf" name="uf">
+                                <option value="">UF</option>
+                                @foreach (['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'] as $sigla)
+                                    <option value="{{ $sigla }}" {{ old('uf', $tenant->uf) === $sigla ? 'selected' : '' }}>{{ $sigla }}</option>
+                                @endforeach
+                            </select>
+                            @error('uf') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        {{-- Campo legado oculto — monta endereço completo automaticamente --}}
+                        <input type="hidden" name="endereco" id="endereco_legado" value="{{ old('endereco', $tenant->endereco) }}">
+
                         {{-- Contato --}}
-                        <div class="col-lg-12">
-                            <label for="endereco" class="form-label fw-semibold text-primary-light text-sm mb-8">Endereço</label>
-                            <input type="text" class="form-control radius-8 @error('endereco') is-invalid @enderror"
-                                   id="endereco" name="endereco" value="{{ old('endereco', $tenant->endereco) }}" placeholder="Rua, número, bairro — CEP">
-                            @error('endereco') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="col-12">
+                            <hr class="my-8">
+                            <h6 class="fw-semibold text-sm text-primary-light mb-0">Contato</h6>
                         </div>
                         <div class="col-lg-4">
                             <label for="branding_telefone" class="form-label fw-semibold text-primary-light text-sm mb-8">Telefone</label>
                             <input type="text" class="form-control radius-8 @error('telefone') is-invalid @enderror"
-                                   id="branding_telefone" name="telefone" value="{{ old('telefone', $tenant->telefone) }}" placeholder="(00) 0000-0000">
+                                   id="branding_telefone" name="telefone" value="{{ old('telefone', $tenant->telefone) }}" placeholder="(00) 00000-0000" maxlength="15">
                             @error('telefone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-lg-4">
@@ -377,6 +456,188 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (corSecundaria && corSecundariaText) {
         corSecundaria.addEventListener('input', function() { corSecundariaText.value = this.value; });
+    }
+
+    // Preview em tempo real da logo
+    var logoInput = document.getElementById('logoInput');
+    var logoPreviewContainer = document.getElementById('logoPreviewContainer');
+    var logoPreviewImg = document.getElementById('logoPreviewImg');
+    var logoPreviewNewLabel = document.getElementById('logoPreviewNewLabel');
+    var removerLogoFlag = document.getElementById('removerLogoFlag');
+    var btnRemoverLogo = document.getElementById('btnRemoverLogo');
+
+    if (logoInput) {
+        logoInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                var file = this.files[0];
+                if (!file.type.match('image.*')) return;
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    logoPreviewImg.src = e.target.result;
+                    logoPreviewContainer.classList.remove('d-none');
+                    logoPreviewNewLabel.classList.remove('d-none');
+                    btnRemoverLogo.classList.add('d-none');
+                    removerLogoFlag.value = '0';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (btnRemoverLogo) {
+        btnRemoverLogo.addEventListener('click', function() {
+            removerLogoFlag.value = '1';
+            logoPreviewImg.src = '';
+            logoPreviewContainer.classList.add('d-none');
+            logoPreviewNewLabel.classList.add('d-none');
+            logoInput.value = '';
+        });
+    }
+
+    // ========== Máscaras de Input ==========
+
+    function aplicarMascara(input, mascara) {
+        input.addEventListener('input', function() {
+            var valor = this.value.replace(/\D/g, '');
+            var resultado = '';
+            var idx = 0;
+            for (var i = 0; i < mascara.length && idx < valor.length; i++) {
+                if (mascara[i] === '0') {
+                    resultado += valor[idx];
+                    idx++;
+                } else {
+                    resultado += mascara[i];
+                }
+            }
+            this.value = resultado;
+        });
+    }
+
+    // Máscara CNPJ: 00.000.000/0000-00
+    var cnpjInput = document.getElementById('branding_cnpj');
+    if (cnpjInput) {
+        aplicarMascara(cnpjInput, '00.000.000/0000-00');
+    }
+
+    // Máscara CEP: 00000-000
+    var cepInput = document.getElementById('cep');
+    if (cepInput) {
+        aplicarMascara(cepInput, '00000-000');
+    }
+
+    // Máscara Telefone: (00) 00000-0000 ou (00) 0000-0000
+    var telefoneInput = document.getElementById('branding_telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function() {
+            var valor = this.value.replace(/\D/g, '');
+            if (valor.length <= 10) {
+                // Fixo: (00) 0000-0000
+                this.value = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, function(m, p1, p2, p3) {
+                    var r = '(' + p1 + ') ' + p2;
+                    if (p3) r += '-' + p3;
+                    return r;
+                });
+            } else {
+                // Celular: (00) 00000-0000
+                this.value = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, function(m, p1, p2, p3) {
+                    var r = '(' + p1 + ') ' + p2;
+                    if (p3) r += '-' + p3;
+                    return r;
+                });
+            }
+            if (valor.length <= 2) {
+                this.value = valor.length > 0 ? '(' + valor : '';
+            }
+        });
+    }
+
+    // ========== Busca CEP via ViaCEP ==========
+
+    if (cepInput) {
+        var cepSpinner = document.getElementById('cepSpinner');
+        var cepFeedback = document.getElementById('cepFeedback');
+
+        cepInput.addEventListener('blur', function() {
+            var cep = this.value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                if (cep.length > 0) {
+                    cepFeedback.textContent = 'CEP deve ter 8 dígitos.';
+                    cepFeedback.className = 'text-xs mt-4 d-block text-danger-main';
+                } else {
+                    cepFeedback.textContent = '';
+                    cepFeedback.className = 'text-xs mt-4 d-block';
+                }
+                return;
+            }
+
+            cepSpinner.classList.remove('d-none');
+            cepFeedback.textContent = '';
+            cepFeedback.className = 'text-xs mt-4 d-block';
+
+            fetch('https://viacep.com.br/ws/' + cep + '/json/')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    cepSpinner.classList.add('d-none');
+                    if (data.erro) {
+                        cepFeedback.textContent = 'CEP não encontrado.';
+                        cepFeedback.className = 'text-xs mt-4 d-block text-danger-main';
+                        return;
+                    }
+                    cepFeedback.textContent = 'Endereço preenchido automaticamente.';
+                    cepFeedback.className = 'text-xs mt-4 d-block text-success-main';
+
+                    document.getElementById('logradouro').value = data.logradouro || '';
+                    document.getElementById('bairro').value = data.bairro || '';
+                    document.getElementById('cidade').value = data.localidade || '';
+                    var ufSelect = document.getElementById('uf');
+                    if (ufSelect && data.uf) {
+                        ufSelect.value = data.uf;
+                    }
+
+                    // Se logradouro preenchido, foca no número
+                    if (data.logradouro) {
+                        document.getElementById('numero').focus();
+                    } else {
+                        document.getElementById('logradouro').focus();
+                    }
+                })
+                .catch(function() {
+                    cepSpinner.classList.add('d-none');
+                    cepFeedback.textContent = 'Erro ao consultar CEP. Preencha manualmente.';
+                    cepFeedback.className = 'text-xs mt-4 d-block text-warning-main';
+                });
+        });
+    }
+
+    // ========== Montar endereço legado no submit ==========
+
+    var brandingForm = document.querySelector('form[action*="branding"]');
+    if (brandingForm) {
+        brandingForm.addEventListener('submit', function() {
+            var partes = [];
+            var logradouro = document.getElementById('logradouro').value;
+            var numero = document.getElementById('numero').value;
+            var bairro = document.getElementById('bairro').value;
+            var cidade = document.getElementById('cidade').value;
+            var uf = document.getElementById('uf').value;
+            var cepVal = document.getElementById('cep').value;
+
+            if (logradouro) {
+                var linha = logradouro;
+                if (numero) linha += ', ' + numero;
+                partes.push(linha);
+            }
+            if (bairro) partes.push(bairro);
+            if (cidade) {
+                var cidadeUf = cidade;
+                if (uf) cidadeUf += '/' + uf;
+                partes.push(cidadeUf);
+            }
+            if (cepVal) partes.push('CEP: ' + cepVal);
+
+            document.getElementById('endereco_legado').value = partes.join(' — ');
+        });
     }
 });
 </script>

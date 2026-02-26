@@ -19,6 +19,7 @@ Route::middleware(['web', 'tenant.public'])->prefix('{slug}/portal')->group(func
     Route::get('/contratos', [PortalController::class, 'contratos'])->name('portal.contratos');
     Route::get('/contratos/{numero}', [PortalController::class, 'contratoDetalhe'])->where('numero', '.*')->name('portal.contratos.show');
     Route::get('/fornecedores', [PortalController::class, 'fornecedores'])->name('portal.fornecedores');
+    Route::get('/logo', [PortalController::class, 'logo'])->name('portal.logo');
     Route::get('/dados-abertos', [PortalController::class, 'dadosAbertos'])->name('portal.dados-abertos');
 
     // SIC/e-SIC — Transparencia Passiva (IMP-058)

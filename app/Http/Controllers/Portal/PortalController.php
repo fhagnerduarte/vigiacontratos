@@ -11,6 +11,7 @@ use App\Models\Fornecedor;
 use App\Models\Secretaria;
 use App\Services\DadosAbertosService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PortalController extends Controller
 {
@@ -97,6 +98,17 @@ class PortalController extends Controller
         $fornecedores = $query->orderBy('razao_social')->paginate(20);
 
         return view('portal.fornecedores.index', compact('tenant', 'fornecedores'));
+    }
+
+    public function logo(string $slug)
+    {
+        $tenant = app('tenant');
+
+        if (! $tenant->logo_path || ! Storage::disk('s3')->exists($tenant->logo_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('s3')->response($tenant->logo_path);
     }
 
     public function dadosAbertos(Request $request, string $slug)

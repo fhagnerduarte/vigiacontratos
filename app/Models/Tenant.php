@@ -20,6 +20,13 @@ class Tenant extends Model
         'logo_path',
         'cor_primaria',
         'cor_secundaria',
+        'cep',
+        'logradouro',
+        'numero',
+        'complemento',
+        'bairro',
+        'cidade',
+        'uf',
         'endereco',
         'telefone',
         'email_contato',
@@ -38,6 +45,44 @@ class Tenant extends Model
             'mfa_habilitado' => 'boolean',
             'mfa_perfis_obrigatorios' => 'array',
         ];
+    }
+
+    public function getEnderecoCompletoAttribute(): ?string
+    {
+        if (! $this->logradouro) {
+            return $this->endereco;
+        }
+
+        $partes = [];
+        $linha = $this->logradouro;
+        if ($this->numero) {
+            $linha .= ', ' . $this->numero;
+        }
+        if ($this->complemento) {
+            $linha .= ' — ' . $this->complemento;
+        }
+        $partes[] = $linha;
+
+        if ($this->bairro) {
+            $partes[] = $this->bairro;
+        }
+
+        $cidadeUf = '';
+        if ($this->cidade) {
+            $cidadeUf = $this->cidade;
+        }
+        if ($this->uf) {
+            $cidadeUf .= ($cidadeUf ? '/' : '') . $this->uf;
+        }
+        if ($cidadeUf) {
+            $partes[] = $cidadeUf;
+        }
+
+        if ($this->cep) {
+            $partes[] = 'CEP: ' . $this->cep;
+        }
+
+        return implode(' — ', $partes);
     }
 
     public function getLogoUrlAttribute(): ?string

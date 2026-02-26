@@ -39,9 +39,9 @@
     {{-- Header Institucional --}}
     <header class="portal-header">
         <div class="container d-flex align-items-center gap-3">
-            @if($tenant->logo_url ?? false)
+            @if($tenant->logo_path ?? false)
                 <div class="portal-logo">
-                    <img src="{{ $tenant->logo_url }}" alt="Brasao {{ $tenant->nome }}">
+                    <img src="{{ route('portal.logo', $tenant->slug) }}" alt="Brasao {{ $tenant->nome }}">
                 </div>
             @else
                 <div class="portal-logo-placeholder">
@@ -145,8 +145,8 @@
                 </div>
                 <div class="col-md-4">
                     <h5>Contato</h5>
-                    @if($tenant->endereco ?? false)
-                        <p><iconify-icon icon="solar:map-point-bold" width="14"></iconify-icon> {{ $tenant->endereco }}</p>
+                    @if($tenant->endereco_completo ?? ($tenant->endereco ?? false))
+                        <p><iconify-icon icon="solar:map-point-bold" width="14"></iconify-icon> {{ $tenant->endereco_completo ?? $tenant->endereco }}</p>
                     @endif
                     @if($tenant->telefone ?? false)
                         <p><iconify-icon icon="solar:phone-bold" width="14"></iconify-icon> {{ $tenant->telefone }}</p>
