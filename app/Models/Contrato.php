@@ -203,6 +203,11 @@ class Contrato extends Model
         return $this->hasMany(RelatorioFiscal::class);
     }
 
+    public function comparativosPreco(): HasMany
+    {
+        return $this->hasMany(ComparativoPreco::class);
+    }
+
     // Scopes
 
     public function scopeIrregulares($query)

@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\V1\OcorrenciasController;
 use App\Http\Controllers\Api\V1\PainelRiscoController;
 use App\Http\Controllers\Api\V1\SecretariasController;
 use App\Http\Controllers\Api\V1\ServidoresController;
+use App\Http\Controllers\Api\V1\DadosAbertosController;
+use App\Http\Controllers\Api\V1\PnpController;
 use App\Http\Controllers\Api\V1\TceController;
 use App\Http\Controllers\Api\V1\WebhooksController;
 use Illuminate\Support\Facades\Route;
@@ -96,6 +98,26 @@ Route::middleware(['api.tenant', 'auth:sanctum', 'throttle:api'])
         Route::get('/tce/validar', [TceController::class, 'validar'])->name('api.tce.validar');
         Route::post('/tce/exportar', [TceController::class, 'exportar'])->name('api.tce.exportar');
         Route::get('/tce/historico', [TceController::class, 'historico'])->name('api.tce.historico');
+
+        // PNP — Precos Referenciais (IMP-065)
+        Route::get('/pnp/precos', [PnpController::class, 'precos'])->name('api.pnp.precos');
+        Route::get('/pnp/precos/{preco}', [PnpController::class, 'showPreco'])->name('api.pnp.precos.show');
+        Route::post('/pnp/precos', [PnpController::class, 'storePreco'])->name('api.pnp.precos.store');
+        Route::put('/pnp/precos/{preco}', [PnpController::class, 'updatePreco'])->name('api.pnp.precos.update');
+        Route::get('/pnp/categorias', [PnpController::class, 'categorias'])->name('api.pnp.categorias');
+        Route::get('/pnp/comparativo', [PnpController::class, 'comparativo'])->name('api.pnp.comparativo');
+        Route::post('/pnp/contratos/{contrato}/comparar', [PnpController::class, 'compararContrato'])->name('api.pnp.comparar');
+        Route::get('/pnp/indicadores', [PnpController::class, 'indicadores'])->name('api.pnp.indicadores');
+        Route::get('/pnp/historico', [PnpController::class, 'historico'])->name('api.pnp.historico');
+
+        // Dados Abertos Gov (IMP-066)
+        Route::get('/dados-abertos/catalogo', [DadosAbertosController::class, 'catalogo'])->name('api.dados-abertos.catalogo');
+        Route::get('/dados-abertos/contratos', [DadosAbertosController::class, 'contratos'])->name('api.dados-abertos.contratos');
+        Route::get('/dados-abertos/fornecedores', [DadosAbertosController::class, 'fornecedores'])->name('api.dados-abertos.fornecedores');
+        Route::get('/dados-abertos/licitacoes', [DadosAbertosController::class, 'licitacoes'])->name('api.dados-abertos.licitacoes');
+        Route::post('/dados-abertos/exportar', [DadosAbertosController::class, 'exportar'])->name('api.dados-abertos.exportar');
+        Route::get('/dados-abertos/estatisticas', [DadosAbertosController::class, 'estatisticas'])->name('api.dados-abertos.estatisticas');
+        Route::get('/dados-abertos/historico', [DadosAbertosController::class, 'historico'])->name('api.dados-abertos.historico');
 
         // Webhooks (CRUD)
         Route::get('/webhooks', [WebhooksController::class, 'index'])->name('api.webhooks.index');

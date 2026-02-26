@@ -52,6 +52,7 @@ class TenantService
             'ExecucaoFinanceiraSeeder',
             'OcorrenciaRelatorioFiscalSeeder',
             'ContratoConformidadeFaseSeeder',
+            'PrecoReferencialSeeder',
         ];
 
         foreach ($seeders as $seeder) {

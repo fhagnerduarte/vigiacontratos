@@ -47,5 +47,8 @@ class WebhookService
         'ocorrencia.criada',
         'ocorrencia.resolvida',
         'execucao_financeira.criada',
+        'pnp.preco.registrado',
+        'pnp.comparativo.gerado',
+        'dados_abertos.exportacao',
     ];
 }

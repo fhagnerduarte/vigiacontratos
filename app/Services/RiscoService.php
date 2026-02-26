@@ -6,8 +6,10 @@ use App\Enums\CategoriaContrato;
 use App\Enums\ClassificacaoSigilo;
 use App\Enums\FaseContratual;
 use App\Enums\NivelRisco;
+use App\Enums\StatusComparativoPreco;
 use App\Enums\TipoContrato;
 use App\Enums\TipoDocumentoContratual;
+use App\Models\ComparativoPreco;
 use App\Models\Contrato;
 
 class RiscoService
@@ -142,6 +144,15 @@ class RiscoService
         if ((float) $contrato->percentual_executado >= 90 && (float) $contrato->percentual_executado <= 100) {
             $score += 5;
             $criterios[] = "Saldo restante inferior a 10% ({$contrato->percentual_executado}% executado) (+5pts)";
+        }
+
+        // Sobrepreco PNP: +10pts se contrato acima do teto referencial
+        $comparativo = ComparativoPreco::where('contrato_id', $contrato->id)
+            ->latest()
+            ->first();
+        if ($comparativo && $comparativo->status_comparativo === StatusComparativoPreco::Sobrepreco) {
+            $score += 10;
+            $criterios[] = "Sobrepreco detectado ({$comparativo->percentual_diferenca}% acima do referencial) (+10pts)";
         }
 
         return ['score' => $score, 'criterios' => $criterios];
