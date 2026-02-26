@@ -128,6 +128,24 @@ $neutral-dark: (
 );
 
 $semantic-colors: (
+  primary: (
+    "main": #487FFF,
+    "surface": #E4F1FF,
+    "border": #BFDCFF,
+    "hover": #486CEA,
+    "pressed": #4536B6,
+    "focus": #487fff26,
+  ),
+
+  secondary: (
+    "main": #4B5563,
+    "surface": #F3F4F6,
+    "border": #D1D5DB,
+    "hover": #374151,
+    "pressed": #1F2937,
+    "focus": #4b556326,
+  ),
+
   success: (
     "main": #45B369,
     "surface": #DAF0E1,

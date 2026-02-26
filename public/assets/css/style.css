@@ -242,6 +242,18 @@
   --light-600: #E4F1FF;
   --light-700: #374151;
   --light-800: #1F2937;
+  --primary-main: #487FFF;
+  --primary-surface: #E4F1FF;
+  --primary-border: #BFDCFF;
+  --primary-hover: #486CEA;
+  --primary-pressed: #4536B6;
+  --primary-focus: rgba(72, 127, 255, 0.1490196078);
+  --secondary-main: #4B5563;
+  --secondary-surface: #F3F4F6;
+  --secondary-border: #D1D5DB;
+  --secondary-hover: #374151;
+  --secondary-pressed: #1F2937;
+  --secondary-focus: rgba(75, 85, 99, 0.1490196078);
   --success-main: #45B369;
   --success-surface: #DAF0E1;
   --success-border: #B5E1C3;
@@ -1355,6 +1367,54 @@ th {
   color: var(--light-800) !important;
 }
 
+.text-primary-main {
+  color: var(--primary-main);
+}
+
+.text-primary-surface {
+  color: var(--primary-surface);
+}
+
+.text-primary-border {
+  color: var(--primary-border);
+}
+
+.text-primary-hover {
+  color: var(--primary-hover);
+}
+
+.text-primary-pressed {
+  color: var(--primary-pressed);
+}
+
+.text-primary-focus {
+  color: var(--primary-focus);
+}
+
+.text-secondary-main {
+  color: var(--secondary-main);
+}
+
+.text-secondary-surface {
+  color: var(--secondary-surface);
+}
+
+.text-secondary-border {
+  color: var(--secondary-border);
+}
+
+.text-secondary-hover {
+  color: var(--secondary-hover);
+}
+
+.text-secondary-pressed {
+  color: var(--secondary-pressed);
+}
+
+.text-secondary-focus {
+  color: var(--secondary-focus);
+}
+
 .text-success-main {
   color: var(--success-main);
 }
@@ -1871,6 +1931,54 @@ th {
 
 .bg-light-800 {
   background-color: var(--light-800) !important;
+}
+
+.bg-primary-main {
+  background-color: var(--primary-main) !important;
+}
+
+.bg-primary-surface {
+  background-color: var(--primary-surface) !important;
+}
+
+.bg-primary-border {
+  background-color: var(--primary-border) !important;
+}
+
+.bg-primary-hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.bg-primary-pressed {
+  background-color: var(--primary-pressed) !important;
+}
+
+.bg-primary-focus {
+  background-color: var(--primary-focus) !important;
+}
+
+.bg-secondary-main {
+  background-color: var(--secondary-main) !important;
+}
+
+.bg-secondary-surface {
+  background-color: var(--secondary-surface) !important;
+}
+
+.bg-secondary-border {
+  background-color: var(--secondary-border) !important;
+}
+
+.bg-secondary-hover {
+  background-color: var(--secondary-hover) !important;
+}
+
+.bg-secondary-pressed {
+  background-color: var(--secondary-pressed) !important;
+}
+
+.bg-secondary-focus {
+  background-color: var(--secondary-focus) !important;
 }
 
 .bg-success-main {
@@ -2865,6 +2973,126 @@ th {
 
 .bg-hover-light-800:hover {
   background-color: var(--light-800) !important;
+}
+
+.bg-hover-primary-main {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-main:hover {
+  background-color: var(--primary-main) !important;
+}
+
+.bg-hover-primary-surface {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-surface:hover {
+  background-color: var(--primary-surface) !important;
+}
+
+.bg-hover-primary-border {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-border:hover {
+  background-color: var(--primary-border) !important;
+}
+
+.bg-hover-primary-hover {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-hover:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.bg-hover-primary-pressed {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-pressed:hover {
+  background-color: var(--primary-pressed) !important;
+}
+
+.bg-hover-primary-focus {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-primary-focus:hover {
+  background-color: var(--primary-focus) !important;
+}
+
+.bg-hover-secondary-main {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-main:hover {
+  background-color: var(--secondary-main) !important;
+}
+
+.bg-hover-secondary-surface {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-surface:hover {
+  background-color: var(--secondary-surface) !important;
+}
+
+.bg-hover-secondary-border {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-border:hover {
+  background-color: var(--secondary-border) !important;
+}
+
+.bg-hover-secondary-hover {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-hover:hover {
+  background-color: var(--secondary-hover) !important;
+}
+
+.bg-hover-secondary-pressed {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-pressed:hover {
+  background-color: var(--secondary-pressed) !important;
+}
+
+.bg-hover-secondary-focus {
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.bg-hover-secondary-focus:hover {
+  background-color: var(--secondary-focus) !important;
 }
 
 .bg-hover-success-main {
@@ -7572,6 +7800,54 @@ h6, .h6 {
   background-color: var(--light-800) !important;
 }
 
+.group-item:hover .group-hover\:bg-primary-main {
+  background-color: var(--primary-main) !important;
+}
+
+.group-item:hover .group-hover\:bg-primary-surface {
+  background-color: var(--primary-surface) !important;
+}
+
+.group-item:hover .group-hover\:bg-primary-border {
+  background-color: var(--primary-border) !important;
+}
+
+.group-item:hover .group-hover\:bg-primary-hover {
+  background-color: var(--primary-hover) !important;
+}
+
+.group-item:hover .group-hover\:bg-primary-pressed {
+  background-color: var(--primary-pressed) !important;
+}
+
+.group-item:hover .group-hover\:bg-primary-focus {
+  background-color: var(--primary-focus) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-main {
+  background-color: var(--secondary-main) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-surface {
+  background-color: var(--secondary-surface) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-border {
+  background-color: var(--secondary-border) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-hover {
+  background-color: var(--secondary-hover) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-pressed {
+  background-color: var(--secondary-pressed) !important;
+}
+
+.group-item:hover .group-hover\:bg-secondary-focus {
+  background-color: var(--secondary-focus) !important;
+}
+
 .group-item:hover .group-hover\:bg-success-main {
   background-color: var(--success-main) !important;
 }
@@ -8042,6 +8318,54 @@ h6, .h6 {
 
 .group-item:hover .group-hover\:text-light-800 {
   color: var(--light-800) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-main {
+  color: var(--primary-main) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-surface {
+  color: var(--primary-surface) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-border {
+  color: var(--primary-border) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-hover {
+  color: var(--primary-hover) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-pressed {
+  color: var(--primary-pressed) !important;
+}
+
+.group-item:hover .group-hover\:text-primary-focus {
+  color: var(--primary-focus) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-main {
+  color: var(--secondary-main) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-surface {
+  color: var(--secondary-surface) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-border {
+  color: var(--secondary-border) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-hover {
+  color: var(--secondary-hover) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-pressed {
+  color: var(--secondary-pressed) !important;
+}
+
+.group-item:hover .group-hover\:text-secondary-focus {
+  color: var(--secondary-focus) !important;
 }
 
 .group-item:hover .group-hover\:text-success-main {
