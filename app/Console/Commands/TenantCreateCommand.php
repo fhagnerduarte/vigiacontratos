@@ -61,7 +61,11 @@ class TenantCreateCommand extends Command
 
         $this->info("  Aplicando seeders no banco do tenant...");
 
-        $seeders = ['RoleSeeder', 'TenantUserSeeder', 'SecretariaSeeder', 'FornecedorSeeder'];
+        $seeders = [
+            'RoleSeeder', 'TenantUserSeeder', 'SecretariaSeeder', 'FornecedorSeeder',
+            'ServidorSeeder', 'ContratoSeeder', 'DocumentoSeeder', 'AditivoSeeder',
+            'ExecucaoFinanceiraSeeder', 'OcorrenciaRelatorioFiscalSeeder', 'ContratoConformidadeFaseSeeder',
+        ];
 
         foreach ($seeders as $seeder) {
             Artisan::call('db:seed', [

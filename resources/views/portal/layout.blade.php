@@ -15,7 +15,7 @@
             --portal-secondary: {{ $tenant->cor_secundaria ?? '#0b3a9e' }};
         }
     </style>
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
     @stack('styles')
 </head>
 <body>

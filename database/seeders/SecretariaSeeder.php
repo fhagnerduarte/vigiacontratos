@@ -45,6 +45,41 @@ class SecretariaSeeder extends Seeder
                 'email'       => 'meioambiente@prefeitura.gov.br',
                 'telefone'    => '(65) 3321-0005',
             ],
+            [
+                'nome'        => 'Secretaria Municipal de Fazenda',
+                'sigla'       => 'SMF',
+                'responsavel' => 'Luciana Borges',
+                'email'       => 'fazenda@prefeitura.gov.br',
+                'telefone'    => '(65) 3321-0006',
+            ],
+            [
+                'nome'        => 'Secretaria Municipal de Assistência Social',
+                'sigla'       => 'SMAS',
+                'responsavel' => 'Fernanda Costa',
+                'email'       => 'assistenciasocial@prefeitura.gov.br',
+                'telefone'    => '(65) 3321-0007',
+            ],
+            [
+                'nome'        => 'Secretaria Municipal de Segurança Pública',
+                'sigla'       => 'SMSP',
+                'responsavel' => 'Ricardo Teixeira',
+                'email'       => 'seguranca@prefeitura.gov.br',
+                'telefone'    => '(65) 3321-0008',
+            ],
+            [
+                'nome'        => 'Secretaria Municipal de Cultura e Turismo',
+                'sigla'       => 'SMCT',
+                'responsavel' => 'Daniela Rocha',
+                'email'       => 'cultura@prefeitura.gov.br',
+                'telefone'    => '(65) 3321-0009',
+            ],
+            [
+                'nome'        => 'Secretaria Municipal de Transporte e Mobilidade',
+                'sigla'       => 'SMTM',
+                'responsavel' => 'Marcos Vinícius Almeida',
+                'email'       => 'transporte@prefeitura.gov.br',
+                'telefone'    => '(65) 3321-0010',
+            ],
         ];
 
         foreach ($secretarias as $secretaria) {
