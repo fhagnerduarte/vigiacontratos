@@ -26,8 +26,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class DocumentoService
 {
     /**
-     * Checklist de documentos obrigatorios por padrao (RN-129).
-     * Usado como fallback quando a tabela configuracoes_checklist_documento esta vazia.
+     * Checklist de documentos obrigatórios por padrão (RN-129).
+     * Usado como fallback quando a tabela configuracoes_checklist_documento está vazia.
      */
     public const CHECKLIST_OBRIGATORIO = [
         TipoDocumentoContratual::ContratoOriginal,
@@ -37,7 +37,7 @@ class DocumentoService
     ];
 
     /**
-     * Cache estatico por tipo de contrato para evitar N+1 no accessor do Model.
+     * Cache estático por tipo de contrato para evitar N+1 no accessor do Model.
      * Resetado a cada request (ciclo de vida PHP-FPM).
      *
      * @var array<string, TipoDocumentoContratual[]>
@@ -45,8 +45,8 @@ class DocumentoService
     private static array $checklistCache = [];
 
     /**
-     * Obtem o checklist configurado para um tipo de contrato especifico (RN-129).
-     * Fallback para CHECKLIST_OBRIGATORIO se tabela nao configurada.
+     * Obtém o checklist configurado para um tipo de contrato específico (RN-129).
+     * Fallback para CHECKLIST_OBRIGATORIO se tabela não configurada.
      *
      * @return TipoDocumentoContratual[]
      */
@@ -70,7 +70,7 @@ class DocumentoService
                 return self::$checklistCache[$cacheKey];
             }
         } catch (\Throwable) {
-            // Tabela pode nao existir ainda (migrations nao rodadas) — usar fallback
+            // Tabela pode não existir ainda (migrations não rodadas) — usar fallback
         }
 
         self::$checklistCache[$cacheKey] = self::CHECKLIST_OBRIGATORIO;
@@ -79,7 +79,7 @@ class DocumentoService
     }
 
     /**
-     * Limpa o cache de checklist (necessario nos testes e apos salvar configuracoes).
+     * Limpa o cache de checklist (necessário nos testes e após salvar configurações).
      */
     public static function limparCacheChecklist(): void
     {
@@ -87,7 +87,7 @@ class DocumentoService
     }
 
     /**
-     * Upload de documento com versionamento automatico (RN-120).
+     * Upload de documento com versionamento automático (RN-120).
      */
     public static function upload(
         UploadedFile $arquivo,
@@ -100,7 +100,7 @@ class DocumentoService
         return DB::connection('tenant')->transaction(function () use (
             $arquivo, $documentable, $tipoDocumento, $user, $ip, $descricao
         ) {
-            // Validacao de magic bytes para PDF (segunda camada de seguranca)
+            // Validação de magic bytes para PDF (segunda camada de segurança)
             self::validarMagicBytes($arquivo);
 
             // Determinar contrato_id para path (documentable pode ser Contrato ou Aditivo)
@@ -108,7 +108,7 @@ class DocumentoService
                 ? $documentable->id
                 : $documentable->contrato_id;
 
-            // Determinar versao (RN-120)
+            // Determinar versão (RN-120)
             $versaoAnterior = Documento::where('documentable_type', get_class($documentable))
                 ->where('documentable_id', $documentable->id)
                 ->where('tipo_documento', $tipoDocumento->value)
@@ -118,7 +118,7 @@ class DocumentoService
             $versao = 1;
             if ($versaoAnterior) {
                 $versao = $versaoAnterior->versao + 1;
-                // Marcar versao anterior como nao-atual (versionamento nao-destrutivo)
+                // Marcar versão anterior como não-atual (versionamento não-destrutivo)
                 $versaoAnterior->update(['is_versao_atual' => false]);
             }
 
@@ -157,7 +157,7 @@ class DocumentoService
             // Registrar log de acesso (RN-122)
             self::registrarLog($documento, $user, AcaoLogDocumento::Upload, $ip);
 
-            // Se houve substituicao, registrar log de substituicao na versao anterior
+            // Se houve substituição, registrar log de substituição na versão anterior
             if ($versaoAnterior) {
                 self::registrarLog($versaoAnterior, $user, AcaoLogDocumento::Substituicao, $ip);
             }
@@ -173,7 +173,7 @@ class DocumentoService
     {
         if ($documento->integridade_comprometida) {
             throw new \RuntimeException(
-                'Download bloqueado: a integridade deste documento esta comprometida. Contate o administrador do sistema.'
+                'Download bloqueado: a integridade deste documento está comprometida. Contate o administrador do sistema.'
             );
         }
 
@@ -190,7 +190,7 @@ class DocumentoService
     }
 
     /**
-     * Exclusao logica de documento com registro de log (RN-134).
+     * Exclusão lógica de documento com registro de log (RN-134).
      */
     public static function excluir(Documento $documento, User $user, string $ip): void
     {
@@ -207,7 +207,7 @@ class DocumentoService
     }
 
     /**
-     * Verificar documentos pendentes do checklist obrigatorio (RN-129).
+     * Verificar documentos pendentes do checklist obrigatório (RN-129).
      *
      * @return array<array{tipo: TipoDocumentoContratual, label: string, presente: bool, versao: int|null}>
      */
@@ -374,7 +374,7 @@ class DocumentoService
     /**
      * Resolve o slug do tenant atual para isolamento de storage (ADR-058).
      *
-     * @throws \RuntimeException Se nao houver contexto de tenant.
+     * @throws \RuntimeException Se não houver contexto de tenant.
      */
     private static function getTenantSlug(): string
     {
@@ -383,20 +383,20 @@ class DocumentoService
         }
 
         throw new \RuntimeException(
-            'Contexto de tenant nao disponivel. Storage de documentos requer tenant ativo.'
+            'Contexto de tenant não disponível. Storage de documentos requer tenant ativo.'
         );
     }
 
     /**
      * Valida que o path do documento pertence ao tenant atual (ADR-058).
-     * Paths legados (sem prefixo tenant) sao permitidos com log de warning.
+     * Paths legados (sem prefixo tenant) são permitidos com log de warning.
      *
      * @throws \RuntimeException Se o path pertence a outro tenant.
      */
     private static function validarTenantPath(Documento $documento): void
     {
         if (!app()->bound('tenant') || !app('tenant')) {
-            return; // Sem contexto de tenant (CLI, testes unitarios)
+            return; // Sem contexto de tenant (CLI, testes unitários)
         }
 
         $tenantSlug = app('tenant')->slug;
@@ -417,16 +417,16 @@ class DocumentoService
             return;
         }
 
-        // Path de outro tenant ou invalido
+        // Path de outro tenant ou inválido
         throw new \RuntimeException(
-            'Acesso negado: documento nao pertence ao tenant atual.'
+            'Acesso negado: documento não pertence ao tenant atual.'
         );
     }
 
     /**
-     * Validar magic bytes do arquivo PDF (segunda camada de seguranca).
+     * Validar magic bytes do arquivo PDF (segunda camada de segurança).
      *
-     * @throws \RuntimeException Se o arquivo nao e um PDF valido.
+     * @throws \RuntimeException Se o arquivo não é um PDF válido.
      */
     private static function validarMagicBytes(UploadedFile $arquivo): void
     {
@@ -435,7 +435,7 @@ class DocumentoService
         fclose($handle);
 
         if ($header !== '%PDF-') {
-            throw new \RuntimeException('O arquivo enviado nao e um PDF valido.');
+            throw new \RuntimeException('O arquivo enviado não é um PDF válido.');
         }
     }
 }

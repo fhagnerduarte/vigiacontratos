@@ -33,10 +33,10 @@ class StoreFornecedorRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'razao_social.required' => 'A razao social e obrigatoria.',
-            'cnpj.required'         => 'O CNPJ e obrigatorio.',
-            'cnpj.unique'           => 'Este CNPJ ja esta cadastrado.',
-            'email.email'           => 'Informe um e-mail valido.',
+            'razao_social.required' => 'A razão social é obrigatória.',
+            'cnpj.required'         => 'O CNPJ é obrigatório.',
+            'cnpj.unique'           => 'Este CNPJ já está cadastrado.',
+            'email.email'           => 'Informe um e-mail válido.',
             'uf.size'               => 'A UF deve ter exatamente 2 caracteres.',
         ];
     }

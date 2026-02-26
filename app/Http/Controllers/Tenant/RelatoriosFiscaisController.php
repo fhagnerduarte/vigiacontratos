@@ -15,11 +15,11 @@ class RelatoriosFiscaisController extends Controller
         $dados = $request->validated();
         $resultado = RelatorioFiscalService::registrar($contrato, $dados, $request->user(), $request->ip());
 
-        $mensagem = 'Relatorio fiscal registrado com sucesso.';
+        $mensagem = 'Relatório fiscal registrado com sucesso.';
         $tipo = 'success';
 
         if ($resultado['alerta_resolvido']) {
-            $mensagem .= ' O alerta de fiscal sem relatorio foi resolvido automaticamente.';
+            $mensagem .= ' O alerta de fiscal sem relatório foi resolvido automaticamente.';
         }
 
         return redirect()->route('tenant.contratos.show', $contrato)

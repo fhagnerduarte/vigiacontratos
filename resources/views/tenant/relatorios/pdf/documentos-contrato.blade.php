@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Documentos — Contrato {{ $dados['contrato']['numero'] }}</title>
+    <title>Relatório de Documentos — Contrato {{ $dados['contrato']['numero'] }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -35,12 +35,12 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Documentos Contratuais</h1>
+    <h1>Relatório de Documentos Contratuais</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
         Gerado em: {{ $dados['data_geracao'] }} | Tribunal de Contas do Estado — Listagem Documental (RN-133)
@@ -51,7 +51,7 @@
 <h3 class="section-title">1. Dados do Contrato</h3>
 <div class="info-grid">
     <div class="info-row">
-        <div class="info-label">Numero:</div>
+        <div class="info-label">Número:</div>
         <div class="info-value"><strong>{{ $dados['contrato']['numero'] }}</strong></div>
     </div>
     <div class="info-row">
@@ -71,7 +71,7 @@
         <div class="info-value">R$ {{ number_format($dados['contrato']['valor_global'], 2, ',', '.') }}</div>
     </div>
     <div class="info-row">
-        <div class="info-label">Vigencia:</div>
+        <div class="info-label">Vigência:</div>
         <div class="info-value">{{ $dados['contrato']['data_inicio'] }} a {{ $dados['contrato']['data_fim'] }}</div>
     </div>
     <div class="info-row">
@@ -86,7 +86,7 @@
     {{ $dados['completude']['status'] }}
 </div>
 <p style="font-size: 9px; color: #555; margin-bottom: 15px;">
-    Total de documentos na versao atual: <strong>{{ $dados['total_documentos'] }}</strong>
+    Total de documentos na versão atual: <strong>{{ $dados['total_documentos'] }}</strong>
 </p>
 
 {{-- TABELA DE DOCUMENTOS --}}
@@ -98,9 +98,9 @@
             <th style="width: 5%;">#</th>
             <th style="width: 20%;">Tipo Documento</th>
             <th style="width: 30%;">Nome Arquivo</th>
-            <th style="width: 8%;">Versao</th>
+            <th style="width: 8%;">Versão</th>
             <th style="width: 15%;">Data Upload</th>
-            <th style="width: 15%;">Responsavel</th>
+            <th style="width: 15%;">Responsável</th>
             <th style="width: 7%;">Tamanho</th>
         </tr>
     </thead>
@@ -124,7 +124,7 @@
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e constitui instrumento de
-    conferencia documental para fins de auditoria e prestacao de contas perante o Tribunal de Contas do Estado.
+    conferência documental para fins de auditoria e prestação de contas perante o Tribunal de Contas do Estado.
 </p>
 
 </body>

@@ -21,17 +21,17 @@ class AlertaVencimentoNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        // Se notifiable e um User, usar ambos os canais
+        // Se notifiable é um User, usar ambos os canais
         if ($notifiable instanceof \App\Models\User) {
             return ['mail', 'database'];
         }
 
-        // Se e on-demand (route notification), so email
+        // Se é on-demand (route notification), só email
         return ['mail'];
     }
 
     /**
-     * Representacao em email.
+     * Representação em email.
      */
     public function toMail(object $notifiable): MailMessage
     {
@@ -56,18 +56,18 @@ class AlertaVencimentoNotification extends Notification
 
         if ($alerta->prioridade->value === 'urgente') {
             $mail->line('')
-                ->line('**ATENCAO: Este alerta requer acao imediata.**');
+                ->line('**ATENÇÃO: Este alerta requer ação imediata.**');
         }
 
         $mail->line('')
-            ->line('Acesse o sistema para mais detalhes e regularizacao.')
+            ->line('Acesse o sistema para mais detalhes e regularização.')
             ->salutation('Atenciosamente, VigiaContratos');
 
         return $mail;
     }
 
     /**
-     * Representacao no banco de dados (notifications table).
+     * Representação no banco de dados (notifications table).
      * Usado para exibir no sino/badge do navbar.
      */
     public function toDatabase(object $notifiable): array

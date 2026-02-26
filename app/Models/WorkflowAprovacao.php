@@ -45,14 +45,14 @@ class WorkflowAprovacao extends Model
     protected static function booted(): void
     {
         static::updating(function (WorkflowAprovacao $modelo) {
-            // Permite atualizar apenas se status atual e pendente (para registrar decisao)
+            // Permite atualizar apenas se status atual é pendente (para registrar decisão)
             if ($modelo->getRawOriginal('status') !== 'pendente') {
-                throw new \RuntimeException('Registros de workflow aprovados/reprovados sao imutaveis (RN-336).');
+                throw new \RuntimeException('Registros de workflow aprovados/reprovados são imutáveis (RN-336).');
             }
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Registros de workflow nao podem ser excluidos (RN-336).');
+            throw new \RuntimeException('Registros de workflow não podem ser excluídos (RN-336).');
         });
     }
 

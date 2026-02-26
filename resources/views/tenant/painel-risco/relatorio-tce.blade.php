@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Risco Contratual — TCE</title>
+    <title>Relatório de Risco Contratual — TCE</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -42,12 +42,12 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Risco Contratual</h1>
+    <h1>Relatório de Risco Contratual</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
         Gerado em: {{ $dados['data_geracao'] }} | Tribunal de Contas do Estado — Instrumento de Defesa Administrativa
@@ -67,7 +67,7 @@
     </div>
     <div class="resumo-item bg-warning">
         <div class="valor">{{ $dados['resumo']['medio_risco'] }}</div>
-        <div class="label">Medio Risco</div>
+        <div class="label">Médio Risco</div>
     </div>
     <div class="resumo-item bg-success">
         <div class="valor">{{ $dados['resumo']['baixo_risco'] }}</div>
@@ -76,9 +76,9 @@
 </div>
 
 <p style="font-size: 9px; color: #555; margin-bottom: 15px;">
-    Este relatorio demonstra que o municipio de <strong>{{ $dados['municipio'] }}</strong> monitora proativamente
+    Este relatório demonstra que o município de <strong>{{ $dados['municipio'] }}</strong> monitora proativamente
     seus contratos administrativos, identificando riscos e adotando medidas preventivas para garantir a conformidade
-    legal e a eficiencia na gestao dos recursos publicos.
+    legal e a eficiência na gestão dos recursos públicos.
 </p>
 
 {{-- TABELA DETALHADA --}}
@@ -91,9 +91,9 @@
             <th style="width: 12%;">Fornecedor</th>
             <th style="width: 10%;">Secretaria</th>
             <th style="width: 8%;">Valor (R$)</th>
-            <th style="width: 6%;">Vigencia</th>
+            <th style="width: 6%;">Vigência</th>
             <th style="width: 4%;">Score</th>
-            <th style="width: 5%;">Nivel</th>
+            <th style="width: 5%;">Nível</th>
             <th style="width: 10%;">Categorias</th>
             <th style="width: 19%;">Justificativas</th>
         </tr>
@@ -129,7 +129,7 @@
                             @endif
                         </ul>
                     @else
-                        <em>Nenhum criterio ativado</em>
+                        <em>Nenhum critério ativado</em>
                     @endif
                 </td>
             </tr>
@@ -137,23 +137,23 @@
     </tbody>
 </table>
 
-{{-- PLANO DE ACAO --}}
-<h3 class="section-title">3. Plano de Acao Sugerido</h3>
+{{-- PLANO DE AÇÃO --}}
+<h3 class="section-title">3. Plano de Ação Sugerido</h3>
 <table>
     <thead>
         <tr>
             <th style="width: 5%;">#</th>
-            <th style="width: 35%;">Acao</th>
+            <th style="width: 35%;">Ação</th>
             <th style="width: 30%;">Contratos Impactados</th>
             <th style="width: 15%;">Prazo Sugerido</th>
-            <th style="width: 15%;">Responsavel</th>
+            <th style="width: 15%;">Responsável</th>
         </tr>
     </thead>
     <tbody>
         @if ($dados['resumo']['alto_risco'] > 0)
             <tr>
                 <td>1</td>
-                <td>Revisar contratos com score de risco alto e providenciar regularizacao imediata</td>
+                <td>Revisar contratos com score de risco alto e providenciar regularização imediata</td>
                 <td>{{ $dados['resumo']['alto_risco'] }} contrato(s) com risco alto</td>
                 <td>Imediato (7 dias)</td>
                 <td>Controladoria / Gestor</td>
@@ -161,29 +161,29 @@
         @endif
         <tr>
             <td>{{ $dados['resumo']['alto_risco'] > 0 ? 2 : 1 }}</td>
-            <td>Completar documentacao obrigatoria dos contratos com pendencias documentais</td>
+            <td>Completar documentação obrigatória dos contratos com pendências documentais</td>
             <td>Contratos com categoria "Documental" ativa</td>
             <td>15 dias</td>
             <td>Gestor de Contrato</td>
         </tr>
         <tr>
             <td>{{ $dados['resumo']['alto_risco'] > 0 ? 3 : 2 }}</td>
-            <td>Designar fiscal para contratos sem fiscal atribuido</td>
+            <td>Designar fiscal para contratos sem fiscal atribuído</td>
             <td>Contratos com categoria "Operacional" ativa</td>
             <td>7 dias</td>
-            <td>Secretaria responsavel</td>
+            <td>Secretaria responsável</td>
         </tr>
         <tr>
             <td>{{ $dados['resumo']['alto_risco'] > 0 ? 4 : 3 }}</td>
-            <td>Iniciar processo de renovacao ou nova licitacao para contratos proximos do vencimento</td>
+            <td>Iniciar processo de renovação ou nova licitação para contratos próximos do vencimento</td>
             <td>Contratos com categoria "Vencimento" ativa</td>
             <td>30 dias antes do vencimento</td>
-            <td>Gestor / Licitacao</td>
+            <td>Gestor / Licitação</td>
         </tr>
         <tr>
             <td>{{ $dados['resumo']['alto_risco'] > 0 ? 5 : 4 }}</td>
             <td>Avaliar justificativas de aditivos que ultrapassaram o limite legal</td>
-            <td>Contratos com categoria "Financeiro" ou "Juridico" ativa</td>
+            <td>Contratos com categoria "Financeiro" ou "Jurídico" ativa</td>
             <td>15 dias</td>
             <td>Procuradoria / Controladoria</td>
         </tr>
@@ -192,7 +192,7 @@
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e constitui instrumento de defesa administrativa
-    perante o Tribunal de Contas do Estado, demonstrando o monitoramento proativo da gestao contratual municipal.
+    perante o Tribunal de Contas do Estado, demonstrando o monitoramento proativo da gestão contratual municipal.
 </p>
 
 </body>

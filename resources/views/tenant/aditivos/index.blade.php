@@ -46,7 +46,7 @@
             <div class="card-body p-20">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">% Medio de Acrescimo</p>
+                        <p class="fw-medium text-primary-light mb-1">% Médio de Acréscimo</p>
                         <h6 class="mb-0 text-warning-main">{{ number_format($percentualMedioAcrescimo, 2, ',', '.') }}%</h6>
                     </div>
                     <div class="w-40-px h-40-px bg-warning-main rounded-circle d-flex justify-content-center align-items-center">

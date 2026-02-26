@@ -2,7 +2,7 @@
 
 @php
     $title = 'Contratos';
-    $subTitle = 'Gestao Contratual';
+    $subTitle = 'Gestão Contratual';
 @endphp
 
 @section('title', 'Contratos')
@@ -45,7 +45,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label fw-semibold text-primary-light text-sm mb-4">Nivel de Risco</label>
+                <label class="form-label fw-semibold text-primary-light text-sm mb-4">Nível de Risco</label>
                 <select name="nivel_risco" class="form-control radius-8 form-select select2">
                     <option value="">Todos</option>
                     @foreach (\App\Enums\NivelRisco::cases() as $risco)
@@ -66,14 +66,14 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th class="px-24 py-16">Numero</th>
+                        <th class="px-24 py-16">Número</th>
                         <th class="px-24 py-16">Objeto</th>
                         <th class="px-24 py-16">Fornecedor</th>
                         <th class="px-24 py-16">Valor Global</th>
-                        <th class="px-24 py-16">Vigencia</th>
+                        <th class="px-24 py-16">Vigência</th>
                         <th class="px-24 py-16 text-center">Status</th>
                         <th class="px-24 py-16 text-center">Risco</th>
-                        <th class="px-24 py-16 text-center">Acoes</th>
+                        <th class="px-24 py-16 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,7 +95,7 @@
                                     {{ $contrato->status->label() }}
                                 </span>
                                 @if ($contrato->is_irregular)
-                                    <span class="badge bg-danger text-white px-8 py-4 radius-4 text-xs ms-4" title="Contrato em situacao irregular (RN-046)">
+                                    <span class="badge bg-danger text-white px-8 py-4 radius-4 text-xs ms-4" title="Contrato em situação irregular (RN-046)">
                                         IRREGULAR
                                     </span>
                                 @endif

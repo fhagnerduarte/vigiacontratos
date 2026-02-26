@@ -32,7 +32,7 @@ class PermissionSeeder extends Seeder
             ['nome' => 'documento.criar', 'descricao' => 'Criar/upload de documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.download', 'descricao' => 'Download de documentos', 'grupo' => 'documento'],
             ['nome' => 'documento.excluir', 'descricao' => 'Excluir documentos', 'grupo' => 'documento'],
-            ['nome' => 'documento.configurar', 'descricao' => 'Configurar checklist de documentos obrigatorios', 'grupo' => 'documento'],
+            ['nome' => 'documento.configurar', 'descricao' => 'Configurar checklist de documentos obrigatórios', 'grupo' => 'documento'],
 
             // Financeiro
             ['nome' => 'financeiro.visualizar', 'descricao' => 'Visualizar dados financeiros', 'grupo' => 'financeiro'],
@@ -44,18 +44,18 @@ class PermissionSeeder extends Seeder
             ['nome' => 'fiscal.editar', 'descricao' => 'Editar fiscais', 'grupo' => 'fiscal'],
 
             // Relatorio
-            ['nome' => 'relatorio.visualizar', 'descricao' => 'Visualizar relatorios', 'grupo' => 'relatorio'],
-            ['nome' => 'relatorio.gerar', 'descricao' => 'Gerar relatorios', 'grupo' => 'relatorio'],
+            ['nome' => 'relatorio.visualizar', 'descricao' => 'Visualizar relatórios', 'grupo' => 'relatorio'],
+            ['nome' => 'relatorio.gerar', 'descricao' => 'Gerar relatórios', 'grupo' => 'relatorio'],
 
             // Usuario
-            ['nome' => 'usuario.visualizar', 'descricao' => 'Visualizar usuarios', 'grupo' => 'usuario'],
-            ['nome' => 'usuario.criar', 'descricao' => 'Criar usuarios', 'grupo' => 'usuario'],
-            ['nome' => 'usuario.editar', 'descricao' => 'Editar usuarios', 'grupo' => 'usuario'],
-            ['nome' => 'usuario.desativar', 'descricao' => 'Desativar usuarios', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.visualizar', 'descricao' => 'Visualizar usuários', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.criar', 'descricao' => 'Criar usuários', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.editar', 'descricao' => 'Editar usuários', 'grupo' => 'usuario'],
+            ['nome' => 'usuario.desativar', 'descricao' => 'Desativar usuários', 'grupo' => 'usuario'],
 
             // Configuracao
-            ['nome' => 'configuracao.visualizar', 'descricao' => 'Visualizar configuracoes', 'grupo' => 'configuracao'],
-            ['nome' => 'configuracao.editar', 'descricao' => 'Editar configuracoes do sistema', 'grupo' => 'configuracao'],
+            ['nome' => 'configuracao.visualizar', 'descricao' => 'Visualizar configurações', 'grupo' => 'configuracao'],
+            ['nome' => 'configuracao.editar', 'descricao' => 'Editar configurações do sistema', 'grupo' => 'configuracao'],
 
             // Auditoria
             ['nome' => 'auditoria.visualizar', 'descricao' => 'Visualizar logs de auditoria', 'grupo' => 'auditoria'],
@@ -67,7 +67,7 @@ class PermissionSeeder extends Seeder
             ['nome' => 'parecer.emitir', 'descricao' => 'Emitir pareceres', 'grupo' => 'parecer'],
 
             // Workflow
-            ['nome' => 'workflow.visualizar', 'descricao' => 'Visualizar workflows de aprovacao', 'grupo' => 'workflow'],
+            ['nome' => 'workflow.visualizar', 'descricao' => 'Visualizar workflows de aprovação', 'grupo' => 'workflow'],
             ['nome' => 'workflow.aprovar', 'descricao' => 'Aprovar etapas de workflow', 'grupo' => 'workflow'],
 
             // Servidor
@@ -92,42 +92,42 @@ class PermissionSeeder extends Seeder
 
             // Painel de Risco
             ['nome' => 'painel-risco.visualizar', 'descricao' => 'Visualizar painel de risco', 'grupo' => 'painel-risco'],
-            ['nome' => 'painel-risco.exportar', 'descricao' => 'Exportar relatorio de risco TCE', 'grupo' => 'painel-risco'],
+            ['nome' => 'painel-risco.exportar', 'descricao' => 'Exportar relatório de risco TCE', 'grupo' => 'painel-risco'],
 
             // Encerramento (IMP-052)
             ['nome' => 'encerramento.visualizar', 'descricao' => 'Visualizar processo de encerramento', 'grupo' => 'encerramento'],
             ['nome' => 'encerramento.iniciar', 'descricao' => 'Iniciar processo de encerramento', 'grupo' => 'encerramento'],
-            ['nome' => 'encerramento.verificar_financeiro', 'descricao' => 'Verificar situacao financeira no encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.verificar_financeiro', 'descricao' => 'Verificar situação financeira no encerramento', 'grupo' => 'encerramento'],
             ['nome' => 'encerramento.registrar_termo', 'descricao' => 'Registrar termos de recebimento', 'grupo' => 'encerramento'],
-            ['nome' => 'encerramento.avaliar', 'descricao' => 'Registrar avaliacao fiscal no encerramento', 'grupo' => 'encerramento'],
-            ['nome' => 'encerramento.quitar', 'descricao' => 'Registrar quitacao e finalizar encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.avaliar', 'descricao' => 'Registrar avaliação fiscal no encerramento', 'grupo' => 'encerramento'],
+            ['nome' => 'encerramento.quitar', 'descricao' => 'Registrar quitação e finalizar encerramento', 'grupo' => 'encerramento'],
 
             // Ocorrencia (IMP-054)
-            ['nome' => 'ocorrencia.visualizar', 'descricao' => 'Visualizar ocorrencias contratuais', 'grupo' => 'ocorrencia'],
-            ['nome' => 'ocorrencia.criar', 'descricao' => 'Registrar ocorrencias', 'grupo' => 'ocorrencia'],
-            ['nome' => 'ocorrencia.resolver', 'descricao' => 'Resolver ocorrencias pendentes', 'grupo' => 'ocorrencia'],
+            ['nome' => 'ocorrencia.visualizar', 'descricao' => 'Visualizar ocorrências contratuais', 'grupo' => 'ocorrencia'],
+            ['nome' => 'ocorrencia.criar', 'descricao' => 'Registrar ocorrências', 'grupo' => 'ocorrencia'],
+            ['nome' => 'ocorrencia.resolver', 'descricao' => 'Resolver ocorrências pendentes', 'grupo' => 'ocorrencia'],
 
             // Relatorio Fiscal (IMP-054)
-            ['nome' => 'relatorio_fiscal.visualizar', 'descricao' => 'Visualizar relatorios fiscais', 'grupo' => 'relatorio_fiscal'],
-            ['nome' => 'relatorio_fiscal.criar', 'descricao' => 'Registrar relatorios fiscais', 'grupo' => 'relatorio_fiscal'],
+            ['nome' => 'relatorio_fiscal.visualizar', 'descricao' => 'Visualizar relatórios fiscais', 'grupo' => 'relatorio_fiscal'],
+            ['nome' => 'relatorio_fiscal.criar', 'descricao' => 'Registrar relatórios fiscais', 'grupo' => 'relatorio_fiscal'],
 
             // LGPD (RN-213)
-            ['nome' => 'lgpd.visualizar', 'descricao' => 'Visualizar solicitacoes LGPD', 'grupo' => 'lgpd'],
-            ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitacao LGPD', 'grupo' => 'lgpd'],
-            ['nome' => 'lgpd.processar', 'descricao' => 'Processar anonimizacao LGPD', 'grupo' => 'lgpd'],
+            ['nome' => 'lgpd.visualizar', 'descricao' => 'Visualizar solicitações LGPD', 'grupo' => 'lgpd'],
+            ['nome' => 'lgpd.solicitar', 'descricao' => 'Criar solicitação LGPD', 'grupo' => 'lgpd'],
+            ['nome' => 'lgpd.processar', 'descricao' => 'Processar anonimização LGPD', 'grupo' => 'lgpd'],
 
-            // SIC/e-SIC — Solicitacoes LAI (IMP-058)
-            ['nome' => 'lai.visualizar', 'descricao' => 'Visualizar solicitacoes LAI', 'grupo' => 'lai'],
-            ['nome' => 'lai.analisar', 'descricao' => 'Marcar solicitacao LAI em analise', 'grupo' => 'lai'],
-            ['nome' => 'lai.responder', 'descricao' => 'Registrar resposta a solicitacao LAI', 'grupo' => 'lai'],
-            ['nome' => 'lai.prorrogar', 'descricao' => 'Prorrogar prazo de solicitacao LAI', 'grupo' => 'lai'],
-            ['nome' => 'lai.indeferir', 'descricao' => 'Indeferir solicitacao LAI', 'grupo' => 'lai'],
-            ['nome' => 'lai.relatorio', 'descricao' => 'Gerar relatorio de transparencia LAI', 'grupo' => 'lai'],
+            // SIC/e-SIC — Solicitações LAI (IMP-058)
+            ['nome' => 'lai.visualizar', 'descricao' => 'Visualizar solicitações LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.analisar', 'descricao' => 'Marcar solicitação LAI em análise', 'grupo' => 'lai'],
+            ['nome' => 'lai.responder', 'descricao' => 'Registrar resposta a solicitação LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.prorrogar', 'descricao' => 'Prorrogar prazo de solicitação LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.indeferir', 'descricao' => 'Indeferir solicitação LAI', 'grupo' => 'lai'],
+            ['nome' => 'lai.relatorio', 'descricao' => 'Gerar relatório de transparência LAI', 'grupo' => 'lai'],
 
-            // Classificacao de Sigilo (IMP-056 — LAI 12.527/2011)
-            ['nome' => 'classificacao.visualizar', 'descricao' => 'Visualizar classificacao de sigilo', 'grupo' => 'classificacao'],
+            // Classificação de Sigilo (IMP-056 — LAI 12.527/2011)
+            ['nome' => 'classificacao.visualizar', 'descricao' => 'Visualizar classificação de sigilo', 'grupo' => 'classificacao'],
             ['nome' => 'classificacao.classificar', 'descricao' => 'Classificar/alterar sigilo de contrato', 'grupo' => 'classificacao'],
-            ['nome' => 'classificacao.desclassificar', 'descricao' => 'Desclassificar contrato para publico', 'grupo' => 'classificacao'],
+            ['nome' => 'classificacao.desclassificar', 'descricao' => 'Desclassificar contrato para público', 'grupo' => 'classificacao'],
             ['nome' => 'classificacao.justificar', 'descricao' => 'Editar justificativa de sigilo', 'grupo' => 'classificacao'],
         ];
 

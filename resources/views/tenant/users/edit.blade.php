@@ -1,16 +1,16 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Editar Usuario';
-    $subTitle = 'Administracao';
+    $title = 'Editar Usuário';
+    $subTitle = 'Administração';
 @endphp
 
-@section('title', 'Editar Usuario')
+@section('title', 'Editar Usuário')
 
 @section('content')
 <div class="card radius-8 border-0">
     <div class="card-body p-24">
-        <h6 class="fw-semibold mb-24">Editar Usuario</h6>
+        <h6 class="fw-semibold mb-24">Editar Usuário</h6>
 
         <form action="{{ route('tenant.users.update', $user) }}" method="POST">
             @csrf
@@ -96,7 +96,7 @@
                         Secretarias Vinculadas
                     </label>
                     <p class="text-secondary-light text-sm mb-12">
-                        Perfis estrategicos (Administrador, Controladoria, Gabinete) acessam todas as secretarias automaticamente.
+                        Perfis estratégicos (Administrador, Controladoria, Gabinete) acessam todas as secretarias automaticamente.
                     </p>
                     @php
                         $userSecretariaIds = old('secretarias', $user->secretarias->pluck('id')->toArray());

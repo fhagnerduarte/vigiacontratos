@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Auditoria</title>
+    <title>Relatório de Auditoria</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -39,12 +39,12 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Auditoria</h1>
+    <h1>Relatório de Auditoria</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
         Gerado em: {{ $dados['data_geracao'] }} | Logs de Atividade do Sistema (RN-222)
@@ -54,7 +54,7 @@
 {{-- FILTROS APLICADOS --}}
 <div class="filtros">
     <strong>Filtros aplicados:</strong>
-    Periodo: {{ $dados['filtros']['data_inicio'] }} a {{ $dados['filtros']['data_fim'] }}
+    Período: {{ $dados['filtros']['data_inicio'] }} a {{ $dados['filtros']['data_fim'] }}
     | Tipo: {{ $dados['filtros']['tipo_acao'] }}
     | Entidade: {{ $dados['filtros']['entidade'] }}
 </div>
@@ -82,9 +82,9 @@
         <tr>
             <th style="width: 10%;">Data/Hora</th>
             <th style="width: 8%;">Tipo</th>
-            <th style="width: 12%;">Usuario</th>
+            <th style="width: 12%;">Usuário</th>
             <th style="width: 10%;">Perfil</th>
-            <th style="width: 25%;">Descricao</th>
+            <th style="width: 25%;">Descrição</th>
             <th style="width: 25%;">Detalhes</th>
             <th style="width: 10%;">IP</th>
         </tr>
@@ -96,7 +96,7 @@
                 <td>
                     @php
                         $badgeClass = match($registro['tipo']) {
-                            'Alteracao' => 'badge-alteracao',
+                            'Alteração' => 'badge-alteracao',
                             'Login' => 'badge-login',
                             default => 'badge-acesso',
                         };
@@ -118,7 +118,7 @@
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e constitui registro de auditoria
-    para fins de conformidade e transparencia na gestao contratual municipal.
+    para fins de conformidade e transparência na gestão contratual municipal.
 </p>
 
 </body>

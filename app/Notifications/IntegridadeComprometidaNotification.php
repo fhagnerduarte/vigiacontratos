@@ -28,15 +28,15 @@ class IntegridadeComprometidaNotification extends Notification implements Should
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('[ALERTA DE SEGURANCA] Integridade comprometida — ' . $this->documento->nome_arquivo)
-            ->greeting('Alerta de Seguranca')
+            ->subject('[ALERTA DE SEGURANÇA] Integridade comprometida — ' . $this->documento->nome_arquivo)
+            ->greeting('Alerta de Segurança')
             ->line('A integridade do documento abaixo foi comprometida:')
             ->line('**Arquivo:** ' . $this->documento->nome_arquivo)
             ->line('**Hash esperado:** ' . $this->documento->hash_integridade)
             ->line('**Detectado em:** ' . now()->format('d/m/Y H:i:s'))
             ->line('')
             ->line('O download deste documento foi bloqueado automaticamente.')
-            ->line('Verifique a origem da alteracao e tome as medidas cabiveis.')
+            ->line('Verifique a origem da alteração e tome as medidas cabíveis.')
             ->salutation('Atenciosamente, VigiaContratos');
     }
 

@@ -33,11 +33,11 @@ class HistoricoSolicitacaoLai extends Model
     protected static function booted(): void
     {
         static::updating(function () {
-            throw new \RuntimeException('Historico de solicitacoes LAI e imutavel (LAI 12.527/2011).');
+            throw new \RuntimeException('Histórico de solicitações LAI é imutável (LAI 12.527/2011).');
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Historico de solicitacoes LAI nao pode ser excluido (LAI 12.527/2011).');
+            throw new \RuntimeException('Histórico de solicitações LAI não pode ser excluído (LAI 12.527/2011).');
         });
     }
 

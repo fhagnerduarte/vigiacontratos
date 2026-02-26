@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class AuditoriaController extends Controller
 {
     /**
-     * Trilha de auditoria unificada com filtros e paginacao.
+     * Trilha de auditoria unificada com filtros e paginação.
      */
     public function index(Request $request): View
     {
@@ -53,7 +53,7 @@ class AuditoriaController extends Controller
                     'tipo_key' => 'alteracao',
                     'data' => $h->created_at->format('d/m/Y H:i:s'),
                     'data_sort' => $h->created_at->timestamp,
-                    'tipo' => 'Alteracao',
+                    'tipo' => 'Alteração',
                     'usuario' => $h->user?->nome ?? '-',
                     'perfil' => $h->role_nome ?? '-',
                     'descricao' => "{$entidade} #{$h->auditable_id}: {$h->campo_alterado}",
@@ -122,12 +122,12 @@ class AuditoriaController extends Controller
         $registros = $registros->sortByDesc('data_sort')->values();
 
         // Contadores para cards
-        $totalAlteracoes = $registros->where('tipo', 'Alteracao')->count();
+        $totalAlteracoes = $registros->where('tipo', 'Alteração')->count();
         $totalLogins = $registros->where('tipo', 'Login')->count();
         $totalAcessosDocs = $registros->where('tipo', 'Acesso Documento')->count();
         $totalGeral = $registros->count();
 
-        // Paginacao manual
+        // Paginação manual
         $paginados = $registros->forPage($page, $perPage)->values();
 
         $paginator = new LengthAwarePaginator(
@@ -163,7 +163,7 @@ class AuditoriaController extends Controller
             case 'alteracao':
                 $registro = HistoricoAlteracao::with(['user:id,nome', 'auditable'])->findOrFail($id);
 
-                // Contexto: mesma entidade, mesmo periodo (+/- 5 minutos)
+                // Contexto: mesma entidade, mesmo período (+/- 5 minutos)
                 $contexto = HistoricoAlteracao::with('user:id,nome')
                     ->where('auditable_type', $registro->auditable_type)
                     ->where('auditable_id', $registro->auditable_id)
@@ -180,7 +180,7 @@ class AuditoriaController extends Controller
             case 'login':
                 $registro = LoginLog::with('user:id,nome')->findOrFail($id);
 
-                // Contexto: logins do mesmo usuario, mesmo periodo
+                // Contexto: logins do mesmo usuário, mesmo período
                 $contexto = LoginLog::with('user:id,nome')
                     ->where('user_id', $registro->user_id)
                     ->where('id', '!=', $registro->id)
@@ -197,7 +197,7 @@ class AuditoriaController extends Controller
                 $registro = LogAcessoDocumento::with(['user:id,nome', 'documento:id,nome_arquivo,tipo_documento'])
                     ->findOrFail($id);
 
-                // Contexto: acessos do mesmo usuario ao mesmo documento
+                // Contexto: acessos do mesmo usuário ao mesmo documento
                 $contexto = LogAcessoDocumento::with('user:id,nome')
                     ->where('documento_id', $registro->documento_id)
                     ->where('id', '!=', $registro->id)

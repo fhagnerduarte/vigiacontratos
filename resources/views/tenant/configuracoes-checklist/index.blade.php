@@ -1,8 +1,8 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Checklist de Documentos Obrigatorios';
-    $subTitle = 'Configurar quais documentos sao obrigatorios por tipo de contrato e fase';
+    $title = 'Checklist de Documentos Obrigatórios';
+    $subTitle = 'Configurar quais documentos são obrigatórios por tipo de contrato e fase';
 @endphp
 
 @section('title', 'Checklist de Documentos')
@@ -11,8 +11,8 @@
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-4">Checklist de Documentos Obrigatorios</h6>
-        <p class="text-secondary-light text-sm mb-0">Configure quais documentos sao obrigatorios por fase contratual e tipo de contrato (RN-129, Lei 14.133/2021).</p>
+        <h6 class="fw-semibold mb-4">Checklist de Documentos Obrigatórios</h6>
+        <p class="text-secondary-light text-sm mb-0">Configure quais documentos são obrigatórios por fase contratual e tipo de contrato (RN-129, Lei 14.133/2021).</p>
     </div>
 </div>
 
@@ -88,10 +88,10 @@
     <div class="mt-24 d-flex justify-content-between align-items-center">
         <p class="text-sm text-secondary-light mb-0">
             <iconify-icon icon="solar:info-circle-bold" class="me-1"></iconify-icon>
-            Alteracoes afetam imediatamente a validacao de conformidade por fase de todos os contratos.
+            Alterações afetam imediatamente a validação de conformidade por fase de todos os contratos.
         </p>
         <button type="submit" class="btn btn-primary-600">
-            <iconify-icon icon="solar:disk-bold" class="me-1"></iconify-icon> Salvar Configuracoes
+            <iconify-icon icon="solar:disk-bold" class="me-1"></iconify-icon> Salvar Configurações
         </button>
     </div>
 </form>

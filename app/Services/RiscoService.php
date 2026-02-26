@@ -16,7 +16,7 @@ class RiscoService
 {
     /**
      * Calcula o score de risco automaticamente (RN-029).
-     * Criterios conforme Fluxo 2 do banco de conhecimento.
+     * Critérios conforme Fluxo 2 do banco de conhecimento.
      *
      * @return array{score: int, nivel: NivelRisco}
      */
@@ -32,7 +32,7 @@ class RiscoService
 
     /**
      * Calcula o score de risco expandido com 6 categorias (RN-136 a RN-142, RN-434).
-     * Categorias: vencimento, financeiro, documental, juridico, operacional, transparencia.
+     * Categorias: vencimento, financeiro, documental, jurídico, operacional, transparência.
      *
      * @return array{score: int, nivel: NivelRisco, categorias: array}
      */
@@ -83,10 +83,10 @@ class RiscoService
             }
         }
 
-        // Vigencia > 24 meses: +5pts (criterio base)
+        // Vigência > 24 meses: +5pts (critério base)
         if ($contrato->prazo_meses > 24) {
             $score += 5;
-            $criterios[] = "Vigencia superior a 24 meses (+5pts)";
+            $criterios[] = "Vigência superior a 24 meses (+5pts)";
         }
 
         // Aditivo proximo do limite legal: +10pts (RN-137)
@@ -98,7 +98,7 @@ class RiscoService
                 $limite = AditivoService::verificarLimiteLegal($contrato, $percentualAcumulado);
                 if (! $limite['dentro_limite'] || $percentualAcumulado > ($limite['limite'] * 0.8)) {
                     $score += 10;
-                    $criterios[] = "Aditivo proximo do limite legal ({$percentualAcumulado}%/{$limite['limite']}%) (+10pts)";
+                    $criterios[] = "Aditivo próximo do limite legal ({$percentualAcumulado}%/{$limite['limite']}%) (+10pts)";
                 }
             }
         }
@@ -152,7 +152,7 @@ class RiscoService
             ->first();
         if ($comparativo && $comparativo->status_comparativo === StatusComparativoPreco::Sobrepreco) {
             $score += 10;
-            $criterios[] = "Sobrepreco detectado ({$comparativo->percentual_diferenca}% acima do referencial) (+10pts)";
+            $criterios[] = "Sobrepreço detectado ({$comparativo->percentual_diferenca}% acima do referencial) (+10pts)";
         }
 
         return ['score' => $score, 'criterios' => $criterios];
@@ -173,7 +173,7 @@ class RiscoService
             ->map(fn ($t) => $t instanceof TipoDocumentoContratual ? $t->value : $t)
             ->unique();
 
-        // Checklist configuravel por tipo de contrato (RN-129 + RN-139)
+        // Checklist configurável por tipo de contrato (RN-129 + RN-139)
         $checklistObrigatorio = $contrato->tipo instanceof TipoContrato
             ? DocumentoService::obterChecklistPorTipo($contrato->tipo)
             : DocumentoService::CHECKLIST_OBRIGATORIO;
@@ -185,25 +185,25 @@ class RiscoService
             }
         }
 
-        // Falta termo de fiscalizacao: +5pts
+        // Falta termo de fiscalização: +5pts
         if (! $tiposPresentes->contains(TipoDocumentoContratual::RelatorioFiscalizacao->value)) {
             $score += 5;
-            $criterios[] = 'Falta Relatorio de Fiscalizacao (+5pts)';
+            $criterios[] = 'Falta Relatório de Fiscalização (+5pts)';
         }
 
-        // Falta relatorio de execucao (medicao): +5pts (RN-139)
+        // Falta relatório de execução (medição): +5pts (RN-139)
         if (! $tiposPresentes->contains(TipoDocumentoContratual::RelatorioMedicao->value)) {
             $score += 5;
-            $criterios[] = 'Falta Relatorio de Medicao (+5pts)';
+            $criterios[] = 'Falta Relatório de Medição (+5pts)';
         }
 
-        // Sem nenhum documento: +10pts adicional (criterio base)
+        // Sem nenhum documento: +10pts adicional (critério base)
         if ($tiposPresentes->isEmpty()) {
             $score += 10;
             $criterios[] = 'Nenhum documento anexado (+10pts)';
         }
 
-        // Conformidade por fase critica (IMP-050, RN-139)
+        // Conformidade por fase crítica (IMP-050, RN-139)
         $fasesCriticas = [FaseContratual::Formalizacao, FaseContratual::Publicacao];
         foreach ($fasesCriticas as $faseCritica) {
             $conformidade = ChecklistService::calcularConformidadeFase($contrato, $faseCritica);
@@ -217,29 +217,29 @@ class RiscoService
     }
 
     /**
-     * Categoria: Juridico (RN-140).
+     * Categoria: Jurídico (RN-140).
      */
     private static function calcularRiscoJuridico(Contrato $contrato): array
     {
         $score = 0;
         $criterios = [];
 
-        // Modalidade sensivel sem fundamento legal: +15pts
+        // Modalidade sensível sem fundamento legal: +15pts
         if ($contrato->modalidade_contratacao?->isSensivel() && empty($contrato->fundamento_legal)) {
             $score += 15;
-            $criterios[] = 'Modalidade sensivel sem fundamento legal (+15pts)';
+            $criterios[] = 'Modalidade sensível sem fundamento legal (+15pts)';
         }
 
-        // Modalidade sensivel (dispensa/inexigibilidade): +10pts
+        // Modalidade sensível (dispensa/inexigibilidade): +10pts
         if ($contrato->modalidade_contratacao?->isSensivel()) {
             $score += 10;
-            $criterios[] = 'Modalidade sensivel (dispensa/inexigibilidade) (+10pts)';
+            $criterios[] = 'Modalidade sensível (dispensa/inexigibilidade) (+10pts)';
         }
 
-        // Sem numero de processo administrativo: +10pts
+        // Sem número de processo administrativo: +10pts
         if (empty($contrato->numero_processo)) {
             $score += 10;
-            $criterios[] = 'Sem numero de processo administrativo (+10pts)';
+            $criterios[] = 'Sem número de processo administrativo (+10pts)';
         }
 
         // 4+ aditivos em 12 meses: +10pts (RN-140)
@@ -265,7 +265,7 @@ class RiscoService
             }
         }
 
-        // Ausencia de justificativa formal em aditivo: +10pts (RN-140)
+        // Ausência de justificativa formal em aditivo: +10pts (RN-140)
         if ($contrato->relationLoaded('aditivos') || $contrato->aditivos()->exists()) {
             $aditivosSemJustificativa = $contrato->aditivos()
                 ->where(function ($q) {
@@ -275,7 +275,7 @@ class RiscoService
                 ->count();
             if ($aditivosSemJustificativa > 0) {
                 $score += 10;
-                $criterios[] = "{$aditivosSemJustificativa} aditivo(s) sem justificativa tecnica (+10pts)";
+                $criterios[] = "{$aditivosSemJustificativa} aditivo(s) sem justificativa técnica (+10pts)";
             }
         }
 
@@ -290,7 +290,7 @@ class RiscoService
         $score = 0;
         $criterios = [];
 
-        // Sem fiscal designado: +20pts (criterio base)
+        // Sem fiscal designado: +20pts (critério base)
         if (! $contrato->fiscalAtual) {
             $score += 20;
             $criterios[] = 'Sem fiscal designado (+20pts)';
@@ -305,14 +305,14 @@ class RiscoService
             }
         }
 
-        // Servico continuado sem prorrogacao automatica (RN-141)
+        // Serviço continuado sem prorrogação automática (RN-141)
         if ($contrato->tipo === \App\Enums\TipoContrato::Servico
             && ! $contrato->prorrogacao_automatica
             && $contrato->data_fim) {
             $diasRestantes = (int) now()->startOfDay()->diffInDays($contrato->data_fim->startOfDay(), false);
             if ($diasRestantes >= 0 && $diasRestantes < 90) {
                 $score += 10;
-                $criterios[] = 'Servico continuado sem prorrogacao automatica vencendo em breve (+10pts)';
+                $criterios[] = 'Serviço continuado sem prorrogação automática vencendo em breve (+10pts)';
             }
         }
 
@@ -325,12 +325,12 @@ class RiscoService
                 $diasAntes = $ultimoAditivo->data_assinatura->diffInDays($contrato->data_fim, false);
                 if ($diasAntes >= 0 && $diasAntes <= 30) {
                     $score += 5;
-                    $criterios[] = 'Ultimo aditivo registrado proximo ao vencimento (+5pts)';
+                    $criterios[] = 'Último aditivo registrado próximo ao vencimento (+5pts)';
                 }
             }
         }
 
-        // Ocorrencias pendentes vencidas: +5pts por ocorrencia (IMP-054, RN-141)
+        // Ocorrências pendentes vencidas: +5pts por ocorrência (IMP-054, RN-141)
         $ocorrenciasVencidas = $contrato->ocorrencias()
             ->where('resolvida', false)
             ->whereNotNull('prazo_providencia')
@@ -339,51 +339,51 @@ class RiscoService
         if ($ocorrenciasVencidas > 0) {
             $pontos = min(15, $ocorrenciasVencidas * 5);
             $score += $pontos;
-            $criterios[] = "{$ocorrenciasVencidas} ocorrencia(s) com prazo vencido (+{$pontos}pts)";
+            $criterios[] = "{$ocorrenciasVencidas} ocorrência(s) com prazo vencido (+{$pontos}pts)";
         }
 
-        // Fiscal sem relatorio recente (>60 dias): +10pts (IMP-054, RN-141)
+        // Fiscal sem relatório recente (>60 dias): +10pts (IMP-054, RN-141)
         if ($contrato->fiscalAtual && $contrato->fiscalAtual->data_ultimo_relatorio) {
             $diasSemRelatorio = (int) $contrato->fiscalAtual->data_ultimo_relatorio->diffInDays(now());
             if ($diasSemRelatorio > 60) {
                 $score += 10;
-                $criterios[] = "Fiscal sem relatorio ha {$diasSemRelatorio} dias (+10pts)";
+                $criterios[] = "Fiscal sem relatório há {$diasSemRelatorio} dias (+10pts)";
             }
         } elseif ($contrato->fiscalAtual && ! $contrato->fiscalAtual->data_ultimo_relatorio) {
             $score += 10;
-            $criterios[] = 'Fiscal nunca registrou relatorio (+10pts)';
+            $criterios[] = 'Fiscal nunca registrou relatório (+10pts)';
         }
 
         return ['score' => $score, 'criterios' => $criterios];
     }
 
     /**
-     * Categoria: Transparencia (RN-434, LAI 12.527/2011).
+     * Categoria: Transparência (RN-434, LAI 12.527/2011).
      */
     private static function calcularRiscoTransparencia(Contrato $contrato): array
     {
         $score = 0;
         $criterios = [];
 
-        // Contrato publico nao publicado no portal: +10pts
+        // Contrato público não publicado no portal: +10pts
         if ($contrato->classificacao_sigilo === ClassificacaoSigilo::Publico
             && ! $contrato->publicado_portal) {
             $score += 10;
-            $criterios[] = 'Contrato publico nao publicado no portal (+10pts)';
+            $criterios[] = 'Contrato público não publicado no portal (+10pts)';
         }
 
-        // Classificacao de sigilo sem justificativa: +10pts
+        // Classificação de sigilo sem justificativa: +10pts
         if ($contrato->classificacao_sigilo !== null
             && $contrato->classificacao_sigilo !== ClassificacaoSigilo::Publico
             && empty($contrato->justificativa_sigilo)) {
             $score += 10;
-            $criterios[] = 'Classificacao de sigilo sem justificativa (+10pts)';
+            $criterios[] = 'Classificação de sigilo sem justificativa (+10pts)';
         }
 
-        // Dados de publicacao incompletos: +5pts
+        // Dados de publicação incompletos: +5pts
         if (empty($contrato->data_publicacao) || empty($contrato->veiculo_publicacao)) {
             $score += 5;
-            $criterios[] = 'Dados de publicacao incompletos (+5pts)';
+            $criterios[] = 'Dados de publicação incompletos (+5pts)';
         }
 
         return ['score' => $score, 'criterios' => $criterios];

@@ -98,7 +98,7 @@ class ContratosController extends Controller
         }
         unset($dados['fiscal_substituto_servidor_id']);
 
-        // Checkbox prorrogacao_automatica
+        // Checkbox prorrogação automática
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
 
         // Checkbox publicado_portal
@@ -142,11 +142,11 @@ class ContratosController extends Controller
             'relatoriosFiscais.registradoPor',
         ]);
 
-        // Dados para aba Documentos (Modulo 5)
+        // Dados para aba Documentos (Módulo 5)
         $checklistObrigatorio = DocumentoService::verificarChecklist($contrato);
         $tiposDocumento = TipoDocumentoContratual::cases();
 
-        // Agrupar documentos por tipo (label) para exibicao
+        // Agrupar documentos por tipo (label) para exibição
         $documentosPorTipo = $contrato->documentos->groupBy(
             fn ($doc) => $doc->tipo_documento->label()
         );
@@ -155,7 +155,7 @@ class ContratosController extends Controller
         $conformidadeFases = ChecklistService::calcularConformidadeGeral($contrato);
         $percentualGlobal = ChecklistService::calcularPercentualGlobal($contrato);
 
-        // Resumo ocorrencias e relatorios fiscais (IMP-054)
+        // Resumo ocorrências e relatórios fiscais (IMP-054)
         $resumoOcorrencias = OcorrenciaService::resumo($contrato);
         $resumoRelatoriosFiscais = RelatorioFiscalService::resumo($contrato);
 
@@ -179,10 +179,10 @@ class ContratosController extends Controller
     {
         $this->authorize('update', $contrato);
 
-        // RN-006: Contrato vencido nao pode ser editado
+        // RN-006: Contrato vencido não pode ser editado
         if ($contrato->status === StatusContrato::Vencido) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Contrato vencido nao pode ser editado (RN-006). Para alterar, crie um aditivo ou novo contrato.');
+                ->with('error', 'Contrato vencido não pode ser editado (RN-006). Para alterar, crie um aditivo ou novo contrato.');
         }
 
         $contrato->load('fornecedor', 'secretaria', 'gestor');
@@ -200,7 +200,7 @@ class ContratosController extends Controller
         // RN-006: Defesa em profundidade
         if ($contrato->status === StatusContrato::Vencido) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Contrato vencido nao pode ser editado (RN-006). Para alterar, crie um aditivo retroativo ou encerre formalmente.');
+                ->with('error', 'Contrato vencido não pode ser editado (RN-006). Para alterar, crie um aditivo retroativo ou encerre formalmente.');
         }
 
         $dados = $request->validated();

@@ -1,11 +1,11 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Configuracoes de Alertas';
-    $subTitle = 'Definir prazos e ativacao dos alertas automaticos';
+    $title = 'Configurações de Alertas';
+    $subTitle = 'Definir prazos e ativação dos alertas automáticos';
 @endphp
 
-@section('title', 'Configuracoes de Alertas')
+@section('title', 'Configurações de Alertas')
 
 @section('content')
 
@@ -19,7 +19,7 @@
     <div class="card-header">
         <h6 class="card-title mb-0">Prazos de Alerta (RN-015)</h6>
         <p class="text-sm text-secondary-light mb-0 mt-1">
-            Configure quais prazos de antecedencia devem gerar alertas automaticos para vencimento de contratos.
+            Configure quais prazos de antecedência devem gerar alertas automáticos para vencimento de contratos.
         </p>
     </div>
     <div class="card-body">
@@ -30,8 +30,8 @@
                 <table class="table bordered-table mb-0">
                     <thead>
                         <tr>
-                            <th>Dias de Antecedencia</th>
-                            <th>Prioridade Padrao</th>
+                            <th>Dias de Antecedência</th>
+                            <th>Prioridade Padrão</th>
                             <th class="text-center">Ativo</th>
                         </tr>
                     </thead>
@@ -67,7 +67,7 @@
 
             <div class="mt-24 text-end">
                 <button type="submit" class="btn btn-primary-600">
-                    <iconify-icon icon="solar:disk-bold" class="me-1"></iconify-icon> Salvar Configuracoes
+                    <iconify-icon icon="solar:disk-bold" class="me-1"></iconify-icon> Salvar Configurações
                 </button>
             </div>
         </form>

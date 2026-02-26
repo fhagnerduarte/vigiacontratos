@@ -2,14 +2,14 @@
 
 @php
     $title = 'Novo Contrato';
-    $subTitle = 'Gestao Contratual';
+    $subTitle = 'Gestão Contratual';
 @endphp
 
 @section('title', 'Novo Contrato')
 
 @section('content')
 
-{{-- Erros de validacao --}}
+{{-- Erros de validação --}}
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
         <strong>Verifique os campos abaixo:</strong>
@@ -31,7 +31,7 @@
             <ul class="d-flex align-items-center justify-content-between gap-2 flex-wrap list-unstyled mb-0" id="wizard-steps">
                 <li class="wizard-step active text-center" data-step="1">
                     <div class="w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center mx-auto mb-8 bg-primary-600 text-white fw-semibold">1</div>
-                    <span class="text-sm fw-medium">Identificacao</span>
+                    <span class="text-sm fw-medium">Identificação</span>
                 </li>
                 <li class="wizard-step text-center" data-step="2">
                     <div class="w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center mx-auto mb-8 bg-neutral-200 text-secondary-light fw-semibold">2</div>
@@ -43,7 +43,7 @@
                 </li>
                 <li class="wizard-step text-center" data-step="4">
                     <div class="w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center mx-auto mb-8 bg-neutral-200 text-secondary-light fw-semibold">4</div>
-                    <span class="text-sm fw-medium">Vigencia</span>
+                    <span class="text-sm fw-medium">Vigência</span>
                 </li>
                 <li class="wizard-step text-center" data-step="5">
                     <div class="w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center mx-auto mb-8 bg-neutral-200 text-secondary-light fw-semibold">5</div>
@@ -51,16 +51,16 @@
                 </li>
                 <li class="wizard-step text-center" data-step="6">
                     <div class="w-40-px h-40-px rounded-circle d-flex justify-content-center align-items-center mx-auto mb-8 bg-neutral-200 text-secondary-light fw-semibold">6</div>
-                    <span class="text-sm fw-medium">Revisao</span>
+                    <span class="text-sm fw-medium">Revisão</span>
                 </li>
             </ul>
         </div>
     </div>
 
-    {{-- ETAPA 1 — Identificacao --}}
+    {{-- ETAPA 1 — Identificação --}}
     <div class="card radius-8 border-0 mb-24 wizard-panel" data-step="1">
         <div class="card-body p-24">
-            <h6 class="fw-semibold mb-24">Etapa 1: Identificacao do Contrato</h6>
+            <h6 class="fw-semibold mb-24">Etapa 1: Identificação do Contrato</h6>
             <div class="row gy-3">
                 <div class="col-md-3">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
@@ -88,7 +88,7 @@
 
                 <div class="col-md-5">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Modalidade de Contratacao <span class="text-danger-main">*</span>
+                        Modalidade de Contratação <span class="text-danger-main">*</span>
                     </label>
                     <select name="modalidade_contratacao" id="modalidade_contratacao"
                             class="form-control radius-8 form-select select2 @error('modalidade_contratacao') is-invalid @enderror" required>
@@ -138,7 +138,7 @@
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Unidade Gestora</label>
                     <input type="text" name="unidade_gestora" value="{{ old('unidade_gestora') }}"
                            class="form-control radius-8 @error('unidade_gestora') is-invalid @enderror"
-                           placeholder="Subdivisao da secretaria">
+                           placeholder="Subdivisão da secretaria">
                     @error('unidade_gestora')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -171,11 +171,11 @@
 
                 <div class="col-md-6" id="campo-responsavel-tecnico" style="{{ old('tipo') === 'obra' ? '' : 'display:none' }}">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Responsavel Tecnico <span class="text-danger-main">*</span>
+                        Responsável Técnico <span class="text-danger-main">*</span>
                     </label>
                     <input type="text" name="responsavel_tecnico" value="{{ old('responsavel_tecnico') }}"
                            class="form-control radius-8 @error('responsavel_tecnico') is-invalid @enderror"
-                           placeholder="Nome do responsavel tecnico">
+                           placeholder="Nome do responsável técnico">
                     @error('responsavel_tecnico')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -196,7 +196,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small class="text-secondary-light mt-4 d-block">
-                        Nao encontrou o servidor?
+                        Não encontrou o servidor?
                         <a href="{{ route('tenant.servidores.create') }}" target="_blank">Cadastrar novo servidor</a>
                     </small>
                 </div>
@@ -235,7 +235,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small class="text-secondary-light mt-4 d-block">
-                        Nao encontrou o fornecedor?
+                        Não encontrou o fornecedor?
                         <a href="{{ route('tenant.fornecedores.create') }}" target="_blank">Cadastrar novo fornecedor</a>
                     </small>
                 </div>
@@ -294,7 +294,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Dotacao Orcamentaria</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Dotação Orçamentária</label>
                     <input type="text" name="dotacao_orcamentaria" value="{{ old('dotacao_orcamentaria') }}"
                            class="form-control radius-8 @error('dotacao_orcamentaria') is-invalid @enderror">
                     @error('dotacao_orcamentaria')
@@ -303,7 +303,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Numero do Empenho</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Número do Empenho</label>
                     <input type="text" name="numero_empenho" value="{{ old('numero_empenho') }}"
                            class="form-control radius-8 @error('numero_empenho') is-invalid @enderror">
                     @error('numero_empenho')
@@ -326,7 +326,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria de Servico</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Categoria de Serviço</label>
                     <select name="categoria_servico"
                             class="form-control radius-8 form-select select2 @error('categoria_servico') is-invalid @enderror">
                         <option value="">Selecione...</option>
@@ -340,16 +340,16 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Regime de Execucao</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Regime de Execução</label>
                     <select name="regime_execucao"
                             class="form-control radius-8 form-select select2 @error('regime_execucao') is-invalid @enderror"
                             data-placeholder="Selecione o regime...">
                         <option value=""></option>
                         <option value="empreitada_integral" {{ old('regime_execucao') === 'empreitada_integral' ? 'selected' : '' }}>Empreitada Integral</option>
-                        <option value="preco_unitario" {{ old('regime_execucao') === 'preco_unitario' ? 'selected' : '' }}>Preco Unitario</option>
-                        <option value="preco_global" {{ old('regime_execucao') === 'preco_global' ? 'selected' : '' }}>Preco Global</option>
+                        <option value="preco_unitario" {{ old('regime_execucao') === 'preco_unitario' ? 'selected' : '' }}>Preço Unitário</option>
+                        <option value="preco_global" {{ old('regime_execucao') === 'preco_global' ? 'selected' : '' }}>Preço Global</option>
                         <option value="tarefa" {{ old('regime_execucao') === 'tarefa' ? 'selected' : '' }}>Tarefa</option>
-                        <option value="contratacao_integrada" {{ old('regime_execucao') === 'contratacao_integrada' ? 'selected' : '' }}>Contratacao Integrada</option>
+                        <option value="contratacao_integrada" {{ old('regime_execucao') === 'contratacao_integrada' ? 'selected' : '' }}>Contratação Integrada</option>
                     </select>
                     @error('regime_execucao')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -357,10 +357,10 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Condicoes de Pagamento</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Condições de Pagamento</label>
                     <textarea name="condicoes_pagamento" rows="3"
                               class="form-control radius-8 @error('condicoes_pagamento') is-invalid @enderror"
-                              placeholder="Descreva as condicoes de pagamento previstas no contrato">{{ old('condicoes_pagamento') }}</textarea>
+                              placeholder="Descreva as condições de pagamento previstas no contrato">{{ old('condicoes_pagamento') }}</textarea>
                     @error('condicoes_pagamento')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -370,7 +370,7 @@
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Garantias</label>
                     <textarea name="garantias" rows="3"
                               class="form-control radius-8 @error('garantias') is-invalid @enderror"
-                              placeholder="Descreva as garantias exigidas (caucao, seguro, fianca bancaria, etc.)">{{ old('garantias') }}</textarea>
+                              placeholder="Descreva as garantias exigidas (caução, seguro, fiança bancária, etc.)">{{ old('garantias') }}</textarea>
                     @error('garantias')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -379,14 +379,14 @@
         </div>
     </div>
 
-    {{-- ETAPA 4 — Vigencia --}}
+    {{-- ETAPA 4 — Vigência --}}
     <div class="card radius-8 border-0 mb-24 wizard-panel d-none" data-step="4">
         <div class="card-body p-24">
-            <h6 class="fw-semibold mb-24">Etapa 4: Vigencia</h6>
+            <h6 class="fw-semibold mb-24">Etapa 4: Vigência</h6>
             <div class="row gy-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Data de Inicio <span class="text-danger-main">*</span>
+                        Data de Início <span class="text-danger-main">*</span>
                     </label>
                     <input type="date" name="data_inicio" value="{{ old('data_inicio') }}"
                            class="form-control radius-8 @error('data_inicio') is-invalid @enderror" required>
@@ -412,23 +412,23 @@
                         <input class="form-check-input" type="checkbox" name="prorrogacao_automatica" value="1"
                                id="prorrogacao_automatica" {{ old('prorrogacao_automatica') ? 'checked' : '' }}>
                         <label class="form-check-label fw-semibold text-primary-light text-sm" for="prorrogacao_automatica">
-                            Prorrogacao automatica
+                            Prorrogação automática
                         </label>
                     </div>
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                     <textarea name="observacoes" rows="3"
                               class="form-control radius-8 @error('observacoes') is-invalid @enderror"
-                              placeholder="Observacoes gerais sobre o contrato">{{ old('observacoes') }}</textarea>
+                              placeholder="Observações gerais sobre o contrato">{{ old('observacoes') }}</textarea>
                     @error('observacoes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Publicacao</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data de Publicação</label>
                     <input type="date" name="data_publicacao" value="{{ old('data_publicacao') }}"
                            class="form-control radius-8 @error('data_publicacao') is-invalid @enderror">
                     @error('data_publicacao')
@@ -437,17 +437,17 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Veiculo de Publicacao</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Veículo de Publicação</label>
                     <input type="text" name="veiculo_publicacao" value="{{ old('veiculo_publicacao') }}"
                            class="form-control radius-8 @error('veiculo_publicacao') is-invalid @enderror"
-                           placeholder="Ex: Diario Oficial do Municipio">
+                           placeholder="Ex: Diário Oficial do Município">
                     @error('veiculo_publicacao')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Link Transparencia</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Link Transparência</label>
                     <input type="url" name="link_transparencia" value="{{ old('link_transparencia') }}"
                            class="form-control radius-8 @error('link_transparencia') is-invalid @enderror"
                            placeholder="https://...">
@@ -457,7 +457,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Classificacao de Sigilo</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Classificação de Sigilo</label>
                     <select name="classificacao_sigilo" id="classificacao_sigilo"
                             class="form-select radius-8 @error('classificacao_sigilo') is-invalid @enderror">
                         @foreach (\App\Enums\ClassificacaoSigilo::cases() as $classificacao)
@@ -472,12 +472,12 @@
                 </div>
 
                 <div class="col-md-4" id="publicado_portal_wrapper" style="{{ old('classificacao_sigilo', 'publico') !== 'publico' ? 'display:none' : '' }}">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portal de Transparencia</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portal de Transparência</label>
                     <div class="form-check form-switch mt-8">
                         <input type="hidden" name="publicado_portal" value="0">
                         <input class="form-check-input" type="checkbox" name="publicado_portal" id="publicado_portal" value="1"
                                {{ old('publicado_portal') ? 'checked' : '' }}>
-                        <label class="form-check-label" for="publicado_portal">Publicar no Portal Publico</label>
+                        <label class="form-check-label" for="publicado_portal">Publicar no Portal Público</label>
                     </div>
                     @error('publicado_portal')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -488,7 +488,7 @@
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Justificativa de Sigilo</label>
                     <textarea name="justificativa_sigilo" rows="3"
                               class="form-control radius-8 @error('justificativa_sigilo') is-invalid @enderror"
-                              placeholder="Justifique a classificacao de sigilo (obrigatorio para contratos nao publicos)">{{ old('justificativa_sigilo') }}</textarea>
+                              placeholder="Justifique a classificação de sigilo (obrigatório para contratos não públicos)">{{ old('justificativa_sigilo') }}</textarea>
                     @error('justificativa_sigilo')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -501,7 +501,7 @@
     <div class="card radius-8 border-0 mb-24 wizard-panel d-none" data-step="5">
         <div class="card-body p-24">
             <h6 class="fw-semibold mb-24">Etapa 5: Fiscal do Contrato</h6>
-            <p class="text-secondary-light mb-16">O fiscal e obrigatorio para contratos ativos (RN-024).</p>
+            <p class="text-secondary-light mb-16">O fiscal é obrigatório para contratos ativos (RN-024).</p>
             <div class="row gy-3">
                 <div class="col-md-8">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
@@ -546,7 +546,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portaria de Designacao</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portaria de Designação</label>
                     <input type="text" name="portaria_designacao" value="{{ old('portaria_designacao') }}"
                            class="form-control radius-8 @error('portaria_designacao') is-invalid @enderror"
                            placeholder="Ex: Portaria no 123/2026">
@@ -558,19 +558,19 @@
         </div>
     </div>
 
-    {{-- ETAPA 6 — Revisao --}}
+    {{-- ETAPA 6 — Revisão --}}
     <div class="card radius-8 border-0 mb-24 wizard-panel d-none" data-step="6">
         <div class="card-body p-24">
-            <h6 class="fw-semibold mb-24">Etapa 6: Revisao Final</h6>
-            <p class="text-secondary-light mb-16">Revise os dados antes de salvar. O numero do contrato sera gerado automaticamente.</p>
+            <h6 class="fw-semibold mb-24">Etapa 6: Revisão Final</h6>
+            <p class="text-secondary-light mb-16">Revise os dados antes de salvar. O número do contrato será gerado automaticamente.</p>
             <div class="alert alert-info-100 radius-8">
                 <iconify-icon icon="solar:info-circle-bold" class="text-info-main me-8"></iconify-icon>
-                Apos salvar, voce podera anexar documentos na tela de detalhes do contrato.
+                Após salvar, você poderá anexar documentos na tela de detalhes do contrato.
             </div>
         </div>
     </div>
 
-    {{-- Navegacao do Wizard --}}
+    {{-- Navegação do Wizard --}}
     <div class="d-flex align-items-center justify-content-between gap-3">
         <a href="{{ route('tenant.contratos.index') }}" class="btn btn-outline-secondary text-sm btn-sm px-16 py-10 radius-8">Cancelar</a>
         <div class="d-flex gap-2">
@@ -578,7 +578,7 @@
                 <iconify-icon icon="lucide:arrow-left" class="me-4"></iconify-icon> Anterior
             </button>
             <button type="button" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8" id="wizard-next">
-                Proximo <iconify-icon icon="lucide:arrow-right" class="ms-4"></iconify-icon>
+                Próximo <iconify-icon icon="lucide:arrow-right" class="ms-4"></iconify-icon>
             </button>
             <button type="submit" class="btn btn-success text-sm btn-sm px-16 py-10 radius-8 d-none" id="wizard-submit">
                 <iconify-icon icon="lucide:check" class="me-4"></iconify-icon> Salvar Contrato

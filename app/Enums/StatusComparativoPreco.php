@@ -12,8 +12,8 @@ enum StatusComparativoPreco: string
     {
         return match ($this) {
             self::Adequado => 'Adequado',
-            self::Atencao => 'Atencao',
-            self::Sobrepreco => 'Sobrepreco',
+            self::Atencao => 'Atenção',
+            self::Sobrepreco => 'Sobrepreço',
         };
     }
 

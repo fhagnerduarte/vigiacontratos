@@ -2,7 +2,7 @@
 
 @php
     $title = 'Central de Documentos';
-    $subTitle = 'Gestao centralizada de documentos contratuais';
+    $subTitle = 'Gestão centralizada de documentos contratuais';
 @endphp
 
 @section('title', 'Central de Documentos')
@@ -16,7 +16,7 @@
             <div class="card-body p-20">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Documentacao Completa</p>
+                        <p class="fw-medium text-primary-light mb-1">Documentação Completa</p>
                         <h6 class="mb-0 text-success-main">{{ $indicadores['pct_completos'] }}%</h6>
                     </div>
                     <div class="w-40-px h-40-px bg-success-main rounded-circle d-flex justify-content-center align-items-center">
@@ -61,7 +61,7 @@
             <div class="card-body p-20">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Secretarias com Pendencias</p>
+                        <p class="fw-medium text-primary-light mb-1">Secretarias com Pendências</p>
                         <h6 class="mb-0">{{ $indicadores['secretarias_pendentes'] }}</h6>
                     </div>
                     <div class="w-40-px h-40-px bg-primary-600 rounded-circle d-flex justify-content-center align-items-center">
@@ -79,7 +79,7 @@
         <form id="filtros-documentos" method="GET" action="{{ route('tenant.documentos.index') }}">
             <div class="row gy-3">
                 <div class="col-md-3">
-                    <input type="text" class="form-control radius-8" name="numero_contrato" placeholder="Numero do contrato" value="{{ request('numero_contrato') }}">
+                    <input type="text" class="form-control radius-8" name="numero_contrato" placeholder="Número do contrato" value="{{ request('numero_contrato') }}">
                 </div>
                 <div class="col-md-3">
                     <select class="form-select radius-8 select2" name="tipo_documento">
@@ -111,7 +111,7 @@
                     <input type="date" class="form-control radius-8" name="data_upload_de" placeholder="Upload de" value="{{ request('data_upload_de') }}">
                 </div>
                 <div class="col-md-3">
-                    <input type="date" class="form-control radius-8" name="data_upload_ate" placeholder="Upload ate" value="{{ request('data_upload_ate') }}">
+                    <input type="date" class="form-control radius-8" name="data_upload_ate" placeholder="Upload até" value="{{ request('data_upload_ate') }}">
                 </div>
                 <div class="col-md-6 d-flex gap-10 align-items-end justify-content-end">
                     <a href="{{ route('tenant.documentos.index') }}" class="btn btn-outline-secondary-600 radius-8">Limpar</a>
@@ -136,7 +136,7 @@
                         <th class="px-24 py-16">Secretaria</th>
                         <th class="px-24 py-16 text-center">Documentos</th>
                         <th class="px-24 py-16 text-center">Completude</th>
-                        <th class="px-24 py-16 text-center">Acoes</th>
+                        <th class="px-24 py-16 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>

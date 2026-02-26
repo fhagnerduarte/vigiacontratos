@@ -44,7 +44,7 @@ class ContratosExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
     public function headings(): array
     {
         return [
-            'Numero',
+            'Número',
             'Objeto',
             'Status',
             'Tipo',
@@ -52,10 +52,10 @@ class ContratosExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
             'Fornecedor',
             'Secretaria',
             'Valor Global (R$)',
-            'Data Inicio',
+            'Data Início',
             'Data Fim',
             'Prazo (meses)',
-            'Nivel Risco',
+            'Nível Risco',
             'Score Risco',
             '% Executado',
             'Fiscal Atual',

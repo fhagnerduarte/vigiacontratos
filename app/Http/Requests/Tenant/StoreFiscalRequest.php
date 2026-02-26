@@ -22,8 +22,8 @@ class StoreFiscalRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'servidor_id.required' => 'Selecione o servidor que sera o fiscal.',
-            'servidor_id.exists' => 'O servidor selecionado nao existe.',
+            'servidor_id.required' => 'Selecione o servidor que será o fiscal.',
+            'servidor_id.exists' => 'O servidor selecionado não existe.',
         ];
     }
 }

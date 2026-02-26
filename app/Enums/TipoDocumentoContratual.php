@@ -24,20 +24,20 @@ enum TipoDocumentoContratual: string
     {
         return match ($this) {
             self::ContratoOriginal => 'Contrato Original',
-            self::TermoReferencia => 'Termo de Referencia',
-            self::PublicacaoOficial => 'Publicacao Oficial',
-            self::ParecerJuridico => 'Parecer Juridico',
+            self::TermoReferencia => 'Termo de Referência',
+            self::PublicacaoOficial => 'Publicação Oficial',
+            self::ParecerJuridico => 'Parecer Jurídico',
             self::AditivoDoc => 'Aditivo',
             self::NotaEmpenho => 'Nota de Empenho',
             self::NotaFiscal => 'Nota Fiscal',
-            self::OrdemServico => 'Ordem de Servico',
-            self::RelatorioMedicao => 'Relatorio de Medicao',
-            self::RelatorioFiscalizacao => 'Relatorio de Fiscalizacao',
+            self::OrdemServico => 'Ordem de Serviço',
+            self::RelatorioMedicao => 'Relatório de Medição',
+            self::RelatorioFiscalizacao => 'Relatório de Fiscalização',
             self::Justificativa => 'Justificativa',
             self::DocumentoComplementar => 'Documento Complementar',
-            self::TermoRecebimentoProvisorio => 'Termo de Recebimento Provisorio',
+            self::TermoRecebimentoProvisorio => 'Termo de Recebimento Provisório',
             self::TermoRecebimentoDefinitivo => 'Termo de Recebimento Definitivo',
-            self::PortariaDesignacaoFiscal => 'Portaria de Designacao Fiscal',
+            self::PortariaDesignacaoFiscal => 'Portaria de Designação Fiscal',
         };
     }
 }

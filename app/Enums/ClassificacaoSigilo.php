@@ -12,7 +12,7 @@ enum ClassificacaoSigilo: string
     public function label(): string
     {
         return match ($this) {
-            self::Publico => 'Publico',
+            self::Publico => 'Público',
             self::Reservado => 'Reservado',
             self::Secreto => 'Secreto',
             self::Ultrassecreto => 'Ultrassecreto',
@@ -20,8 +20,8 @@ enum ClassificacaoSigilo: string
     }
 
     /**
-     * Prazo maximo de sigilo em anos (LAI art. 24).
-     * Publico nao possui prazo (retorna 0).
+     * Prazo máximo de sigilo em anos (LAI art. 24).
+     * Público não possui prazo (retorna 0).
      */
     public function prazoAnos(): int
     {
@@ -54,7 +54,7 @@ enum ClassificacaoSigilo: string
     }
 
     /**
-     * Verifica se a classificacao requer justificativa (todas exceto publico).
+     * Verifica se a classificação requer justificativa (todas exceto público).
      */
     public function requerJustificativa(): bool
     {

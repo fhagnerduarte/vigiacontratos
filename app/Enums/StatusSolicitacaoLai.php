@@ -15,7 +15,7 @@ enum StatusSolicitacaoLai: string
     {
         return match ($this) {
             self::Recebida => 'Recebida',
-            self::EmAnalise => 'Em Analise',
+            self::EmAnalise => 'Em Análise',
             self::Respondida => 'Respondida',
             self::Prorrogada => 'Prorrogada',
             self::Indeferida => 'Indeferida',

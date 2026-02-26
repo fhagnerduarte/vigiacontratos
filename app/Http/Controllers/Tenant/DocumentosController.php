@@ -47,7 +47,7 @@ class DocumentosController extends Controller
         }
 
         if ($request->filled('completude')) {
-            // Filtro por completude sera aplicado apos query (calculado em memoria)
+            // Filtro por completude será aplicado após query (calculado em memória)
         }
 
         if ($request->filled('data_upload_de')) {
@@ -64,7 +64,7 @@ class DocumentosController extends Controller
 
         $contratos = $query->paginate(25)->withQueryString();
 
-        // Filtro de completude pos-query (campo calculado)
+        // Filtro de completude pós-query (campo calculado)
         if ($request->filled('completude')) {
             $completudeFiltro = $request->completude;
             $contratos->setCollection(
@@ -136,9 +136,9 @@ class DocumentosController extends Controller
         $status = DocumentoService::verificarIntegridade($documento);
 
         $mensagem = match ($status) {
-            \App\Enums\StatusIntegridade::Ok => 'Integridade verificada: documento integro.',
-            \App\Enums\StatusIntegridade::Divergente => 'ATENCAO: Integridade comprometida! Download bloqueado.',
-            \App\Enums\StatusIntegridade::ArquivoAusente => 'Arquivo nao encontrado no storage.',
+            \App\Enums\StatusIntegridade::Ok => 'Integridade verificada: documento íntegro.',
+            \App\Enums\StatusIntegridade::Divergente => 'ATENÇÃO: Integridade comprometida! Download bloqueado.',
+            \App\Enums\StatusIntegridade::ArquivoAusente => 'Arquivo não encontrado no storage.',
         };
 
         $flash = $status === \App\Enums\StatusIntegridade::Ok ? 'success' : 'error';
@@ -147,7 +147,7 @@ class DocumentosController extends Controller
     }
 
     /**
-     * Exclusao logica de documento (RN-134).
+     * Exclusão lógica de documento (RN-134).
      */
     public function destroy(Request $request, Documento $documento): RedirectResponse
     {
@@ -158,6 +158,6 @@ class DocumentosController extends Controller
         $contrato = $documento->documentable;
 
         return redirect()->route('tenant.contratos.show', $contrato)
-            ->with('success', 'Documento excluido com sucesso.');
+            ->with('success', 'Documento excluído com sucesso.');
     }
 }

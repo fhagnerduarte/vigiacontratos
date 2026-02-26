@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Efetividade Mensal</title>
+    <title>Relatório de Efetividade Mensal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -46,12 +46,12 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Efetividade Mensal</h1>
+    <h1>Relatório de Efetividade Mensal</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
         Gerado em: {{ $dados['data_geracao'] }} | Efetividade do Sistema de Alertas (RN-057)
@@ -60,7 +60,7 @@
 
 {{-- FILTROS --}}
 <div class="filtros">
-    <strong>Periodo:</strong> {{ $dados['filtros']['periodo'] }}
+    <strong>Período:</strong> {{ $dados['filtros']['periodo'] }}
     | <strong>Secretaria:</strong> {{ $dados['filtros']['secretaria'] }}
 </div>
 
@@ -77,7 +77,7 @@
     </div>
     <div class="resumo-item vermelho">
         <div class="valor">{{ $dados['resumo']['vencidos_sem_acao'] }}</div>
-        <div class="label">Vencidos sem Acao</div>
+        <div class="label">Vencidos sem Ação</div>
     </div>
     <div class="resumo-item amarelo">
         <div class="valor">{{ $dados['resumo']['regularizados_retroativos'] }}</div>
@@ -89,7 +89,7 @@
     <div class="valor-grande" style="color: {{ $dados['resumo']['taxa_efetividade'] >= 70 ? '#166534' : ($dados['resumo']['taxa_efetividade'] >= 40 ? '#92400e' : '#dc2626') }};">
         {{ $dados['resumo']['taxa_efetividade'] }}%
     </div>
-    <div class="descricao">Taxa de Efetividade — Tempo medio de antecipacao: {{ $dados['resumo']['tempo_medio_antecipacao'] }} dias</div>
+    <div class="descricao">Taxa de Efetividade — Tempo médio de antecipação: {{ $dados['resumo']['tempo_medio_antecipacao'] }} dias</div>
 </div>
 
 {{-- POR SECRETARIA --}}
@@ -131,7 +131,7 @@
 <table>
     <thead>
         <tr>
-            <th style="width: 8%;">Numero</th>
+            <th style="width: 8%;">Número</th>
             <th style="width: 25%;">Objeto</th>
             <th style="width: 15%;">Secretaria</th>
             <th style="width: 8%;">Data Fim</th>
@@ -176,7 +176,7 @@
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e mede a efetividade do sistema de alertas
-    na prevencao de vencimentos contratuais descontrolados. Periodo: {{ $dados['filtros']['periodo'] }}.
+    na prevenção de vencimentos contratuais descontrolados. Período: {{ $dados['filtros']['periodo'] }}.
 </p>
 
 </body>

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class DadosAbertosService
 {
     /**
-     * Exporta contratos publicos em formato JSON (RN-413).
+     * Exporta contratos públicos em formato JSON (RN-413).
      */
     public static function exportarContratosJson(array $filtros = []): JsonResponse
     {
@@ -53,7 +53,7 @@ class DadosAbertosService
     }
 
     /**
-     * Exporta contratos publicos em formato CSV (RN-413).
+     * Exporta contratos públicos em formato CSV (RN-413).
      */
     public static function exportarContratosCsv(array $filtros = []): StreamedResponse
     {
@@ -69,7 +69,7 @@ class DadosAbertosService
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
             fputcsv($handle, [
-                'Numero',
+                'Número',
                 'Ano',
                 'Objeto',
                 'Tipo',
@@ -80,11 +80,11 @@ class DadosAbertosService
                 'Secretaria',
                 'Valor Global',
                 'Valor Mensal',
-                'Data Inicio',
+                'Data Início',
                 'Data Fim',
                 'Data Assinatura',
-                'Data Publicacao',
-                'Numero Processo',
+                'Data Publicação',
+                'Número Processo',
                 'Fonte Recurso',
             ], ';');
 
@@ -115,7 +115,7 @@ class DadosAbertosService
     }
 
     /**
-     * Retorna indicadores agregados para o portal publico (RN-410).
+     * Retorna indicadores agregados para o portal público (RN-410).
      */
     public static function obterIndicadoresPublicos(): array
     {
@@ -150,7 +150,7 @@ class DadosAbertosService
     }
 
     /**
-     * Exporta contratos publicos com campos expandidos (30 campos) para API.
+     * Exporta contratos públicos com campos expandidos (30 campos) para API.
      */
     public static function exportarContratosExpandido(array $filtros = []): array
     {
@@ -211,7 +211,7 @@ class DadosAbertosService
     }
 
     /**
-     * Exporta fornecedores publicos com totais agregados.
+     * Exporta fornecedores públicos com totais agregados.
      */
     public static function exportarFornecedores(array $filtros = []): array
     {
@@ -258,7 +258,7 @@ class DadosAbertosService
     }
 
     /**
-     * Exporta dados de licitacoes (processos) publicos.
+     * Exporta dados de licitações (processos) públicos.
      */
     public static function exportarLicitacoes(array $filtros = []): array
     {
@@ -309,7 +309,7 @@ class DadosAbertosService
     }
 
     /**
-     * Gera XML no padrao dados abertos para o dataset informado.
+     * Gera XML no padrão dados abertos para o dataset informado.
      */
     public static function gerarXml(string $dataset, array $dados): string
     {
@@ -343,7 +343,7 @@ class DadosAbertosService
     }
 
     /**
-     * Retorna catalogo de datasets disponiveis com metadados.
+     * Retorna catálogo de datasets disponíveis com metadados.
      */
     public static function catalogo(): array
     {
@@ -401,7 +401,7 @@ class DadosAbertosService
     }
 
     /**
-     * Registra exportacao no historico para auditoria.
+     * Registra exportação no histórico para auditoria.
      */
     public static function registrarExportacao(
         DatasetDadosAbertos $dataset,
@@ -430,7 +430,7 @@ class DadosAbertosService
     }
 
     /**
-     * Retorna estatisticas de uso dos dados abertos.
+     * Retorna estatísticas de uso dos dados abertos.
      */
     public static function estatisticas(): array
     {
@@ -458,7 +458,7 @@ class DadosAbertosService
     }
 
     /**
-     * Query base para contratos publicos visiveis no portal.
+     * Query base para contratos públicos visíveis no portal.
      */
     private static function queryContratosPublicos(array $filtros = [])
     {

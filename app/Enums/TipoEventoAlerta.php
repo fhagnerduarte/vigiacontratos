@@ -20,7 +20,7 @@ enum TipoEventoAlerta: string
     case ProrrogacaoForaDoPrazo = 'prorrogacao_fora_do_prazo';
     case ContratoParado = 'contrato_parado';
 
-    // IMP-053: Execucao Financeira Avancada
+    // IMP-053: Execução Financeira Avançada
     case EmpenhoInsuficiente = 'empenho_insuficiente';
 
     // IMP-059: Alertas LAI (Lei 12.527/2011)
@@ -32,23 +32,23 @@ enum TipoEventoAlerta: string
     public function label(): string
     {
         return match ($this) {
-            self::VencimentoVigencia => 'Vencimento da Vigencia',
-            self::TerminoAditivo => 'Termino de Aditivo',
+            self::VencimentoVigencia => 'Vencimento da Vigência',
+            self::TerminoAditivo => 'Término de Aditivo',
             self::PrazoGarantia => 'Prazo de Garantia',
-            self::PrazoExecucaoFisica => 'Prazo de Execucao Fisica',
+            self::PrazoExecucaoFisica => 'Prazo de Execução Física',
             self::AditivoSemDocumento => 'Aditivo sem Documento',
-            self::ProrrogacaoSemParecer => 'Prorrogacao sem Parecer Juridico',
-            self::ContratoSemPublicacao => 'Contrato sem Publicacao Oficial',
-            self::ExecucaoAposVencimento => 'Execucao Financeira Apos Vencimento',
+            self::ProrrogacaoSemParecer => 'Prorrogação sem Parecer Jurídico',
+            self::ContratoSemPublicacao => 'Contrato sem Publicação Oficial',
+            self::ExecucaoAposVencimento => 'Execução Financeira Após Vencimento',
             self::AditivoAcimaLimite => 'Aditivo Acima do Limite Legal',
             self::ContratoSemFiscal => 'Contrato sem Fiscal Designado',
-            self::FiscalSemRelatorio => 'Fiscal sem Relatorio Recente',
-            self::ProrrogacaoForaDoPrazo => 'Prorrogacao Fora do Prazo',
-            self::ContratoParado => 'Contrato sem Movimentacao',
+            self::FiscalSemRelatorio => 'Fiscal sem Relatório Recente',
+            self::ProrrogacaoForaDoPrazo => 'Prorrogação Fora do Prazo',
+            self::ContratoParado => 'Contrato sem Movimentação',
             self::EmpenhoInsuficiente => 'Empenho Insuficiente',
-            self::ContratoNaoPublicadoPortal => 'Contrato Nao Publicado no Portal',
-            self::SolicitacaoLaiVencendo => 'Solicitacao LAI Vencendo',
-            self::SolicitacaoLaiVencida => 'Solicitacao LAI Vencida',
+            self::ContratoNaoPublicadoPortal => 'Contrato Não Publicado no Portal',
+            self::SolicitacaoLaiVencendo => 'Solicitação LAI Vencendo',
+            self::SolicitacaoLaiVencida => 'Solicitação LAI Vencida',
             self::SigiloSemJustificativa => 'Sigilo sem Justificativa',
         };
     }

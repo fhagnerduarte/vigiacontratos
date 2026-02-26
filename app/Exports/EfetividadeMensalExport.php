@@ -21,7 +21,7 @@ class EfetividadeMensalExport implements FromCollection, WithHeadings, ShouldAut
             $statusLabel = match ($contrato['status_efetividade']) {
                 'regularizado_a_tempo' => 'Regularizado a Tempo',
                 'regularizado_retroativo' => 'Regularizado Retroativamente',
-                'vencido_sem_acao' => 'Vencido sem Acao',
+                'vencido_sem_acao' => 'Vencido sem Ação',
                 default => '-',
             };
 
@@ -43,7 +43,7 @@ class EfetividadeMensalExport implements FromCollection, WithHeadings, ShouldAut
     public function headings(): array
     {
         return [
-            'Numero',
+            'Número',
             'Objeto',
             'Secretaria',
             'Fornecedor',
@@ -52,7 +52,7 @@ class EfetividadeMensalExport implements FromCollection, WithHeadings, ShouldAut
             'Status Atual',
             'Efetividade',
             'Aditivo',
-            'Dias Antecipacao',
+            'Dias Antecipação',
         ];
     }
 

@@ -21,13 +21,13 @@ class FornecedoresExport implements FromQuery, WithHeadings, WithMapping, Should
     public function headings(): array
     {
         return [
-            'Razao Social',
+            'Razão Social',
             'Nome Fantasia',
             'CNPJ',
             'Representante Legal',
             'Email',
             'Telefone',
-            'Endereco',
+            'Endereço',
             'Cidade',
             'UF',
             'CEP',

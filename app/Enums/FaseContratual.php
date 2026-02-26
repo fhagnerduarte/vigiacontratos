@@ -16,11 +16,11 @@ enum FaseContratual: string
     {
         return match ($this) {
             self::Planejamento => 'Planejamento',
-            self::Formalizacao => 'Formalizacao',
-            self::Publicacao => 'Publicacao',
-            self::Fiscalizacao => 'Fiscalizacao',
-            self::ExecucaoFinanceira => 'Execucao Financeira',
-            self::GestaoAditivos => 'Gestao de Aditivos',
+            self::Formalizacao => 'Formalização',
+            self::Publicacao => 'Publicação',
+            self::Fiscalizacao => 'Fiscalização',
+            self::ExecucaoFinanceira => 'Execução Financeira',
+            self::GestaoAditivos => 'Gestão de Aditivos',
             self::Encerramento => 'Encerramento',
         };
     }

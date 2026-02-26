@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Transparencia — LAI 12.527/2011</title>
+    <title>Relatório de Transparência — LAI 12.527/2011</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -39,20 +39,20 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Transparencia</h1>
+    <h1>Relatório de Transparência</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
-        Gerado em: {{ $dados['data_geracao'] }} | Lei de Acesso a Informacao — LAI 12.527/2011
+        Gerado em: {{ $dados['data_geracao'] }} | Lei de Acesso a Informação — LAI 12.527/2011
     </div>
 </div>
 
 {{-- SECAO 1: TRANSPARENCIA ATIVA --}}
-<h3 class="section-title">1. Transparencia Ativa — Publicacao de Contratos</h3>
+<h3 class="section-title">1. Transparência Ativa — Publicação de Contratos</h3>
 <div class="resumo">
     <div class="resumo-item azul">
         <div class="valor">{{ $dados['resumo']['total_contratos'] }}</div>
@@ -60,7 +60,7 @@
     </div>
     <div class="resumo-item verde">
         <div class="valor">{{ $dados['resumo']['contratos_publicos'] }}</div>
-        <div class="label">Contratos Publicos</div>
+        <div class="label">Contratos Públicos</div>
     </div>
     <div class="resumo-item verde">
         <div class="valor">{{ $dados['resumo']['publicados_portal'] }}</div>
@@ -68,20 +68,20 @@
     </div>
     <div class="resumo-item vermelho">
         <div class="valor">{{ $dados['resumo']['nao_publicados'] }}</div>
-        <div class="label">Nao Publicados</div>
+        <div class="label">Não Publicados</div>
     </div>
     <div class="resumo-item amarelo">
         <div class="valor">{{ $dados['resumo']['sem_dados_publicacao'] }}</div>
-        <div class="label">Sem Dados de Publicacao</div>
+        <div class="label">Sem Dados de Publicação</div>
     </div>
 </div>
 
-{{-- SECAO 2: CLASSIFICACAO DE SIGILO --}}
-<h3 class="section-title">2. Classificacao de Sigilo — LAI Art. 24</h3>
+{{-- SEÇÃO 2: CLASSIFICAÇÃO DE SIGILO --}}
+<h3 class="section-title">2. Classificação de Sigilo — LAI Art. 24</h3>
 <table>
     <thead>
         <tr>
-            <th style="width: 40%;">Classificacao</th>
+            <th style="width: 40%;">Classificação</th>
             <th style="width: 30%; text-align: center;">Total de Contratos</th>
             <th style="width: 30%; text-align: center;">Status</th>
         </tr>
@@ -107,18 +107,18 @@
 
 @if ($dados['resumo']['sigilo_sem_justificativa'] > 0)
 <p style="margin-bottom: 15px;">
-    <span class="badge badge-warning">ATENCAO</span>
+    <span class="badge badge-warning">ATENÇÃO</span>
     {{ $dados['resumo']['sigilo_sem_justificativa'] }} contrato(s) classificado(s) com sigilo sem justificativa registrada.
-    A LAI art. 24 exige fundamentacao para qualquer restricao de acesso.
+    A LAI art. 24 exige fundamentação para qualquer restrição de acesso.
 </p>
 @endif
 
 {{-- SECAO 3: TRANSPARENCIA PASSIVA (SIC/e-SIC) --}}
-<h3 class="section-title">3. Transparencia Passiva — SIC/e-SIC (LAI Art. 9)</h3>
+<h3 class="section-title">3. Transparência Passiva — SIC/e-SIC (LAI Art. 9)</h3>
 <div class="resumo">
     <div class="resumo-item azul">
         <div class="valor">{{ $dados['sic']['total_solicitacoes'] }}</div>
-        <div class="label">Total de Solicitacoes</div>
+        <div class="label">Total de Solicitações</div>
     </div>
     <div class="resumo-item amarelo">
         <div class="valor">{{ $dados['sic']['pendentes'] }}</div>
@@ -134,21 +134,21 @@
     </div>
     <div class="resumo-item">
         <div class="valor">{{ $dados['sic']['tempo_medio_resposta'] }}</div>
-        <div class="label">Tempo Medio de Resposta (dias)</div>
+        <div class="label">Tempo Médio de Resposta (dias)</div>
     </div>
 </div>
 
 @if ($dados['sic']['vencidas'] > 0)
 <p style="margin-bottom: 15px;">
     <span class="badge badge-danger">ALERTA</span>
-    {{ $dados['sic']['vencidas'] }} solicitacao(oes) com prazo legal vencido.
-    A LAI art. 11 estabelece prazo de 20 dias uteis (prorrogavel por +10 dias) para resposta.
+    {{ $dados['sic']['vencidas'] }} solicitação(ões) com prazo legal vencido.
+    A LAI art. 11 estabelece prazo de 20 dias úteis (prorrogável por +10 dias) para resposta.
 </p>
 @endif
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e consolida indicadores de conformidade
-    com a Lei de Acesso a Informacao (Lei 12.527/2011). Os dados refletem o estado no momento da geracao.
+    com a Lei de Acesso a Informação (Lei 12.527/2011). Os dados refletem o estado no momento da geração.
 </p>
 
 </body>

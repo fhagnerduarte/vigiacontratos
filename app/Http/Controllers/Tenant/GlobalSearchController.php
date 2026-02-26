@@ -23,7 +23,7 @@ class GlobalSearchController extends Controller
         $results = [];
         $term = '%' . $query . '%';
 
-        // Contratos: numero, objeto
+        // Contratos: número, objeto
         if ($request->user()->hasPermission('contrato.visualizar')) {
             $contratos = Contrato::where('numero', 'like', $term)
                 ->orWhere('objeto', 'like', $term)
@@ -41,7 +41,7 @@ class GlobalSearchController extends Controller
             }
         }
 
-        // Fornecedores: razao_social, cnpj
+        // Fornecedores: razão social, cnpj
         if ($request->user()->hasPermission('fornecedor.visualizar')) {
             $fornecedores = Fornecedor::where('razao_social', 'like', $term)
                 ->orWhere('cnpj', 'like', $term)
@@ -59,7 +59,7 @@ class GlobalSearchController extends Controller
             }
         }
 
-        // Servidores: nome, matricula
+        // Servidores: nome, matrícula
         if ($request->user()->hasPermission('servidor.visualizar')) {
             $servidores = Servidor::where('nome', 'like', $term)
                 ->orWhere('matricula', 'like', $term)

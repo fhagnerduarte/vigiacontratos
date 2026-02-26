@@ -23,7 +23,7 @@ class ClassificacaoService
     ): void {
         if ($classificacao->requerJustificativa() && empty($justificativa)) {
             throw new \InvalidArgumentException(
-                'Justificativa e obrigatoria para classificacao ' . $classificacao->label()
+                'Justificativa é obrigatória para classificação ' . $classificacao->label()
             );
         }
 

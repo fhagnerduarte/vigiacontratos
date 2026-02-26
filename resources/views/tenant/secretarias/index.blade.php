@@ -22,10 +22,10 @@
                 <tr>
                     <th class="px-24 py-16">Nome</th>
                     <th class="px-24 py-16">Sigla</th>
-                    <th class="px-24 py-16">Responsavel</th>
+                    <th class="px-24 py-16">Responsável</th>
                     <th class="px-24 py-16">E-mail</th>
                     <th class="px-24 py-16">Telefone</th>
-                    <th class="px-24 py-16 text-center">Acoes</th>
+                    <th class="px-24 py-16 text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>

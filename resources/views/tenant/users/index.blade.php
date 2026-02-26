@@ -1,18 +1,18 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Usuarios';
-    $subTitle = 'Administracao';
+    $title = 'Usuários';
+    $subTitle = 'Administração';
 @endphp
 
-@section('title', 'Usuarios')
+@section('title', 'Usuários')
 
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Usuarios</h6>
+    <h6 class="fw-semibold mb-0">Usuários</h6>
     @if (auth()->user()->hasPermission('usuario.criar'))
         <a href="{{ route('tenant.users.create') }}" class="btn btn-primary text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
-            <iconify-icon icon="ic:baseline-plus" class="icon text-xl"></iconify-icon> Novo Usuario
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl"></iconify-icon> Novo Usuário
         </a>
     @endif
 </div>
@@ -28,7 +28,7 @@
                     <th class="px-24 py-16">Perfil</th>
                     <th class="px-24 py-16">Secretarias</th>
                     <th class="px-24 py-16 text-center">Status</th>
-                    <th class="px-24 py-16 text-center">Acoes</th>
+                    <th class="px-24 py-16 text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,8 +74,8 @@
                                 @endif
                                 @if (auth()->user()->hasPermission('usuario.desativar') && $user->is_ativo && $user->id !== auth()->id())
                                     <form action="{{ route('tenant.users.destroy', $user) }}" method="POST"
-                                          data-confirm="Tem certeza que deseja desativar este usuario?"
-                                          data-confirm-title="Desativar usuario">
+                                          data-confirm="Tem certeza que deseja desativar este usuário?"
+                                          data-confirm-title="Desativar usuário">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -90,7 +90,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-secondary-light py-24">Nenhum usuario cadastrado.</td>
+                        <td colspan="6" class="text-center text-secondary-light py-24">Nenhum usuário cadastrado.</td>
                     </tr>
                 @endforelse
             </tbody>

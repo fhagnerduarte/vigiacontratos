@@ -26,14 +26,14 @@ class StoreLgpdSolicitacaoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tipo_solicitacao.required' => 'O tipo de solicitacao e obrigatorio.',
-            'entidade_tipo.required' => 'O tipo de entidade e obrigatorio.',
-            'entidade_tipo.in' => 'Tipo de entidade invalido.',
+            'tipo_solicitacao.required' => 'O tipo de solicitação é obrigatório.',
+            'entidade_tipo.required' => 'O tipo de entidade é obrigatório.',
+            'entidade_tipo.in' => 'Tipo de entidade inválido.',
             'entidade_id.required' => 'Selecione a entidade.',
-            'entidade_id.integer' => 'ID da entidade invalido.',
-            'justificativa.required' => 'A justificativa e obrigatoria.',
+            'entidade_id.integer' => 'ID da entidade inválido.',
+            'justificativa.required' => 'A justificativa é obrigatória.',
             'justificativa.min' => 'A justificativa deve ter pelo menos 10 caracteres.',
-            'justificativa.max' => 'A justificativa deve ter no maximo 500 caracteres.',
+            'justificativa.max' => 'A justificativa deve ter no máximo 500 caracteres.',
         ];
     }
 }

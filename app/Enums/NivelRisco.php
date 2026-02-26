@@ -12,8 +12,8 @@ enum NivelRisco: string
     {
         return match ($this) {
             self::Baixo => 'Regular',
-            self::Medio => 'Atencao',
-            self::Alto => 'Critico',
+            self::Medio => 'Atenção',
+            self::Alto => 'Crítico',
         };
     }
 
@@ -38,9 +38,9 @@ enum NivelRisco: string
     public function descricao(): string
     {
         return match ($this) {
-            self::Baixo => 'Contrato em situacao regular. Sem riscos identificados.',
-            self::Medio => 'Contrato requer atencao. Riscos moderados identificados.',
-            self::Alto => 'Contrato em situacao critica. Riscos altos requerem acao imediata.',
+            self::Baixo => 'Contrato em situação regular. Sem riscos identificados.',
+            self::Medio => 'Contrato requer atenção. Riscos moderados identificados.',
+            self::Alto => 'Contrato em situação crítica. Riscos altos requerem ação imediata.',
         };
     }
 }

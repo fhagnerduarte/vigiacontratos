@@ -24,10 +24,10 @@ class UpdateFiscalRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'O nome do fiscal e obrigatorio.',
-            'matricula.required' => 'A matricula do fiscal e obrigatoria.',
-            'cargo.required' => 'O cargo do fiscal e obrigatorio.',
-            'email.email' => 'Informe um e-mail valido.',
+            'nome.required' => 'O nome do fiscal é obrigatório.',
+            'matricula.required' => 'A matrícula do fiscal é obrigatória.',
+            'cargo.required' => 'O cargo do fiscal é obrigatório.',
+            'email.email' => 'Informe um e-mail válido.',
         ];
     }
 }

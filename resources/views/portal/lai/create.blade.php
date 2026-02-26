@@ -1,23 +1,23 @@
 @extends('portal.layout')
 
-@section('title', 'Nova Solicitacao e-SIC')
+@section('title', 'Nova Solicitação e-SIC')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item">e-SIC</li>
-    <li class="breadcrumb-item active" aria-current="page">Nova Solicitacao</li>
+    <li class="breadcrumb-item active" aria-current="page">Nova Solicitação</li>
 @endsection
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <h2 class="portal-section-title">Solicitacao de Informacao (e-SIC)</h2>
+        <h2 class="portal-section-title">Solicitação de Informação (e-SIC)</h2>
 
         {{-- Info Card --}}
         <div class="portal-info-card">
             <iconify-icon icon="solar:info-circle-bold" width="22"></iconify-icon>
             <div>
-                <p>Conforme a Lei de Acesso a Informacao (Lei 12.527/2011), todo cidadao tem direito de solicitar informacoes publicas. O prazo legal para resposta e de <strong>20 dias uteis</strong>, prorrogavel por mais 10 dias mediante justificativa.</p>
+                <p>Conforme a Lei de Acesso à Informação (Lei 12.527/2011), todo cidadão tem direito de solicitar informações públicas. O prazo legal para resposta é de <strong>20 dias úteis</strong>, prorrogável por mais 10 dias mediante justificativa.</p>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
 
         <div class="card portal-card">
             <div class="card-header" style="background: var(--portal-primary); color: #fff;">
-                <h5 class="mb-0"><iconify-icon icon="solar:pen-new-round-bold" width="18"></iconify-icon> Nova Solicitacao</h5>
+                <h5 class="mb-0"><iconify-icon icon="solar:pen-new-round-bold" width="18"></iconify-icon> Nova Solicitação</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('portal.lai.store', $tenant->slug) }}" method="POST">
@@ -86,23 +86,23 @@
                     </div>
 
                     <hr>
-                    <h6 class="text-muted mb-3"><iconify-icon icon="solar:document-text-bold" width="16"></iconify-icon> Informacao Solicitada</h6>
+                    <h6 class="text-muted mb-3"><iconify-icon icon="solar:document-text-bold" width="16"></iconify-icon> Informação Solicitada</h6>
 
                     <div class="mb-3">
                         <label for="assunto" class="form-label">Assunto <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('assunto') is-invalid @enderror"
                                id="assunto" name="assunto" value="{{ old('assunto') }}"
-                               placeholder="Resuma o assunto da solicitacao" required>
+                               placeholder="Resuma o assunto da solicitação" required>
                         @error('assunto')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label for="descricao" class="form-label">Descricao Detalhada <span class="text-danger">*</span></label>
+                        <label for="descricao" class="form-label">Descrição Detalhada <span class="text-danger">*</span></label>
                         <textarea class="form-control @error('descricao') is-invalid @enderror"
                                   id="descricao" name="descricao" rows="5"
-                                  placeholder="Descreva com detalhes a informacao que deseja obter (minimo 20 caracteres)" required>{{ old('descricao') }}</textarea>
+                                  placeholder="Descreva com detalhes a informação que deseja obter (mínimo 20 caracteres)" required>{{ old('descricao') }}</textarea>
                         @error('descricao')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -113,7 +113,7 @@
                             <iconify-icon icon="solar:magnifer-bold" width="16"></iconify-icon> Consultar Existente
                         </a>
                         <button type="submit" class="btn btn-primary px-4">
-                            <iconify-icon icon="solar:plain-bold" width="16"></iconify-icon> Enviar Solicitacao
+                            <iconify-icon icon="solar:plain-bold" width="16"></iconify-icon> Enviar Solicitação
                         </button>
                     </div>
                 </form>

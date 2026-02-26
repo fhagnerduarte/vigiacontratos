@@ -25,8 +25,8 @@ class UpdateSecretariaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'O nome da secretaria e obrigatorio.',
-            'email.email'   => 'Informe um e-mail valido.',
+            'nome.required' => 'O nome da secretaria é obrigatório.',
+            'email.email'   => 'Informe um e-mail válido.',
         ];
     }
 }

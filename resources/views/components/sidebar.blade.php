@@ -21,7 +21,7 @@
                 </a>
             </li>
 
-            {{-- GESTAO CONTRATUAL --}}
+            {{-- GESTÃO CONTRATUAL --}}
             @if (auth()->user()->hasPermission('contrato.visualizar') || auth()->user()->hasPermission('aditivo.visualizar') || auth()->user()->hasPermission('documento.visualizar'))
                 <li class="sidebar-menu-group-title">Gestão Contratual</li>
 
@@ -142,7 +142,7 @@
                 @endif
             @endif
 
-            {{-- TRANSPARENCIA --}}
+            {{-- TRANSPARÊNCIA --}}
             @if (auth()->user()->hasPermission('lai.visualizar') || auth()->user()->hasPermission('lai.relatorio') || auth()->user()->hasPermission('classificacao.visualizar'))
                 <li class="sidebar-menu-group-title">Transparência</li>
 
@@ -178,7 +178,7 @@
                 </li>
             @endif
 
-            {{-- ADMINISTRACAO --}}
+            {{-- ADMINISTRAÇÃO --}}
             @if (auth()->user()->hasPermission('usuario.visualizar') || auth()->user()->hasPermission('configuracao.visualizar') || auth()->user()->hasPermission('lgpd.visualizar'))
                 <li class="sidebar-menu-group-title">Administração</li>
 

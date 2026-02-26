@@ -17,15 +17,15 @@ enum ModalidadeContratacao: string
     public function label(): string
     {
         return match ($this) {
-            self::PregaoEletronico => 'Pregao Eletronico',
-            self::PregaoPresencial => 'Pregao Presencial',
-            self::Concorrencia => 'Concorrencia',
-            self::TomadaPreco => 'Tomada de Preco',
+            self::PregaoEletronico => 'Pregão Eletrônico',
+            self::PregaoPresencial => 'Pregão Presencial',
+            self::Concorrencia => 'Concorrência',
+            self::TomadaPreco => 'Tomada de Preço',
             self::Convite => 'Convite',
-            self::Leilao => 'Leilao',
+            self::Leilao => 'Leilão',
             self::Dispensa => 'Dispensa',
             self::Inexigibilidade => 'Inexigibilidade',
-            self::AdesaoAta => 'Adesao a Ata',
+            self::AdesaoAta => 'Adesão à Ata',
         };
     }
 

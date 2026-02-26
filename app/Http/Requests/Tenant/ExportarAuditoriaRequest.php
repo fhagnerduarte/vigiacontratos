@@ -25,10 +25,10 @@ class ExportarAuditoriaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'data_inicio.required' => 'A data de inicio e obrigatoria.',
-            'data_inicio.before_or_equal' => 'A data de inicio deve ser anterior ou igual a data fim.',
-            'data_fim.required' => 'A data de fim e obrigatoria.',
-            'data_fim.after_or_equal' => 'A data de fim deve ser posterior ou igual a data de inicio.',
+            'data_inicio.required' => 'A data de início é obrigatória.',
+            'data_inicio.before_or_equal' => 'A data de início deve ser anterior ou igual à data fim.',
+            'data_fim.required' => 'A data de fim é obrigatória.',
+            'data_fim.after_or_equal' => 'A data de fim deve ser posterior ou igual à data de início.',
         ];
     }
 }

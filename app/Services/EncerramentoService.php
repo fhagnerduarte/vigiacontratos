@@ -19,7 +19,7 @@ class EncerramentoService
     public static function iniciar(Contrato $contrato, User $user, string $ip): Encerramento
     {
         if ($contrato->encerramento) {
-            throw new \RuntimeException('Processo de encerramento ja iniciado para este contrato.');
+            throw new \RuntimeException('Processo de encerramento já iniciado para este contrato.');
         }
 
         if (!in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
@@ -47,8 +47,8 @@ class EncerramentoService
     }
 
     /**
-     * Etapa 1: Verificacao Financeira.
-     * Verifica se todas as obrigacoes financeiras foram cumpridas.
+     * Etapa 1: Verificação Financeira.
+     * Verifica se todas as obrigações financeiras foram cumpridas.
      */
     public static function verificarFinanceiro(
         Encerramento $encerramento,
@@ -71,7 +71,7 @@ class EncerramentoService
             $encerramento->contrato,
             'encerramento_verificacao_financeira',
             null,
-            $ok ? 'Verificacao financeira aprovada' : 'Verificacao financeira com ressalvas',
+            $ok ? 'Verificação financeira aprovada' : 'Verificação financeira com ressalvas',
             $user,
             $ip
         );
@@ -80,7 +80,7 @@ class EncerramentoService
     }
 
     /**
-     * Etapa 2: Registro do Termo de Recebimento Provisorio.
+     * Etapa 2: Registro do Termo de Recebimento Provisório.
      */
     public static function registrarTermoProvisorio(
         Encerramento $encerramento,
@@ -101,7 +101,7 @@ class EncerramentoService
             $encerramento->contrato,
             'encerramento_termo_provisorio',
             null,
-            "Termo de recebimento provisorio registrado. Prazo: {$prazoDias} dias.",
+            "Termo de recebimento provisório registrado. Prazo: {$prazoDias} dias.",
             $user,
             $ip
         );
@@ -110,7 +110,7 @@ class EncerramentoService
     }
 
     /**
-     * Etapa 3: Avaliacao do Fiscal.
+     * Etapa 3: Avaliação do Fiscal.
      * Nota de 1 a 10 sobre o desempenho do fornecedor.
      */
     public static function registrarAvaliacaoFiscal(
@@ -123,7 +123,7 @@ class EncerramentoService
         self::validarEtapa($encerramento, EtapaEncerramento::AvaliacaoFiscal);
 
         if ($nota < 1 || $nota > 10) {
-            throw new \RuntimeException('Nota de avaliacao deve ser entre 1 e 10.');
+            throw new \RuntimeException('Nota de avaliação deve ser entre 1 e 10.');
         }
 
         $encerramento->update([
@@ -138,7 +138,7 @@ class EncerramentoService
             $encerramento->contrato,
             'encerramento_avaliacao_fiscal',
             null,
-            "Avaliacao fiscal registrada. Nota: {$nota}/10.",
+            "Avaliação fiscal registrada. Nota: {$nota}/10.",
             $user,
             $ip
         );
@@ -175,7 +175,7 @@ class EncerramentoService
     }
 
     /**
-     * Etapa 5: Quitacao.
+     * Etapa 5: Quitação.
      */
     public static function registrarQuitacao(
         Encerramento $encerramento,
@@ -200,7 +200,7 @@ class EncerramentoService
             $encerramento->contrato,
             'encerramento_quitacao',
             null,
-            'Quitacao registrada. Contrato encerrado formalmente.',
+            'Quitação registrada. Contrato encerrado formalmente.',
             $user,
             $ip
         );
@@ -244,7 +244,7 @@ class EncerramentoService
     }
 
     /**
-     * Valida que o encerramento esta na etapa correta para a acao solicitada.
+     * Valida que o encerramento está na etapa correta para a ação solicitada.
      */
     private static function validarEtapa(Encerramento $encerramento, EtapaEncerramento $esperada): void
     {

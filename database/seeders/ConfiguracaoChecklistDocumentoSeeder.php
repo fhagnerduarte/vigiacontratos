@@ -15,34 +15,34 @@ class ConfiguracaoChecklistDocumentoSeeder extends Seeder
     {
         $conn = DB::connection('tenant');
 
-        // Mapeamento completo com descricoes por fase
+        // Mapeamento completo com descrições por fase
         $checklistPorFase = [
             FaseContratual::Planejamento->value => [
-                ['tipo' => TipoDocumentoContratual::TermoReferencia, 'descricao' => 'Estudo tecnico preliminar e especificacoes', 'ordem' => 1],
-                ['tipo' => TipoDocumentoContratual::Justificativa, 'descricao' => 'Justificativa da necessidade de contratacao', 'ordem' => 2],
+                ['tipo' => TipoDocumentoContratual::TermoReferencia, 'descricao' => 'Estudo técnico preliminar e especificações', 'ordem' => 1],
+                ['tipo' => TipoDocumentoContratual::Justificativa, 'descricao' => 'Justificativa da necessidade de contratação', 'ordem' => 2],
             ],
             FaseContratual::Formalizacao->value => [
                 ['tipo' => TipoDocumentoContratual::ContratoOriginal, 'descricao' => 'Instrumento contratual assinado', 'ordem' => 1],
-                ['tipo' => TipoDocumentoContratual::ParecerJuridico, 'descricao' => 'Parecer juridico sobre legalidade', 'ordem' => 2],
+                ['tipo' => TipoDocumentoContratual::ParecerJuridico, 'descricao' => 'Parecer jurídico sobre legalidade', 'ordem' => 2],
                 ['tipo' => TipoDocumentoContratual::NotaEmpenho, 'descricao' => 'Nota de empenho da despesa', 'ordem' => 3],
             ],
             FaseContratual::Publicacao->value => [
-                ['tipo' => TipoDocumentoContratual::PublicacaoOficial, 'descricao' => 'Extrato publicado no Diario Oficial', 'ordem' => 1],
+                ['tipo' => TipoDocumentoContratual::PublicacaoOficial, 'descricao' => 'Extrato publicado no Diário Oficial', 'ordem' => 1],
             ],
             FaseContratual::Fiscalizacao->value => [
-                ['tipo' => TipoDocumentoContratual::PortariaDesignacaoFiscal, 'descricao' => 'Portaria de designacao do fiscal (Lei 14.133 art. 117)', 'ordem' => 1],
-                ['tipo' => TipoDocumentoContratual::RelatorioFiscalizacao, 'descricao' => 'Relatorio de acompanhamento do fiscal', 'ordem' => 2],
+                ['tipo' => TipoDocumentoContratual::PortariaDesignacaoFiscal, 'descricao' => 'Portaria de designação do fiscal (Lei 14.133 art. 117)', 'ordem' => 1],
+                ['tipo' => TipoDocumentoContratual::RelatorioFiscalizacao, 'descricao' => 'Relatório de acompanhamento do fiscal', 'ordem' => 2],
             ],
             FaseContratual::ExecucaoFinanceira->value => [
-                ['tipo' => TipoDocumentoContratual::NotaFiscal, 'descricao' => 'Nota fiscal dos servicos/produtos', 'ordem' => 1],
-                ['tipo' => TipoDocumentoContratual::OrdemServico, 'descricao' => 'Ordem de servico ou fornecimento', 'ordem' => 2],
-                ['tipo' => TipoDocumentoContratual::RelatorioMedicao, 'descricao' => 'Relatorio de medicao de servicos', 'ordem' => 3],
+                ['tipo' => TipoDocumentoContratual::NotaFiscal, 'descricao' => 'Nota fiscal dos serviços/produtos', 'ordem' => 1],
+                ['tipo' => TipoDocumentoContratual::OrdemServico, 'descricao' => 'Ordem de serviço ou fornecimento', 'ordem' => 2],
+                ['tipo' => TipoDocumentoContratual::RelatorioMedicao, 'descricao' => 'Relatório de medição de serviços', 'ordem' => 3],
             ],
             FaseContratual::GestaoAditivos->value => [
                 ['tipo' => TipoDocumentoContratual::AditivoDoc, 'descricao' => 'Termo aditivo ao contrato', 'ordem' => 1],
             ],
             FaseContratual::Encerramento->value => [
-                ['tipo' => TipoDocumentoContratual::TermoRecebimentoProvisorio, 'descricao' => 'Termo de recebimento provisorio (Lei 14.133 art. 140)', 'ordem' => 1],
+                ['tipo' => TipoDocumentoContratual::TermoRecebimentoProvisorio, 'descricao' => 'Termo de recebimento provisório (Lei 14.133 art. 140)', 'ordem' => 1],
                 ['tipo' => TipoDocumentoContratual::TermoRecebimentoDefinitivo, 'descricao' => 'Termo de recebimento definitivo (Lei 14.133 art. 140)', 'ordem' => 2],
             ],
         ];

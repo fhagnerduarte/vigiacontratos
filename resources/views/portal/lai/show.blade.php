@@ -1,9 +1,9 @@
 @extends('portal.layout')
 
-@section('title', 'Solicitacao ' . $solicitacao->protocolo)
+@section('title', 'Solicitação ' . $solicitacao->protocolo)
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item"><a href="{{ route('portal.lai.create', $tenant->slug) }}">e-SIC</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ $solicitacao->protocolo }}</li>
 @endsection
@@ -33,7 +33,7 @@
         {{-- Dados da Solicitacao --}}
         <div class="card portal-card mb-4">
             <div class="card-header">
-                <h5 class="mb-0"><iconify-icon icon="solar:document-text-bold" width="18"></iconify-icon> Dados da Solicitacao</h5>
+                <h5 class="mb-0"><iconify-icon icon="solar:document-text-bold" width="18"></iconify-icon> Dados da Solicitação</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3 mb-3">
@@ -56,7 +56,7 @@
                                 <br>
                                 <small class="text-primary">
                                     <iconify-icon icon="solar:clock-circle-bold" width="14"></iconify-icon>
-                                    Estendido ate {{ $solicitacao->prazo_estendido->format('d/m/Y') }}
+                                    Estendido até {{ $solicitacao->prazo_estendido->format('d/m/Y') }}
                                 </small>
                             @endif
                         </p>
@@ -87,7 +87,7 @@
                     <p class="mb-0 fw-bold">{{ $solicitacao->assunto }}</p>
                 </div>
                 <div>
-                    <strong class="text-muted d-block mb-1">Descricao</strong>
+                    <strong class="text-muted d-block mb-1">Descrição</strong>
                     <p class="mb-0" style="white-space: pre-line;">{{ $solicitacao->descricao }}</p>
                 </div>
             </div>
@@ -116,13 +116,13 @@
             <div class="card portal-card mb-4" style="border-top-color: #ffc107;">
                 <div class="card-header" style="background: #ffc107; color: #333;">
                     <h5 class="mb-0">
-                        <iconify-icon icon="solar:clock-circle-bold" width="18"></iconify-icon> Prorrogacao de Prazo
+                        <iconify-icon icon="solar:clock-circle-bold" width="18"></iconify-icon> Prorrogação de Prazo
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <strong class="text-muted d-block mb-1">Data da Prorrogacao</strong>
+                            <strong class="text-muted d-block mb-1">Data da Prorrogação</strong>
                             <p class="mb-0">{{ $solicitacao->data_prorrogacao?->format('d/m/Y H:i') }}</p>
                         </div>
                         <div class="col-md-4">
@@ -155,11 +155,11 @@
                 </span>
                 @if (!$solicitacao->status->isFinalizado())
                     <p class="text-muted small mt-3 mb-0">
-                        Sua solicitacao esta sendo processada dentro do prazo legal de 20 dias uteis previsto na Lei 12.527/2011.
+                        Sua solicitação está sendo processada dentro do prazo legal de 20 dias úteis previsto na Lei 12.527/2011.
                     </p>
                 @else
                     <p class="text-muted small mt-3 mb-0">
-                        Esta solicitacao foi finalizada. Caso discorde da resposta, voce pode registrar um recurso.
+                        Esta solicitação foi finalizada. Caso discorde da resposta, você pode registrar um recurso.
                     </p>
                 @endif
             </div>
@@ -169,7 +169,7 @@
         @if ($solicitacao->historicos->isNotEmpty())
             <div class="card portal-card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><iconify-icon icon="solar:history-bold" width="18"></iconify-icon> Historico</h5>
+                    <h5 class="mb-0"><iconify-icon icon="solar:history-bold" width="18"></iconify-icon> Histórico</h5>
                 </div>
                 <div class="card-body">
                     <div class="portal-timeline">
@@ -195,14 +195,14 @@
             </div>
         @endif
 
-        {{-- Acoes --}}
+        {{-- Ações --}}
         <div class="card portal-card">
             <div class="card-header">
-                <h5 class="mb-0"><iconify-icon icon="solar:widget-bold" width="18"></iconify-icon> Acoes</h5>
+                <h5 class="mb-0"><iconify-icon icon="solar:widget-bold" width="18"></iconify-icon> Ações</h5>
             </div>
             <div class="card-body d-grid gap-2">
                 <a href="{{ route('portal.lai.create', $tenant->slug) }}" class="btn btn-primary">
-                    <iconify-icon icon="solar:pen-new-round-bold" width="16"></iconify-icon> Nova Solicitacao
+                    <iconify-icon icon="solar:pen-new-round-bold" width="16"></iconify-icon> Nova Solicitação
                 </a>
                 <a href="{{ route('portal.lai.consultar', $tenant->slug) }}" class="btn btn-outline-secondary">
                     <iconify-icon icon="solar:magnifer-bold" width="16"></iconify-icon> Consultar Outra

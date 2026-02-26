@@ -60,7 +60,7 @@ class TceController extends Controller
         $filtros = $request->input('filtros', []);
         $dados = TceExportService::coletarDados($filtros);
 
-        // Registrar exportacao no historico
+        // Registrar exportação no histórico
         $exportacao = TceExportService::registrarExportacao(
             $formato,
             $filtros ?: null,
@@ -68,7 +68,7 @@ class TceController extends Controller
             $dados['total_pendencias'],
         );
 
-        // Gerar conteudo conforme formato
+        // Gerar conteúdo conforme formato
         $conteudo = match ($formato) {
             FormatoExportacaoTce::Xml => TceExportService::gerarXml($dados),
             FormatoExportacaoTce::Csv => null,
@@ -84,11 +84,11 @@ class TceController extends Controller
             ]);
         }
 
-        // CSV e Excel retornam informacao de que a exportacao foi registrada
+        // CSV e Excel retornam informação de que a exportação foi registrada
         // (download feito via endpoints web ou direto via service)
         return response()->json([
             'exportacao' => new ExportacaoTceResource($exportacao->load('geradoPor')),
-            'message' => 'Exportacao registrada com sucesso. Use o endpoint de download para obter o arquivo.',
+            'message' => 'Exportação registrada com sucesso. Use o endpoint de download para obter o arquivo.',
         ]);
     }
 

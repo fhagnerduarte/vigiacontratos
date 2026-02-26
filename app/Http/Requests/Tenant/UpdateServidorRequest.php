@@ -42,12 +42,12 @@ class UpdateServidorRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required'      => 'O nome do servidor e obrigatorio.',
-            'matricula.required' => 'A matricula e obrigatoria.',
-            'matricula.unique'   => 'Esta matricula ja esta cadastrada.',
-            'cpf.unique'         => 'Este CPF ja esta cadastrado.',
-            'cargo.required'     => 'O cargo e obrigatorio.',
-            'email.email'        => 'Informe um e-mail valido.',
+            'nome.required'      => 'O nome do servidor é obrigatório.',
+            'matricula.required' => 'A matrícula é obrigatória.',
+            'matricula.unique'   => 'Esta matrícula já está cadastrada.',
+            'cpf.unique'         => 'Este CPF já está cadastrado.',
+            'cargo.required'     => 'O cargo é obrigatório.',
+            'email.email'        => 'Informe um e-mail válido.',
         ];
     }
 }

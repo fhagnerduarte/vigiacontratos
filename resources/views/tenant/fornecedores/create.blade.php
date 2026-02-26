@@ -16,14 +16,14 @@
             @csrf
 
             <div class="row gy-3">
-                {{-- Identificacao --}}
+                {{-- Identificação --}}
                 <div class="col-md-8">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Razao Social <span class="text-danger-main">*</span>
+                        Razão Social <span class="text-danger-main">*</span>
                     </label>
                     <input type="text" name="razao_social" value="{{ old('razao_social') }}"
                            class="form-control radius-8 @error('razao_social') is-invalid @enderror"
-                           placeholder="Razao social do fornecedor" required>
+                           placeholder="Razão social do fornecedor" required>
                     @error('razao_social')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -84,14 +84,14 @@
                     @enderror
                 </div>
 
-                {{-- Endereco --}}
+                {{-- Endereço --}}
                 <div class="col-12"><hr class="my-8"></div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Endereco</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Endereço</label>
                     <input type="text" name="endereco" value="{{ old('endereco') }}"
                            class="form-control radius-8 @error('endereco') is-invalid @enderror"
-                           placeholder="Rua, numero, complemento">
+                           placeholder="Rua, número, complemento">
                     @error('endereco')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -127,14 +127,14 @@
                     @enderror
                 </div>
 
-                {{-- Observacoes --}}
+                {{-- Observações --}}
                 <div class="col-12"><hr class="my-8"></div>
 
                 <div class="col-12">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                     <textarea name="observacoes" rows="3"
                               class="form-control radius-8 @error('observacoes') is-invalid @enderror"
-                              placeholder="Observacoes adicionais sobre o fornecedor">{{ old('observacoes') }}</textarea>
+                              placeholder="Observações adicionais sobre o fornecedor">{{ old('observacoes') }}</textarea>
                     @error('observacoes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

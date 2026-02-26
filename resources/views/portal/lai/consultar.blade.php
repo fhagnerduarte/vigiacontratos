@@ -1,9 +1,9 @@
 @extends('portal.layout')
 
-@section('title', 'Consultar Solicitacao')
+@section('title', 'Consultar Solicitação')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item">e-SIC</li>
     <li class="breadcrumb-item active" aria-current="page">Consultar</li>
 @endsection
@@ -11,10 +11,10 @@
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-6">
-        <h2 class="portal-section-title">Consultar Solicitacao LAI</h2>
+        <h2 class="portal-section-title">Consultar Solicitação LAI</h2>
 
         <p class="text-muted mb-4">
-            Informe o numero do protocolo e o e-mail utilizado no cadastro para acompanhar sua solicitacao.
+            Informe o número do protocolo e o e-mail utilizado no cadastro para acompanhar sua solicitação.
         </p>
 
         @if (session('error'))
@@ -27,7 +27,7 @@
 
                 <form action="{{ route('portal.lai.show', [$tenant->slug, ':protocolo']) }}" method="GET" id="form-consulta">
                     <div class="mb-3 text-start">
-                        <label for="protocolo" class="form-label">Numero do Protocolo <span class="text-danger">*</span></label>
+                        <label for="protocolo" class="form-label">Número do Protocolo <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="protocolo" name="protocolo"
                                placeholder="LAI-2026-000001" required>
                     </div>
@@ -40,7 +40,7 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                         <a href="{{ route('portal.lai.create', $tenant->slug) }}" class="btn btn-outline-secondary">
-                            <iconify-icon icon="solar:pen-new-round-bold" width="16"></iconify-icon> Nova Solicitacao
+                            <iconify-icon icon="solar:pen-new-round-bold" width="16"></iconify-icon> Nova Solicitação
                         </a>
                         <button type="submit" class="btn btn-primary px-4">
                             <iconify-icon icon="solar:magnifer-bold" width="16"></iconify-icon> Consultar

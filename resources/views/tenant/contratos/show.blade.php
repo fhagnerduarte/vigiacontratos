@@ -2,7 +2,7 @@
 
 @php
     $title = 'Contrato ' . $contrato->numero;
-    $subTitle = 'Gestao Contratual';
+    $subTitle = 'Gestão Contratual';
 @endphp
 
 @section('title', 'Contrato ' . $contrato->numero)
@@ -15,7 +15,7 @@
         <iconify-icon icon="solar:danger-triangle-bold" class="text-danger-main text-2xl mt-2 flex-shrink-0"></iconify-icon>
         <div>
             <h6 class="fw-semibold text-danger-main mb-4">Contrato IRREGULAR (RN-046)</h6>
-            <p class="mb-4">Este contrato esta vencido e em situacao irregular. A edicao esta bloqueada (RN-006).</p>
+            <p class="mb-4">Este contrato está vencido e em situação irregular. A edição está bloqueada (RN-006).</p>
             <p class="mb-0">Para regularizar: registre um <strong>aditivo com justificativa retroativa</strong> ou <strong>encerre formalmente</strong> o contrato.</p>
         </div>
     </div>
@@ -74,7 +74,7 @@
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-fiscal">Fiscal</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-financeiro">Financeiro</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-documentos">Documentos</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ocorrencias">Ocorrencias @if($resumoOcorrencias['pendentes'] > 0)<span class="badge bg-warning-focus text-warning-main ms-4">{{ $resumoOcorrencias['pendentes'] }}</span>@endif</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-ocorrencias">Ocorrências @if($resumoOcorrencias['pendentes'] > 0)<span class="badge bg-warning-focus text-warning-main ms-4">{{ $resumoOcorrencias['pendentes'] }}</span>@endif</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-relatorios-fiscais">Rel. Fiscais</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-conformidade">Conformidade</a></li>
             <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-aditivos">Aditivos</a></li>
@@ -88,7 +88,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <dl class="row mb-0">
-                            <dt class="col-sm-5 text-secondary-light">Numero:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Número:</dt>
                             <dd class="col-sm-7 fw-medium">{{ $contrato->numero }}</dd>
 
                             <dt class="col-sm-5 text-secondary-light">Tipo:</dt>
@@ -112,14 +112,14 @@
                     </div>
                     <div class="col-md-6">
                         <dl class="row mb-0">
-                            <dt class="col-sm-5 text-secondary-light">Vigencia:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Vigência:</dt>
                             <dd class="col-sm-7">{{ $contrato->data_inicio->format('d/m/Y') }} a {{ $contrato->data_fim->format('d/m/Y') }}</dd>
 
                             <dt class="col-sm-5 text-secondary-light">Prazo:</dt>
                             <dd class="col-sm-7">{{ $contrato->prazo_meses }} meses</dd>
 
-                            <dt class="col-sm-5 text-secondary-light">Prorrogacao:</dt>
-                            <dd class="col-sm-7">{{ $contrato->prorrogacao_automatica ? 'Sim' : 'Nao' }}</dd>
+                            <dt class="col-sm-5 text-secondary-light">Prorrogação:</dt>
+                            <dd class="col-sm-7">{{ $contrato->prorrogacao_automatica ? 'Sim' : 'Não' }}</dd>
 
                             <dt class="col-sm-5 text-secondary-light">Valor Global:</dt>
                             <dd class="col-sm-7 fw-semibold">R$ {{ number_format($contrato->valor_global, 2, ',', '.') }}</dd>
@@ -149,10 +149,10 @@
                                 <dt class="col-sm-5 text-secondary-light">Regime Exec.:</dt>
                                 <dd class="col-sm-7">{{ match($contrato->regime_execucao) {
                                     'empreitada_integral'  => 'Empreitada Integral',
-                                    'preco_unitario'       => 'Preco Unitario',
-                                    'preco_global'         => 'Preco Global',
+                                    'preco_unitario'       => 'Preço Unitário',
+                                    'preco_global'         => 'Preço Global',
                                     'tarefa'               => 'Tarefa',
-                                    'contratacao_integrada'=> 'Contratacao Integrada',
+                                    'contratacao_integrada'=> 'Contratação Integrada',
                                     default                => $contrato->regime_execucao,
                                 } }}</dd>
                             @endif
@@ -163,20 +163,20 @@
                             @endif
 
                             @if ($contrato->responsavel_tecnico)
-                                <dt class="col-sm-5 text-secondary-light">Resp. Tecnico:</dt>
+                                <dt class="col-sm-5 text-secondary-light">Resp. Técnico:</dt>
                                 <dd class="col-sm-7">{{ $contrato->responsavel_tecnico }}</dd>
                             @endif
                         </dl>
                     </div>
                     @if ($contrato->observacoes)
                         <div class="col-12 mt-16">
-                            <strong class="text-secondary-light">Observacoes:</strong>
+                            <strong class="text-secondary-light">Observações:</strong>
                             <p class="mt-4">{{ $contrato->observacoes }}</p>
                         </div>
                     @endif
                     @if ($contrato->condicoes_pagamento)
                         <div class="col-12 mt-8">
-                            <strong class="text-secondary-light">Condicoes de Pagamento:</strong>
+                            <strong class="text-secondary-light">Condições de Pagamento:</strong>
                             <p class="mt-4">{{ $contrato->condicoes_pagamento }}</p>
                         </div>
                     @endif
@@ -188,32 +188,32 @@
                     @endif
                 </div>
 
-                {{-- Publicacao --}}
+                {{-- Publicação --}}
                 <div class="row mt-24 pt-16 border-top">
                     <div class="col-12 mb-12 d-flex align-items-center gap-12">
-                        <h6 class="fw-semibold mb-0">Publicacao</h6>
+                        <h6 class="fw-semibold mb-0">Publicação</h6>
                         @if ($contrato->data_publicacao)
                             <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">
                                 <iconify-icon icon="ic:baseline-check-circle" class="me-4"></iconify-icon> Publicado
                             </span>
                         @else
                             <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">
-                                <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Nao publicado
+                                <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Não publicado
                             </span>
                         @endif
                     </div>
                     <div class="col-md-6">
                         <dl class="row mb-0">
-                            <dt class="col-sm-5 text-secondary-light">Data Publicacao:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Data Publicação:</dt>
                             <dd class="col-sm-7">{{ $contrato->data_publicacao ? $contrato->data_publicacao->format('d/m/Y') : '-' }}</dd>
 
-                            <dt class="col-sm-5 text-secondary-light">Veiculo:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Veículo:</dt>
                             <dd class="col-sm-7">{{ $contrato->veiculo_publicacao ?? '-' }}</dd>
                         </dl>
                     </div>
                     <div class="col-md-6">
                         <dl class="row mb-0">
-                            <dt class="col-sm-5 text-secondary-light">Link Transparencia:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Link Transparência:</dt>
                             <dd class="col-sm-7">
                                 @if ($contrato->link_transparencia)
                                     <a href="{{ $contrato->link_transparencia }}" target="_blank" rel="noopener noreferrer" class="text-primary-600">
@@ -226,10 +226,10 @@
                         </dl>
                     </div>
 
-                    {{-- Classificacao e Portal --}}
+                    {{-- Classificação e Portal --}}
                     <div class="col-md-6 mt-16">
                         <dl class="row mb-0">
-                            <dt class="col-sm-5 text-secondary-light">Classificacao:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Classificação:</dt>
                             <dd class="col-sm-7">
                                 @if ($contrato->classificacao_sigilo)
                                     <span class="badge bg-{{ $contrato->classificacao_sigilo->cor() }}-focus text-{{ $contrato->classificacao_sigilo->cor() }}-main px-12 py-4 radius-4">
@@ -241,15 +241,15 @@
                                 @endif
                             </dd>
 
-                            <dt class="col-sm-5 text-secondary-light">Portal Publico:</dt>
+                            <dt class="col-sm-5 text-secondary-light">Portal Público:</dt>
                             <dd class="col-sm-7">
                                 @if ($contrato->publicado_portal)
                                     <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">
-                                        <iconify-icon icon="ic:baseline-check-circle" class="me-4"></iconify-icon> Visivel no Portal
+                                        <iconify-icon icon="ic:baseline-check-circle" class="me-4"></iconify-icon> Visível no Portal
                                     </span>
                                 @else
                                     <span class="badge bg-neutral-200 text-secondary-light px-12 py-4 radius-4">
-                                        <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Nao publicado no Portal
+                                        <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Não publicado no Portal
                                     </span>
                                 @endif
                             </dd>
@@ -284,7 +284,7 @@
                                     <br><small class="text-secondary-light">Portaria: {{ $contrato->fiscalAtual->portaria_designacao ?? $contrato->portaria_designacao }}</small>
                                 @endif
                                 @if ($contrato->fiscalAtual->data_ultimo_relatorio ?? false)
-                                    <br><small class="text-secondary-light">Ultimo relatorio: {{ $contrato->fiscalAtual->data_ultimo_relatorio->format('d/m/Y') }}</small>
+                                    <br><small class="text-secondary-light">Último relatório: {{ $contrato->fiscalAtual->data_ultimo_relatorio->format('d/m/Y') }}</small>
                                 @endif
                             </div>
                         </div>
@@ -312,7 +312,7 @@
                         @if ($contrato->portaria_designacao)
                             <div class="col-md-6">
                                 <div class="p-12 border rounded">
-                                    <span class="text-secondary-light text-sm">Portaria de Designacao:</span>
+                                    <span class="text-secondary-light text-sm">Portaria de Designação:</span>
                                     <p class="fw-medium mb-0 mt-4">{{ $contrato->portaria_designacao }}</p>
                                 </div>
                             </div>
@@ -320,7 +320,7 @@
                         @if ($contrato->data_ultimo_relatorio ?? false)
                             <div class="col-md-6">
                                 <div class="p-12 border rounded">
-                                    <span class="text-secondary-light text-sm">Data do Ultimo Relatorio:</span>
+                                    <span class="text-secondary-light text-sm">Data do Último Relatório:</span>
                                     <p class="fw-medium mb-0 mt-4">{{ $contrato->data_ultimo_relatorio->format('d/m/Y') }}</p>
                                 </div>
                             </div>
@@ -328,16 +328,16 @@
                     </div>
                 @endif
 
-                {{-- Historico de Fiscais --}}
+                {{-- Histórico de Fiscais --}}
                 @if ($contrato->fiscais->count() > 1)
-                    <h6 class="fw-semibold mb-12">Historico de Fiscais</h6>
+                    <h6 class="fw-semibold mb-12">Histórico de Fiscais</h6>
                     <table class="table table-hover mb-24">
                         <thead>
                             <tr>
                                 <th class="px-16 py-12">Nome</th>
-                                <th class="px-16 py-12">Matricula</th>
+                                <th class="px-16 py-12">Matrícula</th>
                                 <th class="px-16 py-12">Cargo</th>
-                                <th class="px-16 py-12">Periodo</th>
+                                <th class="px-16 py-12">Período</th>
                                 <th class="px-16 py-12 text-center">Status</th>
                             </tr>
                         </thead>
@@ -364,7 +364,7 @@
                     </table>
                 @endif
 
-                {{-- Formulario de Troca/Designacao de Fiscal --}}
+                {{-- Formulário de Troca/Designação de Fiscal --}}
                 @if (auth()->user()->hasPermission('fiscal.criar') && $contrato->status !== \App\Enums\StatusContrato::Vencido)
                     <hr class="my-16">
                     <h6 class="fw-semibold mb-12">{{ $contrato->fiscalAtual ? 'Trocar Fiscal' : 'Designar Fiscal' }}</h6>
@@ -418,7 +418,7 @@
                                 @if ($contrato->valor_empenhado)
                                     R$ {{ number_format($contrato->valor_empenhado, 2, ',', '.') }}
                                 @else
-                                    Nao informado
+                                    Não informado
                                 @endif
                             </h6>
                         </div>
@@ -465,17 +465,17 @@
                     @endif
                 </div>
 
-                {{-- Lista de Execucoes --}}
-                <h6 class="fw-semibold mb-12">Execucoes Financeiras</h6>
+                {{-- Lista de Execuções --}}
+                <h6 class="fw-semibold mb-12">Execuções Financeiras</h6>
                 <table class="table table-hover mb-24">
                     <thead>
                         <tr>
                             <th class="px-16 py-12">Data</th>
                             <th class="px-16 py-12">Tipo</th>
-                            <th class="px-16 py-12">Descricao</th>
+                            <th class="px-16 py-12">Descrição</th>
                             <th class="px-16 py-12">Valor</th>
                             <th class="px-16 py-12">Nota Fiscal</th>
-                            <th class="px-16 py-12">Competencia</th>
+                            <th class="px-16 py-12">Competência</th>
                             <th class="px-16 py-12">Registrado por</th>
                         </tr>
                     </thead>
@@ -496,16 +496,16 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma execucao financeira registrada.</td>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma execução financeira registrada.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
 
-                {{-- Formulario de Nova Execucao --}}
+                {{-- Formulário de Nova Execução --}}
                 @if (auth()->user()->hasPermission('financeiro.registrar_empenho') && $contrato->status !== \App\Enums\StatusContrato::Vencido)
                     <hr class="my-16">
-                    <h6 class="fw-semibold mb-12">Registrar Execucao</h6>
+                    <h6 class="fw-semibold mb-12">Registrar Execução</h6>
                     <form action="{{ route('tenant.contratos.execucoes.store', $contrato) }}" method="POST">
                         @csrf
                         <div class="row gy-3">
@@ -520,7 +520,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descrição <span class="text-danger-main">*</span></label>
                                 <input type="text" name="descricao" class="form-control radius-8" required>
                             </div>
                             <div class="col-md-3">
@@ -540,7 +540,7 @@
                                 <input type="text" name="numero_empenho" class="form-control radius-8">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Competencia</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Competência</label>
                                 <input type="month" name="competencia" class="form-control radius-8">
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
@@ -578,7 +578,7 @@
 
                 {{-- Checklist de Documentos Obrigatorios (RN-129) --}}
                 <div class="mb-24">
-                    <h6 class="fw-semibold mb-12">Checklist de Documentos Obrigatorios</h6>
+                    <h6 class="fw-semibold mb-12">Checklist de Documentos Obrigatórios</h6>
                     <div class="row gy-2">
                         @foreach ($checklistObrigatorio as $item)
                             <div class="col-md-6">
@@ -630,7 +630,7 @@
                                             — {{ $doc->created_at->format('d/m/Y H:i') }}
                                             — por {{ $doc->uploader->nome ?? '-' }}
                                             @if (!$doc->is_versao_atual)
-                                                <span class="badge bg-neutral-200 text-neutral-600 ms-2">Versao anterior</span>
+                                                <span class="badge bg-neutral-200 text-neutral-600 ms-2">Versão anterior</span>
                                             @endif
                                         </p>
                                     </div>
@@ -701,11 +701,11 @@
                                 <div class="mb-16">
                                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">Arquivo PDF <span class="text-danger-main">*</span></label>
                                     <input type="file" class="form-control radius-8" name="arquivo" accept=".pdf" required>
-                                    <small class="text-neutral-400">Apenas PDF. Tamanho maximo: 20MB</small>
+                                    <small class="text-neutral-400">Apenas PDF. Tamanho máximo: 20MB</small>
                                 </div>
                                 <div class="mb-16">
-                                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao</label>
-                                    <input type="text" class="form-control radius-8" name="descricao" placeholder="Descricao opcional">
+                                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descrição</label>
+                                    <input type="text" class="form-control radius-8" name="descricao" placeholder="Descrição opcional">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -719,7 +719,7 @@
                 </div>
             </div>
 
-            {{-- ABA: Ocorrencias (IMP-054) --}}
+            {{-- ABA: Ocorrências (IMP-054) --}}
             <div class="tab-pane fade" id="tab-ocorrencias">
                 {{-- Resumo --}}
                 <div class="row gy-3 mb-24">
@@ -749,18 +749,18 @@
                     </div>
                 </div>
 
-                {{-- Tabela de Ocorrencias --}}
+                {{-- Tabela de Ocorrências --}}
                 <table class="table table-hover mb-24">
                     <thead>
                         <tr>
                             <th class="px-16 py-12">Data</th>
                             <th class="px-16 py-12">Tipo</th>
-                            <th class="px-16 py-12">Descricao</th>
+                            <th class="px-16 py-12">Descrição</th>
                             <th class="px-16 py-12">Prazo</th>
                             <th class="px-16 py-12 text-center">Status</th>
                             <th class="px-16 py-12">Registrado por</th>
                             @if (auth()->user()->hasPermission('ocorrencia.resolver'))
-                                <th class="px-16 py-12 text-center">Acao</th>
+                                <th class="px-16 py-12 text-center">Ação</th>
                             @endif
                         </tr>
                     </thead>
@@ -799,7 +799,7 @@
                                     <td class="px-16 py-12 text-center">
                                         @if (!$ocorrencia->resolvida)
                                             <form action="{{ route('tenant.ocorrencias.resolver', $ocorrencia) }}" method="POST" class="d-inline"
-                                                  data-confirm="Confirma a resolucao desta ocorrencia?">
+                                                  data-confirm="Confirma a resolução desta ocorrência?">
                                                 @csrf
                                                 <button type="submit" class="btn btn-success-600 text-sm btn-sm px-12 py-6 radius-4">
                                                     <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Resolver
@@ -811,16 +811,16 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma ocorrencia registrada.</td>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhuma ocorrência registrada.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
 
-                {{-- Formulario de Nova Ocorrencia --}}
+                {{-- Formulário de Nova Ocorrência --}}
                 @if (auth()->user()->hasPermission('ocorrencia.criar') && $contrato->status !== \App\Enums\StatusContrato::Encerrado)
                     <hr class="my-16">
-                    <h6 class="fw-semibold mb-12">Registrar Ocorrencia</h6>
+                    <h6 class="fw-semibold mb-12">Registrar Ocorrência</h6>
                     <form action="{{ route('tenant.contratos.ocorrencias.store', $contrato) }}" method="POST">
                         @csrf
                         <div class="row gy-3">
@@ -836,32 +836,32 @@
                                 @error('tipo_ocorrencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data da Ocorrencia <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Data da Ocorrência <span class="text-danger-main">*</span></label>
                                 <input type="date" name="data_ocorrencia" value="{{ old('data_ocorrencia', date('Y-m-d')) }}"
                                        class="form-control radius-8 @error('data_ocorrencia') is-invalid @enderror" required>
                                 @error('data_ocorrencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Prazo para Providencia</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Prazo para Providência</label>
                                 <input type="date" name="prazo_providencia" value="{{ old('prazo_providencia') }}"
                                        class="form-control radius-8 @error('prazo_providencia') is-invalid @enderror">
                                 @error('prazo_providencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descrição <span class="text-danger-main">*</span></label>
                                 <textarea name="descricao" rows="3" class="form-control radius-8 @error('descricao') is-invalid @enderror"
-                                          placeholder="Descreva a ocorrencia detalhadamente (min. 10 caracteres)..." required>{{ old('descricao') }}</textarea>
+                                          placeholder="Descreva a ocorrência detalhadamente (min. 10 caracteres)..." required>{{ old('descricao') }}</textarea>
                                 @error('descricao') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Providencia Recomendada</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Providência Recomendada</label>
                                 <textarea name="providencia" rows="2" class="form-control radius-8 @error('providencia') is-invalid @enderror"
-                                          placeholder="Providencia a ser tomada...">{{ old('providencia') }}</textarea>
+                                          placeholder="Providência a ser tomada...">{{ old('providencia') }}</textarea>
                                 @error('providencia') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-12 text-end">
                                 <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
-                                    <iconify-icon icon="solar:add-circle-bold" class="me-4"></iconify-icon> Registrar Ocorrencia
+                                    <iconify-icon icon="solar:add-circle-bold" class="me-4"></iconify-icon> Registrar Ocorrência
                                 </button>
                             </div>
                         </div>
@@ -869,13 +869,13 @@
                 @endif
             </div>
 
-            {{-- ABA: Relatorios Fiscais (IMP-054) --}}
+            {{-- ABA: Relatórios Fiscais (IMP-054) --}}
             <div class="tab-pane fade" id="tab-relatorios-fiscais">
                 {{-- Resumo --}}
                 <div class="row gy-3 mb-24">
                     <div class="col-md-3">
                         <div class="p-16 border rounded text-center">
-                            <span class="text-secondary-light text-sm">Total Relatorios</span>
+                            <span class="text-secondary-light text-sm">Total Relatórios</span>
                             <h4 class="fw-bold mt-4 mb-0">{{ $resumoRelatoriosFiscais['total'] }}</h4>
                         </div>
                     </div>
@@ -887,28 +887,28 @@
                     </div>
                     <div class="col-md-3">
                         <div class="p-16 border rounded text-center bg-danger-focus">
-                            <span class="text-secondary-light text-sm">Nao Conformes</span>
+                            <span class="text-secondary-light text-sm">Não Conformes</span>
                             <h4 class="fw-bold mt-4 mb-0 text-danger-main">{{ $resumoRelatoriosFiscais['nao_conformes'] }}</h4>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="p-16 border rounded text-center bg-primary-focus">
-                            <span class="text-secondary-light text-sm">Nota Media</span>
+                            <span class="text-secondary-light text-sm">Nota Média</span>
                             <h4 class="fw-bold mt-4 mb-0 text-primary-main">{{ $resumoRelatoriosFiscais['nota_media'] ?? '—' }}</h4>
                         </div>
                     </div>
                 </div>
 
-                {{-- Tabela de Relatorios Fiscais --}}
+                {{-- Tabela de Relatórios Fiscais --}}
                 <table class="table table-hover mb-24">
                     <thead>
                         <tr>
-                            <th class="px-16 py-12">Periodo</th>
+                            <th class="px-16 py-12">Período</th>
                             <th class="px-16 py-12">Fiscal</th>
                             <th class="px-16 py-12">Atividades</th>
                             <th class="px-16 py-12 text-center">Conformidade</th>
                             <th class="px-16 py-12 text-center">Nota</th>
-                            <th class="px-16 py-12 text-center">Ocorrencias</th>
+                            <th class="px-16 py-12 text-center">Ocorrências</th>
                             <th class="px-16 py-12">Registrado por</th>
                         </tr>
                     </thead>
@@ -924,7 +924,7 @@
                                     @if ($relatorio->conformidade_geral)
                                         <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Conforme</span>
                                     @else
-                                        <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">Nao Conforme</span>
+                                        <span class="badge bg-danger-focus text-danger-main px-12 py-4 radius-4">Não Conforme</span>
                                     @endif
                                 </td>
                                 <td class="px-16 py-12 text-center fw-bold">
@@ -941,27 +941,27 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhum relatorio fiscal registrado.</td>
+                                <td colspan="7" class="text-center text-secondary-light py-16">Nenhum relatório fiscal registrado.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
 
-                {{-- Formulario de Novo Relatorio Fiscal --}}
+                {{-- Formulário de Novo Relatório Fiscal --}}
                 @if (auth()->user()->hasPermission('relatorio_fiscal.criar') && $contrato->status !== \App\Enums\StatusContrato::Encerrado)
                     <hr class="my-16">
-                    <h6 class="fw-semibold mb-12">Registrar Relatorio Fiscal</h6>
+                    <h6 class="fw-semibold mb-12">Registrar Relatório Fiscal</h6>
                     <form action="{{ route('tenant.contratos.relatorios-fiscais.store', $contrato) }}" method="POST">
                         @csrf
                         <div class="row gy-3">
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Periodo Inicio <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Período Início <span class="text-danger-main">*</span></label>
                                 <input type="date" name="periodo_inicio" value="{{ old('periodo_inicio') }}"
                                        class="form-control radius-8 @error('periodo_inicio') is-invalid @enderror" required>
                                 @error('periodo_inicio') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Periodo Fim <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Período Fim <span class="text-danger-main">*</span></label>
                                 <input type="date" name="periodo_fim" value="{{ old('periodo_fim') }}"
                                        class="form-control radius-8 @error('periodo_fim') is-invalid @enderror" required>
                                 @error('periodo_fim') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -973,9 +973,9 @@
                                 @error('nota_desempenho') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descricao das Atividades <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Descrição das Atividades <span class="text-danger-main">*</span></label>
                                 <textarea name="descricao_atividades" rows="3" class="form-control radius-8 @error('descricao_atividades') is-invalid @enderror"
-                                          placeholder="Descreva as atividades fiscalizadas no periodo (min. 10 caracteres)..." required>{{ old('descricao_atividades') }}</textarea>
+                                          placeholder="Descreva as atividades fiscalizadas no período (min. 10 caracteres)..." required>{{ old('descricao_atividades') }}</textarea>
                                 @error('descricao_atividades') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
@@ -984,19 +984,19 @@
                                         data-placeholder="Conforme?" required>
                                     <option value=""></option>
                                     <option value="1" {{ old('conformidade_geral') == '1' ? 'selected' : '' }}>Conforme</option>
-                                    <option value="0" {{ old('conformidade_geral') == '0' ? 'selected' : '' }}>Nao Conforme</option>
+                                    <option value="0" {{ old('conformidade_geral') == '0' ? 'selected' : '' }}>Não Conforme</option>
                                 </select>
                                 @error('conformidade_geral') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                                 <textarea name="observacoes" rows="2" class="form-control radius-8 @error('observacoes') is-invalid @enderror"
-                                          placeholder="Observacoes adicionais...">{{ old('observacoes') }}</textarea>
+                                          placeholder="Observações adicionais...">{{ old('observacoes') }}</textarea>
                                 @error('observacoes') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-12 text-end">
                                 <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
-                                    <iconify-icon icon="solar:document-add-bold" class="me-4"></iconify-icon> Registrar Relatorio
+                                    <iconify-icon icon="solar:document-add-bold" class="me-4"></iconify-icon> Registrar Relatório
                                 </button>
                             </div>
                         </div>
@@ -1090,7 +1090,7 @@
                                             @endforeach
                                         </div>
                                     @else
-                                        <p class="text-sm text-secondary-light mb-0">Nenhum documento obrigatorio configurado para esta fase.</p>
+                                        <p class="text-sm text-secondary-light mb-0">Nenhum documento obrigatório configurado para esta fase.</p>
                                     @endif
                                 </div>
                             </div>
@@ -1123,13 +1123,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="p-16 border rounded text-center">
-                                <p class="text-secondary-light text-sm mb-4">Acrescimos</p>
+                                <p class="text-secondary-light text-sm mb-4">Acréscimos</p>
                                 <h6 class="mb-0 text-success-main">+ R$ {{ number_format($somaAcrescimos, 2, ',', '.') }}</h6>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="p-16 border rounded text-center">
-                                <p class="text-secondary-light text-sm mb-4">Supressoes</p>
+                                <p class="text-secondary-light text-sm mb-4">Supressões</p>
                                 <h6 class="mb-0 text-danger-main">- R$ {{ number_format($somaSupressoes, 2, ',', '.') }}</h6>
                             </div>
                         </div>
@@ -1165,11 +1165,11 @@
                                 <th class="px-16 py-12">#</th>
                                 <th class="px-16 py-12">Tipo</th>
                                 <th class="px-16 py-12">Data Assinatura</th>
-                                <th class="px-16 py-12">Acrescimo</th>
-                                <th class="px-16 py-12">Supressao</th>
+                                <th class="px-16 py-12">Acréscimo</th>
+                                <th class="px-16 py-12">Supressão</th>
                                 <th class="px-16 py-12">% Acumulado</th>
                                 <th class="px-16 py-12 text-center">Status</th>
-                                <th class="px-16 py-12 text-center">Acoes</th>
+                                <th class="px-16 py-12 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1221,7 +1221,7 @@
                     <div class="text-center mt-16">
                         @if ($contrato->status === \App\Enums\StatusContrato::Vencido)
                             <div class="alert alert-warning radius-8 mb-12">
-                                <small>Contrato vencido: aditivo retroativo exigira justificativa formal (RN-052).</small>
+                                <small>Contrato vencido: aditivo retroativo exigirá justificativa formal (RN-052).</small>
                             </div>
                         @endif
                         <a href="{{ route('tenant.contratos.aditivos.create', $contrato) }}"
@@ -1240,7 +1240,7 @@
                         <thead>
                             <tr>
                                 <th class="px-16 py-12">Data/Hora</th>
-                                <th class="px-16 py-12">Usuario</th>
+                                <th class="px-16 py-12">Usuário</th>
                                 <th class="px-16 py-12">Perfil</th>
                                 <th class="px-16 py-12">Campo</th>
                                 <th class="px-16 py-12">Anterior</th>
@@ -1268,7 +1268,7 @@
                     </table>
                 @else
                     <div class="text-center text-secondary-light py-24">
-                        Voce nao possui permissao para visualizar o historico de auditoria.
+                        Você não possui permissão para visualizar o histórico de auditoria.
                     </div>
                 @endif
             </div>

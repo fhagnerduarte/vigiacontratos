@@ -74,7 +74,7 @@
                 @php $contrato = $alerta->contrato; @endphp
                 <table class="table table-borderless mb-0">
                     <tr>
-                        <th class="text-secondary-light fw-medium w-40">Numero</th>
+                        <th class="text-secondary-light fw-medium w-40">Número</th>
                         <td>
                             <a href="{{ route('tenant.contratos.show', $contrato) }}" class="text-primary-600 fw-semibold">
                                 {{ $contrato->numero }}
@@ -98,12 +98,12 @@
                         <td>R$ {{ number_format((float) $contrato->valor_global, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
-                        <th class="text-secondary-light fw-medium">Vigencia</th>
+                        <th class="text-secondary-light fw-medium">Vigência</th>
                         <td>{{ $contrato->data_inicio->format('d/m/Y') }} a {{ $contrato->data_fim->format('d/m/Y') }}</td>
                     </tr>
                     <tr>
                         <th class="text-secondary-light fw-medium">Fiscal Atual</th>
-                        <td>{{ $contrato->fiscalAtual->nome ?? 'Nao designado' }}</td>
+                        <td>{{ $contrato->fiscalAtual->nome ?? 'Não designado' }}</td>
                     </tr>
                 </table>
             </div>
@@ -163,11 +163,11 @@
         </div>
     </div>
 
-    {{-- Log de Notificacoes --}}
+    {{-- Log de Notificações --}}
     <div class="col-12">
         <div class="card radius-8 border-0">
             <div class="card-header">
-                <h6 class="card-title mb-0">Historico de Notificacoes</h6>
+                <h6 class="card-title mb-0">Histórico de Notificações</h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -175,7 +175,7 @@
                         <thead>
                             <tr>
                                 <th>Canal</th>
-                                <th>Destinatario</th>
+                                <th>Destinatário</th>
                                 <th>Data Envio</th>
                                 <th>Tentativa</th>
                                 <th>Status</th>
@@ -203,7 +203,7 @@
                             @empty
                             <tr>
                                 <td colspan="6" class="text-center py-16 text-secondary-light">
-                                    Nenhuma notificacao enviada ainda.
+                                    Nenhuma notificação enviada ainda.
                                 </td>
                             </tr>
                             @endforelse

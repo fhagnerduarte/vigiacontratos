@@ -23,10 +23,10 @@ class StoreRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'O identificador do perfil e obrigatorio.',
-            'nome.regex'    => 'O identificador deve conter apenas letras minusculas e underscores.',
-            'nome.unique'   => 'Ja existe um perfil com este identificador.',
-            'descricao.required' => 'A descricao e obrigatoria.',
+            'nome.required' => 'O identificador do perfil é obrigatório.',
+            'nome.regex'    => 'O identificador deve conter apenas letras minúsculas e underscores.',
+            'nome.unique'   => 'Já existe um perfil com este identificador.',
+            'descricao.required' => 'A descrição é obrigatória.',
         ];
     }
 }

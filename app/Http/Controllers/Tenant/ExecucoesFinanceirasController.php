@@ -16,11 +16,11 @@ class ExecucoesFinanceirasController extends Controller
 
         $resultado = ExecucaoFinanceiraService::registrar($contrato, $dados, $request->user());
 
-        $mensagem = 'Execucao financeira registrada com sucesso.';
+        $mensagem = 'Execução financeira registrada com sucesso.';
         $tipo = 'success';
 
         if ($resultado['alerta']) {
-            $mensagem .= ' ATENCAO: O valor executado ultrapassou o valor contratado (RN-033).';
+            $mensagem .= ' ATENÇÃO: O valor executado ultrapassou o valor contratado (RN-033).';
             $tipo = 'warning';
         }
 
@@ -30,7 +30,7 @@ class ExecucoesFinanceirasController extends Controller
         }
 
         if ($resultado['alerta_vencimento']) {
-            $mensagem .= ' CRITICO: Execucao registrada apos o vencimento do contrato.';
+            $mensagem .= ' CRÍTICO: Execução registrada após o vencimento do contrato.';
             $tipo = 'danger';
         }
 

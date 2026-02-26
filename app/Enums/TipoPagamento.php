@@ -13,9 +13,9 @@ enum TipoPagamento: string
     {
         return match ($this) {
             self::Mensal => 'Mensal',
-            self::PorMedicao => 'Por Medicao',
+            self::PorMedicao => 'Por Medição',
             self::Parcelado => 'Parcelado',
-            self::Unico => 'Unico',
+            self::Unico => 'Único',
         };
     }
 }

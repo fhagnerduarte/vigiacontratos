@@ -2,15 +2,15 @@
 
 @php
     $title = 'LGPD';
-    $subTitle = 'Nova solicitacao de protecao de dados';
+    $subTitle = 'Nova solicitação de proteção de dados';
 @endphp
 
-@section('title', 'LGPD — Nova Solicitacao')
+@section('title', 'LGPD — Nova Solicitação')
 
 @section('content')
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Nova Solicitacao LGPD</h6>
+    <h6 class="fw-semibold mb-0">Nova Solicitação LGPD</h6>
     <a href="{{ route('tenant.lgpd.index') }}" class="btn btn-sm btn-outline-secondary-600">
         <iconify-icon icon="solar:arrow-left-bold" class="me-1"></iconify-icon> Voltar
     </a>
@@ -22,9 +22,9 @@
             @csrf
 
             <div class="row gy-3">
-                {{-- Tipo de Solicitacao --}}
+                {{-- Tipo de Solicitação --}}
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">Tipo de Solicitacao <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold">Tipo de Solicitação <span class="text-danger">*</span></label>
                     <select name="tipo_solicitacao" class="form-select select2" data-placeholder="Selecione o tipo">
                         <option value=""></option>
                         @foreach ($tipos as $tipo)
@@ -46,7 +46,7 @@
                         <option value="fornecedor" {{ old('entidade_tipo') === 'fornecedor' ? 'selected' : '' }}>Fornecedor</option>
                         <option value="fiscal" {{ old('entidade_tipo') === 'fiscal' ? 'selected' : '' }}>Fiscal</option>
                         <option value="servidor" {{ old('entidade_tipo') === 'servidor' ? 'selected' : '' }}>Servidor</option>
-                        <option value="usuario" {{ old('entidade_tipo') === 'usuario' ? 'selected' : '' }}>Usuario (inativo)</option>
+                        <option value="usuario" {{ old('entidade_tipo') === 'usuario' ? 'selected' : '' }}>Usuário (inativo)</option>
                     </select>
                     @error('entidade_tipo')
                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
@@ -94,10 +94,10 @@
                         </select>
                     </div>
 
-                    {{-- Usuario --}}
+                    {{-- Usuário --}}
                     <div class="entidade-select" id="select_usuario" style="display:none;">
-                        <label class="form-label fw-semibold">Usuario (inativo) <span class="text-danger">*</span></label>
-                        <select name="entidade_id_usuario" class="form-select select2" data-placeholder="Selecione o usuario">
+                        <label class="form-label fw-semibold">Usuário (inativo) <span class="text-danger">*</span></label>
+                        <select name="entidade_id_usuario" class="form-select select2" data-placeholder="Selecione o usuário">
                             <option value=""></option>
                             @foreach ($usuarios as $u)
                                 <option value="{{ $u->id }}" {{ (int) old('entidade_id') === $u->id && old('entidade_tipo') === 'usuario' ? 'selected' : '' }}>
@@ -115,7 +115,7 @@
                 <div class="col-md-12">
                     <label class="form-label fw-semibold">Justificativa <span class="text-danger">*</span></label>
                     <textarea name="justificativa" class="form-control" rows="4" minlength="10" maxlength="500"
-                              placeholder="Descreva o motivo da solicitacao (minimo 10 caracteres)...">{{ old('justificativa') }}</textarea>
+                              placeholder="Descreva o motivo da solicitação (mínimo 10 caracteres)...">{{ old('justificativa') }}</textarea>
                     @error('justificativa')
                         <div class="text-danger text-sm mt-1">{{ $message }}</div>
                     @enderror
@@ -131,7 +131,7 @@
             <div class="d-flex align-items-center gap-3 mt-24">
                 <a href="{{ route('tenant.lgpd.index') }}" class="btn btn-outline-secondary text-sm btn-sm px-16 py-10 radius-8">Cancelar</a>
                 <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">
-                    <iconify-icon icon="solar:shield-keyhole-bold" class="me-1"></iconify-icon> Registrar Solicitacao
+                    <iconify-icon icon="solar:shield-keyhole-bold" class="me-1"></iconify-icon> Registrar Solicitação
                 </button>
             </div>
         </form>
@@ -153,7 +153,7 @@ $(function() {
         }
     }
 
-    // Sync entidade_id hidden com o select visivel
+    // Sync entidade_id hidden com o select visível
     function syncEntidadeId() {
         var tipo = $tipoSelect.val();
         if (!tipo) { $entidadeIdHidden.val(''); return; }
@@ -169,7 +169,7 @@ $(function() {
         $entidadeIdHidden.val('');
     });
 
-    // Observar mudancas nos selects de entidade (Select2 jQuery events)
+    // Observar mudanças nos selects de entidade (Select2 jQuery events)
     $('[name^="entidade_id_"]').on('change', syncEntidadeId);
 
     // Init: mostrar o select correto baseado no old()

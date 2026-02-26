@@ -2,7 +2,7 @@
 
 @php
     $title = 'Efetividade Mensal';
-    $subTitle = 'Relatorios';
+    $subTitle = 'Relatórios';
 @endphp
 
 @section('title', 'Efetividade Mensal')
@@ -10,8 +10,8 @@
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-4">Relatorio de Efetividade Mensal</h6>
-        <p class="text-neutral-500 text-sm mb-0">RN-057 — Contratos regularizados a tempo vs. vencidos sem acao</p>
+        <h6 class="fw-semibold mb-4">Relatório de Efetividade Mensal</h6>
+        <p class="text-neutral-500 text-sm mb-0">RN-057 — Contratos regularizados a tempo vs. vencidos sem ação</p>
     </div>
     <a href="{{ route('tenant.relatorios.index') }}" class="btn btn-outline-neutral-600 btn-sm d-flex align-items-center gap-4">
         <iconify-icon icon="solar:arrow-left-bold" class="text-lg"></iconify-icon> Voltar
@@ -35,7 +35,7 @@
         <form method="GET" action="{{ route('tenant.relatorios.efetividade-mensal') }}">
             <div class="row g-16 align-items-end">
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-4">Mes *</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-4">Mês *</label>
                     <select name="mes" class="form-select radius-8" required>
                         @for ($m = 1; $m <= 12; $m++)
                             <option value="{{ $m }}" {{ (int) request('mes', now()->month) === $m ? 'selected' : '' }}>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary-600 btn-sm d-flex align-items-center gap-4">
-                        <iconify-icon icon="solar:chart-2-bold" class="text-lg"></iconify-icon> Gerar Relatorio
+                        <iconify-icon icon="solar:chart-2-bold" class="text-lg"></iconify-icon> Gerar Relatório
                     </button>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                         <iconify-icon icon="solar:close-circle-bold" class="text-danger-600 text-xl"></iconify-icon>
                     </div>
                     <div>
-                        <p class="text-neutral-500 text-sm mb-0">Vencidos sem Acao</p>
+                        <p class="text-neutral-500 text-sm mb-0">Vencidos sem Ação</p>
                         <h5 class="fw-bold mb-0 text-danger-600">{{ $dados['resumo']['vencidos_sem_acao'] }}</h5>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                     <iconify-icon icon="solar:clock-circle-bold" class="text-info-600 text-xl"></iconify-icon>
                 </div>
                 <div>
-                    <p class="text-neutral-500 text-sm mb-0">Tempo Medio de Antecipacao</p>
+                    <p class="text-neutral-500 text-sm mb-0">Tempo Médio de Antecipação</p>
                     <h5 class="fw-bold mb-0 text-info-600">{{ $dados['resumo']['tempo_medio_antecipacao'] }} dias</h5>
                 </div>
             </div>
@@ -171,7 +171,7 @@
     <div class="col-lg-5">
         <div class="card radius-8 border-0 h-100">
             <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                <h6 class="text-lg fw-semibold mb-0">Distribuicao</h6>
+                <h6 class="text-lg fw-semibold mb-0">Distribuição</h6>
             </div>
             <div class="card-body p-24">
                 <div id="chart-efetividade"></div>
@@ -218,7 +218,7 @@
                     </table>
                 </div>
                 @else
-                <p class="text-neutral-500 text-sm mb-0">Nenhum contrato elegivel no periodo selecionado.</p>
+                <p class="text-neutral-500 text-sm mb-0">Nenhum contrato elegível no período selecionado.</p>
                 @endif
             </div>
         </div>
@@ -252,7 +252,7 @@
             <table class="table bordered-table text-sm" id="dataTable">
                 <thead>
                     <tr>
-                        <th>Numero</th>
+                        <th>Número</th>
                         <th>Objeto</th>
                         <th>Secretaria</th>
                         <th>Data Fim</th>
@@ -295,7 +295,7 @@
             </table>
         </div>
         @else
-        <p class="text-neutral-500 text-sm mb-0">Nenhum contrato com vencimento no periodo selecionado.</p>
+        <p class="text-neutral-500 text-sm mb-0">Nenhum contrato com vencimento no período selecionado.</p>
         @endif
     </div>
 </div>
@@ -313,7 +313,7 @@
                     {{ $dados['resumo']['vencidos_sem_acao'] }},
                     {{ $dados['resumo']['regularizados_retroativos'] }}
                 ],
-                labels: ['Regularizados a Tempo', 'Vencidos sem Acao', 'Regularizados Retroativamente'],
+                labels: ['Regularizados a Tempo', 'Vencidos sem Ação', 'Regularizados Retroativamente'],
                 chart: {
                     type: 'donut',
                     height: 300,

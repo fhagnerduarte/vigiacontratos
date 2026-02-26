@@ -25,13 +25,13 @@
 
 {{-- 4 Cards de Resumo --}}
 <div class="row row-cols-xxxl-4 row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4 mb-24">
-    {{-- Total Alteracoes --}}
+    {{-- Total Alterações --}}
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-1 h-100">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Alteracoes</p>
+                        <p class="fw-medium text-primary-light mb-1">Alterações</p>
                         <h6 class="mb-0">{{ number_format($totalAlteracoes) }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-info-main rounded-circle d-flex justify-content-center align-items-center">
@@ -102,7 +102,7 @@
     <div class="card-body">
         <form method="GET" action="{{ route('tenant.auditoria.index') }}" class="row g-3 align-items-end">
             <div class="col-md-2">
-                <label class="form-label">Data Inicio</label>
+                <label class="form-label">Data Início</label>
                 <input type="date" name="data_inicio" class="form-control" value="{{ $filtros['data_inicio'] }}">
             </div>
             <div class="col-md-2">
@@ -113,13 +113,13 @@
                 <label class="form-label">Tipo</label>
                 <select name="tipo_acao" class="form-select select2" data-placeholder="Todos...">
                     <option value=""></option>
-                    <option value="alteracao" {{ ($filtros['tipo_acao'] ?? '') === 'alteracao' ? 'selected' : '' }}>Alteracoes</option>
+                    <option value="alteracao" {{ ($filtros['tipo_acao'] ?? '') === 'alteracao' ? 'selected' : '' }}>Alterações</option>
                     <option value="login" {{ ($filtros['tipo_acao'] ?? '') === 'login' ? 'selected' : '' }}>Logins</option>
                     <option value="acesso_documento" {{ ($filtros['tipo_acao'] ?? '') === 'acesso_documento' ? 'selected' : '' }}>Acessos a Documentos</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label">Usuario</label>
+                <label class="form-label">Usuário</label>
                 <select name="user_id" class="form-select select2" data-placeholder="Todos...">
                     <option value=""></option>
                     @foreach ($usuarios as $usuario)
@@ -138,7 +138,7 @@
                     <option value="fornecedor" {{ ($filtros['entidade'] ?? '') === 'fornecedor' ? 'selected' : '' }}>Fornecedor</option>
                     <option value="secretaria" {{ ($filtros['entidade'] ?? '') === 'secretaria' ? 'selected' : '' }}>Secretaria</option>
                     <option value="servidor" {{ ($filtros['entidade'] ?? '') === 'servidor' ? 'selected' : '' }}>Servidor</option>
-                    <option value="user" {{ ($filtros['entidade'] ?? '') === 'user' ? 'selected' : '' }}>Usuario</option>
+                    <option value="user" {{ ($filtros['entidade'] ?? '') === 'user' ? 'selected' : '' }}>Usuário</option>
                     <option value="role" {{ ($filtros['entidade'] ?? '') === 'role' ? 'selected' : '' }}>Perfil</option>
                 </select>
             </div>
@@ -154,7 +154,7 @@
     </div>
 </div>
 
-{{-- Formulario de exportacao (hidden, usa mesmos filtros) --}}
+{{-- Formulário de exportação (hidden, usa mesmos filtros) --}}
 @if (auth()->user()->hasPermission('auditoria.exportar'))
     <form id="form-exportar" method="POST" class="d-none">
         @csrf
@@ -181,12 +181,12 @@
                     <tr>
                         <th>Data/Hora</th>
                         <th>Tipo</th>
-                        <th>Usuario</th>
+                        <th>Usuário</th>
                         <th>Perfil</th>
-                        <th>Descricao</th>
+                        <th>Descrição</th>
                         <th>Detalhes</th>
                         <th>IP</th>
-                        <th>Acoes</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -199,7 +199,7 @@
                             @if ($registro['tipo'] === 'Alteracao')
                                 <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4 fw-semibold text-sm">
                                     <iconify-icon icon="solar:refresh-circle-bold" class="me-1"></iconify-icon>
-                                    Alteracao
+                                    Alteração
                                 </span>
                             @elseif ($registro['tipo'] === 'Login')
                                 @if (! empty($registro['success']) || ! isset($registro['success']))
@@ -242,7 +242,7 @@
                     <tr>
                         <td colspan="8" class="text-center py-16">
                             <iconify-icon icon="solar:clipboard-list-bold" class="text-secondary-light text-3xl mb-8"></iconify-icon>
-                            <p class="text-secondary-light mb-0">Nenhum registro de auditoria encontrado para o periodo selecionado.</p>
+                            <p class="text-secondary-light mb-0">Nenhum registro de auditoria encontrado para o período selecionado.</p>
                         </td>
                     </tr>
                     @endforelse

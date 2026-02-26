@@ -49,11 +49,11 @@
     </div>
 </div>
 
-{{-- Botao Cancelar (RN-116 — apenas admin com permissao aditivo.aprovar) --}}
+{{-- Botão Cancelar (RN-116 — apenas admin com permissão aditivo.aprovar) --}}
 @if ($aditivo->status->value === 'vigente' && auth()->user()->hasPermission('aditivo.aprovar'))
     <div class="d-flex justify-content-end mb-24">
         <form action="{{ route('tenant.aditivos.cancelar', $aditivo) }}" method="POST"
-              data-confirm="Tem certeza que deseja cancelar este aditivo? Os valores do contrato serao recalculados. Esta acao nao pode ser desfeita."
+              data-confirm="Tem certeza que deseja cancelar este aditivo? Os valores do contrato serão recalculados. Esta ação não pode ser desfeita."
               data-confirm-title="Cancelar aditivo">
             @csrf
             <button type="submit" class="btn btn-outline-danger-600 radius-8">
@@ -104,13 +104,13 @@
     <div class="col-lg-5">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="card-title mb-0">Historico de Aditivos</h5>
+                <h5 class="card-title mb-0">Histórico de Aditivos</h5>
             </div>
             <div class="card-body p-0">
                 <ul class="list-unstyled mb-0">
                     @foreach ($todosAditivos as $item)
                         <li class="d-flex gap-16 p-16 border-bottom {{ $item->id === $aditivo->id ? 'bg-primary-50' : '' }}">
-                            {{-- Numero sequencial circular --}}
+                            {{-- Número sequencial circular --}}
                             <div class="w-40-px h-40-px {{ $item->id === $aditivo->id ? 'bg-primary-600' : 'bg-neutral-200' }} rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
                                 <span class="{{ $item->id === $aditivo->id ? 'text-white' : 'text-neutral-600' }} fw-bold text-sm">
                                     {{ $item->numero_sequencial }}
@@ -131,7 +131,7 @@
                                     <p class="text-danger-main text-sm mb-0 fw-medium">- R$ {{ number_format($item->valor_supressao, 2, ',', '.') }}</p>
                                 @endif
                                 @if ($item->nova_data_fim)
-                                    <p class="text-info-main text-sm mb-0">Ate: {{ $item->nova_data_fim->format('d/m/Y') }}</p>
+                                    <p class="text-info-main text-sm mb-0">Até: {{ $item->nova_data_fim->format('d/m/Y') }}</p>
                                 @endif
                             </div>
                             @if ($item->id !== $aditivo->id)
@@ -156,25 +156,25 @@
             </div>
             <div class="card-body">
 
-                {{-- Fundamentacao Legal --}}
+                {{-- Fundamentação Legal --}}
                 <div class="mb-20">
-                    <label class="form-label fw-semibold text-neutral-600 text-sm">Fundamentacao Legal</label>
+                    <label class="form-label fw-semibold text-neutral-600 text-sm">Fundamentação Legal</label>
                     <p class="mb-0">{{ $aditivo->fundamentacao_legal }}</p>
                 </div>
 
-                {{-- Justificativa Tecnica --}}
+                {{-- Justificativa Técnica --}}
                 <div class="mb-20">
-                    <label class="form-label fw-semibold text-neutral-600 text-sm">Justificativa Tecnica</label>
+                    <label class="form-label fw-semibold text-neutral-600 text-sm">Justificativa Técnica</label>
                     <p class="mb-0">{{ $aditivo->justificativa_tecnica }}</p>
                 </div>
 
-                {{-- Reequilibrio (condicional) --}}
+                {{-- Reequilíbrio (condicional) --}}
                 @if ($aditivo->tipo->value === 'reequilibrio')
                     <div class="border rounded p-16 mb-20 bg-neutral-50">
-                        <h6 class="mb-12 text-neutral-700">Dados do Reequilibrio</h6>
+                        <h6 class="mb-12 text-neutral-700">Dados do Reequilíbrio</h6>
                         <div class="row">
                             <div class="col-md-6 mb-8">
-                                <p class="text-neutral-600 text-sm mb-2">Indice Utilizado</p>
+                                <p class="text-neutral-600 text-sm mb-2">Índice Utilizado</p>
                                 <p class="fw-medium mb-0">{{ $aditivo->indice_utilizado }}</p>
                             </div>
                             <div class="col-md-6 mb-8">
@@ -247,10 +247,10 @@
     </div>
 </div>
 
-{{-- Workflow de Aprovacao --}}
+{{-- Workflow de Aprovação --}}
 <div class="card radius-8 border-0">
     <div class="card-header">
-        <h5 class="card-title mb-0">Workflow de Aprovacao</h5>
+        <h5 class="card-title mb-0">Workflow de Aprovação</h5>
     </div>
     <div class="card-body p-24">
 
@@ -331,9 +331,9 @@
             {{-- Formulario Aprovar/Reprovar (etapa atual) --}}
             @if ($etapaAtual && auth()->user()->hasPermission('aditivo.aprovar'))
                 <div class="border rounded p-16 mt-16">
-                    <h6 class="mb-12">Acao na Etapa: {{ $etapaAtual->etapa->label() }}</h6>
+                    <h6 class="mb-12">Ação na Etapa: {{ $etapaAtual->etapa->label() }}</h6>
                     <div class="mb-12">
-                        <label class="form-label">Parecer (opcional para aprovacao, obrigatorio para reprovacao)</label>
+                        <label class="form-label">Parecer (opcional para aprovação, obrigatório para reprovação)</label>
                         <textarea id="parecer-workflow" class="form-control radius-8" rows="3" placeholder="Digite seu parecer..."></textarea>
                     </div>
                     <div class="d-flex gap-12">

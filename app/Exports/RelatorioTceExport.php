@@ -57,27 +57,27 @@ class RelatorioTceExport implements FromCollection, WithHeadings, ShouldAutoSize
     public function headings(): array
     {
         return [
-            'Numero',
+            'Número',
             'Objeto',
             'CNPJ Fornecedor',
-            'Razao Social',
+            'Razão Social',
             'Secretaria',
             'Modalidade',
             'N. Processo',
             'Valor Global (R$)',
             'Valor Empenhado (R$)',
             '% Executado',
-            'Data Inicio',
+            'Data Início',
             'Data Fim',
             'Data Assinatura',
-            'Data Publicacao',
+            'Data Publicação',
             'Status',
             'Fiscal Titular',
             'Qtd Aditivos',
             'Score Risco',
-            'Nivel Risco',
+            'Nível Risco',
             'Categorias Risco',
-            'Pendencias',
+            'Pendências',
         ];
     }
 

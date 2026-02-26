@@ -24,12 +24,12 @@
                 <thead>
                     <tr>
                         <th class="px-24 py-16">Nome</th>
-                        <th class="px-24 py-16">Matricula</th>
+                        <th class="px-24 py-16">Matrícula</th>
                         <th class="px-24 py-16">Cargo</th>
                         <th class="px-24 py-16">Secretaria</th>
                         <th class="px-24 py-16">E-mail</th>
                         <th class="px-24 py-16 text-center">Status</th>
-                        <th class="px-24 py-16 text-center">Acoes</th>
+                        <th class="px-24 py-16 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>

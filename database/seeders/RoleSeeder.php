@@ -20,7 +20,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'nome'      => 'secretario',
-                'descricao' => 'Secretario Municipal',
+                'descricao' => 'Secretário Municipal',
             ],
             [
                 'nome'      => 'gestor_contrato',
@@ -36,7 +36,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'nome'      => 'procuradoria',
-                'descricao' => 'Procuradoria Juridica',
+                'descricao' => 'Procuradoria Jurídica',
             ],
             [
                 'nome'      => 'gabinete',

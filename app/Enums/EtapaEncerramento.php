@@ -14,11 +14,11 @@ enum EtapaEncerramento: string
     public function label(): string
     {
         return match ($this) {
-            self::VerificacaoFinanceira => 'Verificacao Financeira',
-            self::TermoProvisorio => 'Termo de Recebimento Provisorio',
-            self::AvaliacaoFiscal => 'Avaliacao do Fiscal',
+            self::VerificacaoFinanceira => 'Verificação Financeira',
+            self::TermoProvisorio => 'Termo de Recebimento Provisório',
+            self::AvaliacaoFiscal => 'Avaliação do Fiscal',
             self::TermoDefinitivo => 'Termo de Recebimento Definitivo',
-            self::Quitacao => 'Quitacao',
+            self::Quitacao => 'Quitação',
             self::Encerrado => 'Encerrado',
         };
     }
@@ -72,7 +72,7 @@ enum EtapaEncerramento: string
     }
 
     /**
-     * Retorna todas as etapas anteriores (ja concluidas para chegar aqui).
+     * Retorna todas as etapas anteriores (já concluídas para chegar aqui).
      */
     public function etapasAnteriores(): array
     {

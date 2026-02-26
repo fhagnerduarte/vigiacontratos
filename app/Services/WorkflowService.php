@@ -13,8 +13,8 @@ use Illuminate\Support\Collection;
 class WorkflowService
 {
     /**
-     * Cria o fluxo de aprovacao com 5 etapas sequenciais (RN-335).
-     * Etapa 1 (Solicitacao) e auto-aprovada pelo solicitante.
+     * Cria o fluxo de aprovação com 5 etapas sequenciais (RN-335).
+     * Etapa 1 (Solicitação) é auto-aprovada pelo solicitante.
      */
     public static function criarFluxo(Model $aprovavel, User $solicitante, string $ip): Collection
     {
@@ -38,7 +38,7 @@ class WorkflowService
             if ($etapa === EtapaWorkflow::Solicitacao) {
                 $dados['status'] = StatusAprovacao::Aprovado->value;
                 $dados['user_id'] = $solicitante->id;
-                $dados['parecer'] = 'Solicitacao registrada automaticamente.';
+                $dados['parecer'] = 'Solicitação registrada automaticamente.';
                 $dados['decided_at'] = now();
             }
 
@@ -55,9 +55,9 @@ class WorkflowService
      */
     public static function aprovar(WorkflowAprovacao $etapa, User $user, ?string $parecer, string $ip): WorkflowAprovacao
     {
-        // Valida que e etapa pendente
+        // Valida que é etapa pendente
         if ($etapa->status !== StatusAprovacao::Pendente) {
-            throw new \RuntimeException('Esta etapa ja foi processada.');
+            throw new \RuntimeException('Esta etapa já foi processada.');
         }
 
         // Valida bloqueio sequencial (RN-337)
@@ -93,16 +93,16 @@ class WorkflowService
 
     /**
      * Reprova a etapa atual do workflow (RN-338).
-     * Parecer e obrigatorio na reprovacao.
+     * Parecer é obrigatório na reprovação.
      */
     public static function reprovar(WorkflowAprovacao $etapa, User $user, string $parecer, string $ip): WorkflowAprovacao
     {
         if ($etapa->status !== StatusAprovacao::Pendente) {
-            throw new \RuntimeException('Esta etapa ja foi processada.');
+            throw new \RuntimeException('Esta etapa já foi processada.');
         }
 
         if (empty($parecer)) {
-            throw new \RuntimeException('Parecer e obrigatorio na reprovacao (RN-338).');
+            throw new \RuntimeException('Parecer é obrigatório na reprovação (RN-338).');
         }
 
         $etapa->update([
@@ -159,7 +159,7 @@ class WorkflowService
     }
 
     /**
-     * Retorna o historico completo do workflow ordenado por etapa.
+     * Retorna o histórico completo do workflow ordenado por etapa.
      */
     public static function obterHistorico(Model $aprovavel): Collection
     {

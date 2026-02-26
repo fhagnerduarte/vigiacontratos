@@ -2,14 +2,14 @@
 
 @php
     $title = 'Perfis';
-    $subTitle = 'Administracao';
+    $subTitle = 'Administração';
 @endphp
 
 @section('title', 'Perfis')
 
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Perfis de Usuario</h6>
+    <h6 class="fw-semibold mb-0">Perfis de Usuário</h6>
     @if (auth()->user()->hasPermission('configuracao.editar'))
         <a href="{{ route('tenant.roles.create') }}" class="btn btn-primary text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl"></iconify-icon> Novo Perfil
@@ -24,11 +24,11 @@
             <thead>
                 <tr>
                     <th class="px-24 py-16">Identificador</th>
-                    <th class="px-24 py-16">Descricao</th>
-                    <th class="px-24 py-16 text-center">Usuarios</th>
+                    <th class="px-24 py-16">Descrição</th>
+                    <th class="px-24 py-16 text-center">Usuários</th>
                     <th class="px-24 py-16 text-center">Tipo</th>
                     <th class="px-24 py-16 text-center">Status</th>
-                    <th class="px-24 py-16 text-center">Acoes</th>
+                    <th class="px-24 py-16 text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,7 +43,7 @@
                         </td>
                         <td class="px-24 py-16 text-center">
                             @if ($role->is_padrao)
-                                <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4">Padrao</span>
+                                <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4">Padrão</span>
                             @else
                                 <span class="badge bg-warning-focus text-warning-main px-12 py-6 radius-4">Customizado</span>
                             @endif
@@ -60,7 +60,7 @@
                                 @if (auth()->user()->hasPermission('configuracao.editar'))
                                     <a href="{{ route('tenant.permissoes.index', $role) }}"
                                        class="w-32-px h-32-px bg-info-focus text-info-main rounded-circle d-flex justify-content-center align-items-center"
-                                       title="Gerenciar Permissoes">
+                                       title="Gerenciar Permissões">
                                         <iconify-icon icon="lucide:shield-check"></iconify-icon>
                                     </a>
                                     <a href="{{ route('tenant.roles.edit', $role) }}"

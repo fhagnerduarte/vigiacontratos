@@ -14,7 +14,7 @@ use Illuminate\View\View;
 class SolicitacoesLaiController extends Controller
 {
     /**
-     * Listagem de solicitacoes LAI com filtros.
+     * Listagem de solicitações LAI com filtros.
      */
     public function index(Request $request): View
     {
@@ -48,7 +48,7 @@ class SolicitacoesLaiController extends Controller
     }
 
     /**
-     * Detalhe da solicitacao com historico.
+     * Detalhe da solicitação com histórico.
      */
     public function show(SolicitacaoLai $solicitacao): View
     {
@@ -58,7 +58,7 @@ class SolicitacoesLaiController extends Controller
     }
 
     /**
-     * Marcar solicitacao como em analise.
+     * Marcar solicitação como em análise.
      */
     public function analisar(Request $request, SolicitacaoLai $solicitacao): RedirectResponse
     {
@@ -67,14 +67,14 @@ class SolicitacoesLaiController extends Controller
 
             return redirect()
                 ->route('tenant.solicitacoes-lai.show', $solicitacao)
-                ->with('success', 'Solicitacao marcada como em analise.');
+                ->with('success', 'Solicitação marcada como em análise.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Registrar resposta a solicitacao.
+     * Registrar resposta à solicitação.
      */
     public function responder(Request $request, SolicitacaoLai $solicitacao): RedirectResponse
     {
@@ -103,7 +103,7 @@ class SolicitacoesLaiController extends Controller
     }
 
     /**
-     * Prorrogar prazo da solicitacao (max 1 vez, +10 dias).
+     * Prorrogar prazo da solicitação (max 1 vez, +10 dias).
      */
     public function prorrogar(Request $request, SolicitacaoLai $solicitacao): RedirectResponse
     {
@@ -128,7 +128,7 @@ class SolicitacoesLaiController extends Controller
     }
 
     /**
-     * Indeferir solicitacao com justificativa.
+     * Indeferir solicitação com justificativa.
      */
     public function indeferir(Request $request, SolicitacaoLai $solicitacao): RedirectResponse
     {
@@ -150,7 +150,7 @@ class SolicitacoesLaiController extends Controller
 
             return redirect()
                 ->route('tenant.solicitacoes-lai.show', $solicitacao)
-                ->with('success', 'Solicitacao indeferida.');
+                ->with('success', 'Solicitação indeferida.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }

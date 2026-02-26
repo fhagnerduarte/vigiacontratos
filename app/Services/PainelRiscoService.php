@@ -46,7 +46,7 @@ class PainelRiscoService
             }
         }
 
-        // Contratos sem documentacao obrigatoria
+        // Contratos sem documentação obrigatória
         $semDocObrigatoria = Contrato::where('status', StatusContrato::Vigente->value)
             ->with('documentos')
             ->get()
@@ -124,14 +124,14 @@ class PainelRiscoService
     }
 
     /**
-     * Dados para o relatorio TCE em PDF (RN-150/151).
+     * Dados para o relatório TCE em PDF (RN-150/151).
      * Aceita filtros opcionais: status, secretaria_id, nivel_risco.
      */
     public static function dadosRelatorioTCE(array $filtros = []): array
     {
         $tenant = Tenant::where('is_ativo', true)->first();
 
-        // Relatorio TCE e documento global de compliance — desativa scope por secretaria
+        // Relatório TCE é documento global de compliance — desativa scope por secretaria
         $query = Contrato::withoutGlobalScope(SecretariaScope::class)
             ->with(['secretaria:id,nome,sigla', 'fornecedor:id,razao_social,cnpj', 'fiscalAtual', 'documentos', 'aditivos']);
 
@@ -205,7 +205,7 @@ class PainelRiscoService
         $baixoRisco = collect($contratos)->where('nivel', NivelRisco::Baixo->label())->count();
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'resumo' => [
                 'total_monitorados' => $totalContratos,
@@ -226,9 +226,9 @@ class PainelRiscoService
             'vencimento' => 'Vencimento',
             'financeiro' => 'Financeiro',
             'documental' => 'Documental',
-            'juridico' => 'Juridico',
+            'juridico' => 'Jurídico',
             'operacional' => 'Operacional',
-            'transparencia' => 'Transparencia',
+            'transparencia' => 'Transparência',
             default => ucfirst($categoria),
         };
     }

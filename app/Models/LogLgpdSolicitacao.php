@@ -40,11 +40,11 @@ class LogLgpdSolicitacao extends Model
     protected static function booted(): void
     {
         static::updating(function () {
-            throw new \RuntimeException('Tabela log_lgpd_solicitacoes e imutavel. UPDATE nao permitido.');
+            throw new \RuntimeException('Tabela log_lgpd_solicitacoes é imutável. UPDATE não permitido.');
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Tabela log_lgpd_solicitacoes e imutavel. DELETE nao permitido.');
+            throw new \RuntimeException('Tabela log_lgpd_solicitacoes é imutável. DELETE não permitido.');
         });
     }
 

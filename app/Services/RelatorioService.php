@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class RelatorioService
 {
     /**
-     * RN-133: Dados do relatorio TCE de documentos por contrato.
+     * RN-133: Dados do relatório TCE de documentos por contrato.
      * Alias: gerarRelatorioTCEContrato()
      */
     public static function dadosDocumentosContrato(Contrato $contrato): array
@@ -46,7 +46,7 @@ class RelatorioService
         $statusCompletude = $contrato->status_completude;
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'contrato' => [
                 'numero' => $contrato->numero . '/' . $contrato->ano,
@@ -69,7 +69,7 @@ class RelatorioService
     }
 
     /**
-     * RN-133: Alias para dadosDocumentosContrato (nome referenciado na documentacao).
+     * RN-133: Alias para dadosDocumentosContrato (nome referenciado na documentação).
      */
     public static function gerarRelatorioTCEContrato(Contrato $contrato): array
     {
@@ -77,7 +77,7 @@ class RelatorioService
     }
 
     /**
-     * RN-222: Dados do relatorio de auditoria (3 fontes unificadas).
+     * RN-222: Dados do relatório de auditoria (3 fontes unificadas).
      */
     public static function dadosAuditoria(array $filtros): array
     {
@@ -105,7 +105,7 @@ class RelatorioService
                 $registros->push([
                     'data' => $h->created_at->format('d/m/Y H:i:s'),
                     'data_sort' => $h->created_at->timestamp,
-                    'tipo' => 'Alteracao',
+                    'tipo' => 'Alteração',
                     'usuario' => $h->user?->nome ?? '-',
                     'perfil' => $h->role_nome ?? '-',
                     'descricao' => "{$entidade} #{$h->auditable_id}: {$h->campo_alterado}",
@@ -178,7 +178,7 @@ class RelatorioService
         $resumo = $registros->groupBy('tipo')->map->count()->toArray();
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'filtros' => [
                 'data_inicio' => \Carbon\Carbon::parse($filtros['data_inicio'])->format('d/m/Y'),
@@ -193,7 +193,7 @@ class RelatorioService
     }
 
     /**
-     * RN-222: Dados para exportacao CSV de auditoria.
+     * RN-222: Dados para exportação CSV de auditoria.
      */
     public static function dadosAuditoriaCSV(array $filtros): Collection
     {
@@ -203,9 +203,9 @@ class RelatorioService
             return [
                 'Data' => $registro['data'],
                 'Tipo' => $registro['tipo'],
-                'Usuario' => $registro['usuario'],
+                'Usuário' => $registro['usuario'],
                 'Perfil' => $registro['perfil'],
-                'Descricao' => $registro['descricao'],
+                'Descrição' => $registro['descricao'],
                 'Detalhes' => $registro['detalhes'],
                 'IP' => $registro['ip'],
             ];
@@ -213,7 +213,7 @@ class RelatorioService
     }
 
     /**
-     * RN-225: Dados do relatorio de conformidade documental com verificacao de integridade.
+     * RN-225: Dados do relatório de conformidade documental com verificação de integridade.
      */
     public static function dadosConformidadeDocumental(): array
     {
@@ -248,7 +248,7 @@ class RelatorioService
         $totalAusentes = collect($itens)->where('status_integridade', 'arquivo_ausente')->count();
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'resumo' => [
                 'total_documentos' => count($itens),
@@ -261,8 +261,8 @@ class RelatorioService
     }
 
     /**
-     * RN-057: Dados do relatorio de efetividade mensal dos alertas.
-     * Contratos regularizados a tempo vs. vencidos, tempo medio de antecipacao.
+     * RN-057: Dados do relatório de efetividade mensal dos alertas.
+     * Contratos regularizados a tempo vs. vencidos, tempo médio de antecipação.
      */
     public static function dadosEfetividadeMensal(array $filtros): array
     {
@@ -373,7 +373,7 @@ class RelatorioService
             ->toArray();
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'filtros' => [
                 'periodo' => $mesInicio->translatedFormat('F/Y'),
@@ -395,8 +395,8 @@ class RelatorioService
     }
 
     /**
-     * LAI 12.527/2011: Dados do relatorio de transparencia.
-     * Consolida indicadores de publicacao, classificacao de sigilo e SIC/e-SIC.
+     * LAI 12.527/2011: Dados do relatório de transparência.
+     * Consolida indicadores de publicação, classificação de sigilo e SIC/e-SIC.
      */
     public static function dadosRelatorioLai(): array
     {
@@ -440,11 +440,11 @@ class RelatorioService
         try {
             $resumoLai = SolicitacaoLaiService::resumo();
         } catch (\Throwable) {
-            // Tabela pode nao existir em tenants legados
+            // Tabela pode não existir em tenants legados
         }
 
         return [
-            'municipio' => $tenant?->nome ?? 'Municipio',
+            'municipio' => $tenant?->nome ?? 'Município',
             'data_geracao' => now()->format('d/m/Y H:i'),
             'resumo' => [
                 'total_contratos' => $totalContratos,

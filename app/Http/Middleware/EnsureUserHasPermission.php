@@ -13,11 +13,11 @@ class EnsureUserHasPermission
         $user = $request->user();
 
         if (! $user) {
-            abort(403, 'Acesso nao autorizado.');
+            abort(403, 'Acesso não autorizado.');
         }
 
         if (! $user->hasPermission($permission)) {
-            abort(403, 'Voce nao possui permissao para acessar este recurso.');
+            abort(403, 'Você não possui permissão para acessar este recurso.');
         }
 
         return $next($request);

@@ -30,12 +30,12 @@ class StoreExecucaoFinanceiraRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'descricao.required' => 'A descricao e obrigatoria.',
-            'valor.required' => 'O valor e obrigatorio.',
+            'descricao.required' => 'A descrição é obrigatória.',
+            'valor.required' => 'O valor é obrigatório.',
             'valor.min' => 'O valor deve ser maior que zero.',
-            'data_execucao.required' => 'A data de execucao e obrigatoria.',
-            'data_execucao.date' => 'Informe uma data valida.',
-            'competencia.regex' => 'A competencia deve estar no formato AAAA-MM (ex: 2026-01).',
+            'data_execucao.required' => 'A data de execução é obrigatória.',
+            'data_execucao.date' => 'Informe uma data válida.',
+            'competencia.regex' => 'A competência deve estar no formato AAAA-MM (ex: 2026-01).',
         ];
     }
 }

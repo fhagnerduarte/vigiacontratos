@@ -13,7 +13,7 @@
     <h6 class="fw-semibold mb-0">Painel de Risco Administrativo</h6>
     @if (auth()->user()->hasPermission('painel-risco.exportar'))
         <a href="{{ route('tenant.painel-risco.exportar-tce') }}" class="btn btn-sm btn-outline-danger" target="_blank">
-            <iconify-icon icon="solar:file-download-bold" class="me-1"></iconify-icon> Exportar Relatorio TCE
+            <iconify-icon icon="solar:file-download-bold" class="me-1"></iconify-icon> Exportar Relatório TCE
         </a>
     @endif
 </div>
@@ -100,7 +100,7 @@
         </div>
     </div>
 
-    {{-- Sem doc obrigatoria --}}
+    {{-- Sem doc obrigatória --}}
     <div class="col">
         @php
             $corDoc = $indicadores['sem_doc_obrigatoria'] > 5 ? 'danger' : ($indicadores['sem_doc_obrigatoria'] > 0 ? 'warning' : 'success');
@@ -109,7 +109,7 @@
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Sem Doc. Obrigatoria</p>
+                        <p class="fw-medium text-primary-light mb-1">Sem Doc. Obrigatória</p>
                         <h6 class="mb-0">{{ $indicadores['sem_doc_obrigatoria'] }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-{{ $corDoc }}-main rounded-circle d-flex justify-content-center align-items-center">
@@ -134,9 +134,9 @@
                         <th class="px-24 py-12">Contrato</th>
                         <th class="px-24 py-12">Secretaria</th>
                         <th class="px-24 py-12 text-center">Score</th>
-                        <th class="px-24 py-12 text-center">Nivel</th>
+                        <th class="px-24 py-12 text-center">Nível</th>
                         <th class="px-24 py-12">Categorias de Risco</th>
-                        <th class="px-24 py-12 text-center">Acoes</th>
+                        <th class="px-24 py-12 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -211,7 +211,7 @@
                             <span class="fw-semibold">{{ $sec['total_contratos'] }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-8">
-                            <span class="text-sm text-secondary-light">Contratos Criticos</span>
+                            <span class="text-sm text-secondary-light">Contratos Críticos</span>
                             <span class="fw-semibold text-danger-main">{{ $sec['contratos_criticos'] }}</span>
                         </div>
                         <div class="d-flex justify-content-between">

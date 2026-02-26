@@ -3,7 +3,7 @@
 @section('title', 'Fornecedores')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item active" aria-current="page">Fornecedores</li>
 @endsection
 
@@ -18,7 +18,7 @@
                 <label class="form-label">Buscar</label>
                 <div class="portal-search-wrapper">
                     <iconify-icon icon="solar:magnifer-bold" width="16" class="search-icon"></iconify-icon>
-                    <input type="text" name="busca" class="form-control" placeholder="Razao social ou CNPJ..." value="{{ request('busca') }}">
+                    <input type="text" name="busca" class="form-control" placeholder="Razão social ou CNPJ..." value="{{ request('busca') }}">
                 </div>
             </div>
             <div class="col-md-6 d-flex align-items-end gap-2">
@@ -41,7 +41,7 @@
     <table class="table portal-table">
         <thead>
             <tr>
-                <th>Razao Social</th>
+                <th>Razão Social</th>
                 <th>CNPJ</th>
             </tr>
         </thead>

@@ -18,7 +18,7 @@ class EnsureApiTenantResolved
 
         if (! $slug) {
             return response()->json([
-                'message' => 'Header X-Tenant-Slug e obrigatorio para requisicoes da API.',
+                'message' => 'Header X-Tenant-Slug é obrigatório para requisições da API.',
             ], 422);
         }
 
@@ -32,7 +32,7 @@ class EnsureApiTenantResolved
             ]);
 
             return response()->json([
-                'message' => 'Tenant nao encontrado.',
+                'message' => 'Tenant não encontrado.',
             ], 404);
         }
 
@@ -62,16 +62,16 @@ class EnsureApiTenantResolved
 
     private function resolveSlug(Request $request): ?string
     {
-        // 1. Header X-Tenant-Slug (preferencial e obrigatorio para API)
+        // 1. Header X-Tenant-Slug (preferencial e obrigatório para API)
         $headerSlug = $request->header('X-Tenant-Slug');
         if ($headerSlug) {
             return $headerSlug;
         }
 
-        // 2. Fallback: subdominio (producao)
+        // 2. Fallback: subdomínio (produção)
         $host = $request->getHost();
 
-        // Em localhost nao ha subdominio — header e obrigatorio
+        // Em localhost não há subdomínio — header é obrigatório
         if (in_array($host, ['localhost', '127.0.0.1'])) {
             return null;
         }

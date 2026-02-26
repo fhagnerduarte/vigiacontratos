@@ -17,7 +17,7 @@
         </a>
         @if (auth()->user()->hasPermission('configuracao.editar'))
             <a href="{{ route('tenant.alertas.configuracoes') }}" class="btn btn-sm btn-outline-primary">
-                <iconify-icon icon="solar:settings-bold" class="me-1"></iconify-icon> Configuracoes
+                <iconify-icon icon="solar:settings-bold" class="me-1"></iconify-icon> Configurações
             </a>
         @endif
     </div>
@@ -76,13 +76,13 @@
         </div>
     </div>
 
-    {{-- Ja vencidos --}}
+    {{-- Já vencidos --}}
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-4 h-100">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Ja Vencidos</p>
+                        <p class="fw-medium text-primary-light mb-1">Já Vencidos</p>
                         <h6 class="mb-0 {{ $indicadores['vencidos'] > 0 ? 'text-danger-main' : '' }}">{{ $indicadores['vencidos'] }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-danger-main rounded-circle d-flex justify-content-center align-items-center">
@@ -137,7 +137,7 @@
             <div class="col-md-2">
                 <label class="form-label">Status</label>
                 <select name="status" class="form-select">
-                    <option value="">Nao resolvidos</option>
+                    <option value="">Não resolvidos</option>
                     @foreach (\App\Enums\StatusAlerta::cases() as $status)
                         <option value="{{ $status->value }}" {{ request('status') == $status->value ? 'selected' : '' }}>
                             {{ $status->label() }}
@@ -182,7 +182,7 @@
                         <th>Vencimento</th>
                         <th>Dias</th>
                         <th>Status</th>
-                        <th>Acoes</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -224,14 +224,14 @@
                     <tr>
                         <td colspan="8" class="text-center py-16">
                             <iconify-icon icon="solar:check-circle-bold" class="text-success-main text-3xl mb-8"></iconify-icon>
-                            <p class="text-secondary-light mb-0">Nenhum alerta encontrado. Todos os contratos estao em dia!</p>
+                            <p class="text-secondary-light mb-0">Nenhum alerta encontrado. Todos os contratos estão em dia!</p>
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        {{-- Paginacao --}}
+        {{-- Paginação --}}
         @if ($alertas->hasPages())
         <div class="px-24 py-16">
             {{ $alertas->links() }}

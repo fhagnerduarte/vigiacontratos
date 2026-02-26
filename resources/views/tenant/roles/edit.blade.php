@@ -2,7 +2,7 @@
 
 @php
     $title = 'Editar Perfil';
-    $subTitle = 'Administracao';
+    $subTitle = 'Administração';
 @endphp
 
 @section('title', 'Editar Perfil')
@@ -14,7 +14,7 @@
 
         @if ($role->is_padrao)
             <div class="alert alert-info radius-8 mb-24" role="alert">
-                Este e um perfil padrao do sistema. O identificador nao pode ser alterado.
+                Este é um perfil padrão do sistema. O identificador não pode ser alterado.
             </div>
         @endif
 
@@ -34,7 +34,7 @@
                         <input type="text" name="nome" value="{{ old('nome', $role->nome) }}"
                                class="form-control radius-8 @error('nome') is-invalid @enderror"
                                placeholder="ex: supervisor_obras" required>
-                        <small class="text-secondary-light">Apenas letras minusculas e underscores.</small>
+                        <small class="text-secondary-light">Apenas letras minúsculas e underscores.</small>
                         @error('nome')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -43,11 +43,11 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Descricao <span class="text-danger-main">*</span>
+                        Descrição <span class="text-danger-main">*</span>
                     </label>
                     <input type="text" name="descricao" value="{{ old('descricao', $role->descricao) }}"
                            class="form-control radius-8 @error('descricao') is-invalid @enderror"
-                           placeholder="Nome amigavel do perfil" required>
+                           placeholder="Nome amigável do perfil" required>
                     @error('descricao')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

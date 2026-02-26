@@ -1,19 +1,19 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Permissoes';
-    $subTitle = 'Administracao';
+    $title = 'Permissões';
+    $subTitle = 'Administração';
 @endphp
 
-@section('title', 'Permissoes - ' . $role->descricao)
+@section('title', 'Permissões - ' . $role->descricao)
 
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-4">Permissoes do Perfil</h6>
+        <h6 class="fw-semibold mb-4">Permissões do Perfil</h6>
         <span class="badge bg-primary-focus text-primary-main px-12 py-6 radius-4">{{ $role->descricao }}</span>
         @if ($role->is_padrao)
-            <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4 ms-4">Padrao</span>
+            <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4 ms-4">Padrão</span>
         @endif
     </div>
     <a href="{{ route('tenant.roles.index') }}" class="btn btn-outline-secondary text-sm btn-sm px-12 py-8 radius-8 d-flex align-items-center gap-2">
@@ -34,9 +34,9 @@
             'documento'     => 'Documentos',
             'financeiro'    => 'Financeiro',
             'fiscal'        => 'Fiscais',
-            'relatorio'     => 'Relatorios',
-            'usuario'       => 'Usuarios',
-            'configuracao'  => 'Configuracoes',
+            'relatorio'     => 'Relatórios',
+            'usuario'       => 'Usuários',
+            'configuracao'  => 'Configurações',
             'auditoria'     => 'Auditoria',
             'parecer'       => 'Pareceres',
             'workflow'      => 'Workflow',
@@ -73,7 +73,7 @@
 
     <div class="d-flex align-items-center gap-3 mt-8">
         <a href="{{ route('tenant.roles.index') }}" class="btn btn-outline-secondary text-sm btn-sm px-16 py-10 radius-8">Cancelar</a>
-        <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">Salvar Permissoes</button>
+        <button type="submit" class="btn btn-primary text-sm btn-sm px-16 py-10 radius-8">Salvar Permissões</button>
     </div>
 </form>
 @endsection

@@ -13,15 +13,15 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class TceExportService
 {
     private const CAMPOS_OBRIGATORIOS_TCE = [
-        'numero' => 'Numero do contrato',
+        'numero' => 'Número do contrato',
         'objeto' => 'Objeto do contrato',
         'cnpj_fornecedor' => 'CNPJ do fornecedor',
         'valor_global' => 'Valor global',
-        'data_inicio' => 'Data de inicio',
+        'data_inicio' => 'Data de início',
         'data_fim' => 'Data de fim',
-        'modalidade' => 'Modalidade de contratacao',
-        'numero_processo' => 'Numero do processo',
-        'data_publicacao' => 'Data de publicacao',
+        'modalidade' => 'Modalidade de contratação',
+        'numero_processo' => 'Número do processo',
+        'data_publicacao' => 'Data de publicação',
         'fiscal_titular' => 'Fiscal titular designado',
     ];
 
@@ -68,7 +68,7 @@ class TceExportService
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><RelatorioTCE/>');
         $xml->addAttribute('versao', '1.0');
 
-        // Cabecalho
+        // Cabeçalho
         $cabecalho = $xml->addChild('Cabecalho');
         $cabecalho->addChild('Municipio', self::xmlEscape($dados['municipio']));
         $cabecalho->addChild('DataGeracao', now()->format('Y-m-d\TH:i:s'));
@@ -136,10 +136,10 @@ class TceExportService
 
             // Header
             fputcsv($handle, [
-                'Numero',
+                'Número',
                 'Objeto',
                 'CNPJ Fornecedor',
-                'Razao Social',
+                'Razão Social',
                 'Secretaria',
                 'Modalidade',
                 'N. Processo',
@@ -147,17 +147,17 @@ class TceExportService
                 'Valor Global (R$)',
                 'Valor Empenhado (R$)',
                 '% Executado',
-                'Data Inicio',
+                'Data Início',
                 'Data Fim',
                 'Data Assinatura',
-                'Data Publicacao',
+                'Data Publicação',
                 'Status',
                 'Fiscal Titular',
                 'Qtd Aditivos',
                 'Score Risco',
-                'Nivel Risco',
+                'Nível Risco',
                 'Categorias Risco',
-                'Pendencias',
+                'Pendências',
             ], ';');
 
             // Dados

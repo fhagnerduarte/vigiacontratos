@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Portal de Transparencia — {{ $tenant->nome ?? 'Prefeitura Municipal' }}. Consulte contratos, fornecedores, dados abertos e faca solicitacoes via e-SIC.">
-    <title>@yield('title', 'Portal de Transparencia') — {{ $tenant->nome ?? config('app.name') }}</title>
+    <meta name="description" content="Portal de Transparência — {{ $tenant->nome ?? 'Prefeitura Municipal' }}. Consulte contratos, fornecedores, dados abertos e faça solicitações via e-SIC.">
+    <title>@yield('title', 'Portal de Transparência') — {{ $tenant->nome ?? config('app.name') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16">
     <link rel="stylesheet" href="{{ asset('assets/css/lib/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/portal.css') }}">
@@ -26,7 +26,7 @@
             <span class="d-none d-sm-inline">Acessibilidade:</span>
             <div class="d-flex gap-1 align-items-center">
                 <button onclick="portalFontSize('decrease')" title="Diminuir fonte">A-</button>
-                <button onclick="portalFontSize('reset')" title="Fonte padrao">A</button>
+                <button onclick="portalFontSize('reset')" title="Fonte padrão">A</button>
                 <button onclick="portalFontSize('increase')" title="Aumentar fonte">A+</button>
                 <span class="d-none d-sm-inline mx-1" style="color:#444">|</span>
                 <button onclick="portalContraste()" id="btnContraste" title="Alto contraste">
@@ -41,7 +41,7 @@
         <div class="container d-flex align-items-center gap-3">
             @if($tenant->logo_path ?? false)
                 <div class="portal-logo">
-                    <img src="{{ route('portal.logo', $tenant->slug) }}" alt="Brasao {{ $tenant->nome }}">
+                    <img src="{{ route('portal.logo', $tenant->slug) }}" alt="Brasão {{ $tenant->nome }}">
                 </div>
             @else
                 <div class="portal-logo-placeholder">
@@ -50,7 +50,7 @@
             @endif
             <div>
                 <h1>{{ $tenant->nome ?? 'Prefeitura Municipal' }}</h1>
-                <p>Portal de Transparencia — Lei de Acesso a Informacao (Lei 12.527/2011)</p>
+                <p>Portal de Transparência — Lei de Acesso à Informação (Lei 12.527/2011)</p>
             </div>
         </div>
     </header>
@@ -66,7 +66,7 @@
             {{-- Links Desktop --}}
             <div class="portal-nav-links d-none d-lg-flex">
                 <a href="{{ route('portal.index', $tenant->slug) }}" class="{{ request()->routeIs('portal.index') ? 'active' : '' }}">
-                    <iconify-icon icon="solar:home-2-bold" width="18"></iconify-icon> Inicio
+                    <iconify-icon icon="solar:home-2-bold" width="18"></iconify-icon> Início
                 </a>
                 <a href="{{ route('portal.contratos', $tenant->slug) }}" class="{{ request()->routeIs('portal.contratos*') ? 'active' : '' }}">
                     <iconify-icon icon="solar:document-bold" width="18"></iconify-icon> Contratos
@@ -91,7 +91,7 @@
                 <div class="offcanvas-body">
                     <nav class="d-flex flex-column gap-2">
                         <a href="{{ route('portal.index', $tenant->slug) }}" class="d-flex align-items-center gap-2 text-decoration-none py-2 px-3 rounded {{ request()->routeIs('portal.index') ? 'bg-primary text-white' : 'text-dark' }}">
-                            <iconify-icon icon="solar:home-2-bold" width="20"></iconify-icon> Inicio
+                            <iconify-icon icon="solar:home-2-bold" width="20"></iconify-icon> Início
                         </a>
                         <a href="{{ route('portal.contratos', $tenant->slug) }}" class="d-flex align-items-center gap-2 text-decoration-none py-2 px-3 rounded {{ request()->routeIs('portal.contratos*') ? 'bg-primary text-white' : 'text-dark' }}">
                             <iconify-icon icon="solar:document-bold" width="20"></iconify-icon> Contratos
@@ -135,7 +135,7 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <h5>{{ $tenant->nome ?? 'Prefeitura Municipal' }}</h5>
-                    <p>Portal de Transparencia</p>
+                    <p>Portal de Transparência</p>
                     @if($tenant->cnpj ?? false)
                         <p>CNPJ: {{ $tenant->cnpj }}</p>
                     @endif
@@ -154,10 +154,10 @@
                     @if($tenant->email_contato ?? false)
                         <p><iconify-icon icon="solar:letter-bold" width="14"></iconify-icon> {{ $tenant->email_contato }}</p>
                     @endif
-                    <p><iconify-icon icon="solar:clock-circle-bold" width="14"></iconify-icon> {{ $tenant->horario_atendimento ?? 'Seg-Sex, 8h as 14h' }}</p>
+                    <p><iconify-icon icon="solar:clock-circle-bold" width="14"></iconify-icon> {{ $tenant->horario_atendimento ?? 'Seg-Sex, 8h às 14h' }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h5>Links Rapidos</h5>
+                    <h5>Links Rápidos</h5>
                     <ul>
                         <li><a href="{{ route('portal.contratos', $tenant->slug) }}"><iconify-icon icon="solar:document-bold" width="14"></iconify-icon> Contratos</a></li>
                         <li><a href="{{ route('portal.fornecedores', $tenant->slug) }}"><iconify-icon icon="solar:users-group-rounded-bold" width="14"></iconify-icon> Fornecedores</a></li>
@@ -175,7 +175,7 @@
     {{-- LGPD Banner --}}
     <div class="portal-lgpd" id="lgpdBanner">
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <p class="mb-0">Este portal utiliza cookies conforme a LGPD (Lei 13.709/2018). Ao continuar navegando, voce concorda com nossa Politica de Privacidade.</p>
+            <p class="mb-0">Este portal utiliza cookies conforme a LGPD (Lei 13.709/2018). Ao continuar navegando, você concorda com nossa Política de Privacidade.</p>
             <button onclick="aceitarLgpd()" class="btn btn-sm btn-outline-light flex-shrink-0">Aceitar</button>
         </div>
     </div>

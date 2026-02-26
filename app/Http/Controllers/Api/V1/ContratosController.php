@@ -131,7 +131,7 @@ class ContratosController extends Controller
 
         if ($contrato->status === \App\Enums\StatusContrato::Vencido) {
             return response()->json([
-                'message' => 'Contrato vencido nao pode ser editado (RN-006).',
+                'message' => 'Contrato vencido não pode ser editado (RN-006).',
             ], 422);
         }
 

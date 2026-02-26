@@ -3,7 +3,7 @@
 @section('title', 'Contrato ' . $contrato->numero)
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item"><a href="{{ route('portal.contratos', $tenant->slug) }}">Contratos</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ $contrato->numero }}</li>
 @endsection
@@ -48,7 +48,7 @@
                 <p class="mb-0">{{ $contrato->modalidade_contratacao?->label() ?? '-' }}</p>
             </div>
             <div class="col-md-4">
-                <strong class="text-muted d-block mb-1">Processo Licitatorio</strong>
+                <strong class="text-muted d-block mb-1">Processo Licitatório</strong>
                 <p class="mb-0">{{ $contrato->numero_processo ?? '-' }}</p>
             </div>
         </div>
@@ -63,7 +63,7 @@
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-6">
-                <strong class="text-muted d-block mb-1">Razao Social</strong>
+                <strong class="text-muted d-block mb-1">Razão Social</strong>
                 <p class="mb-0">{{ $contrato->fornecedor?->razao_social ?? '-' }}</p>
             </div>
             <div class="col-md-3">
@@ -100,15 +100,15 @@
     </div>
 </div>
 
-{{-- Vigencia --}}
+{{-- Vigência --}}
 <div class="card portal-card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><iconify-icon icon="solar:calendar-bold" width="18"></iconify-icon> Vigencia</h5>
+        <h5 class="mb-0"><iconify-icon icon="solar:calendar-bold" width="18"></iconify-icon> Vigência</h5>
     </div>
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-3">
-                <strong class="text-muted d-block mb-1">Data Inicio</strong>
+                <strong class="text-muted d-block mb-1">Data Início</strong>
                 <p class="mb-0">{{ $contrato->data_inicio?->format('d/m/Y') ?? '-' }}</p>
             </div>
             <div class="col-md-3">
@@ -116,7 +116,7 @@
                 <p class="mb-0">{{ $contrato->data_fim?->format('d/m/Y') ?? '-' }}</p>
             </div>
             <div class="col-md-3">
-                <strong class="text-muted d-block mb-1">Data Publicacao</strong>
+                <strong class="text-muted d-block mb-1">Data Publicação</strong>
                 <p class="mb-0">{{ $contrato->data_publicacao?->format('d/m/Y') ?? '-' }}</p>
             </div>
             <div class="col-md-3">
@@ -138,10 +138,10 @@
             <table class="table portal-table mb-0">
                 <thead>
                     <tr>
-                        <th>Numero</th>
+                        <th>Número</th>
                         <th>Tipo</th>
-                        <th class="text-end">Valor Acrescimo</th>
-                        <th>Data Inicio</th>
+                        <th class="text-end">Valor Acréscimo</th>
+                        <th>Data Início</th>
                         <th>Status</th>
                     </tr>
                 </thead>

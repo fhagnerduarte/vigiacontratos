@@ -1,11 +1,11 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Novo Usuario';
-    $subTitle = 'Administracao';
+    $title = 'Novo Usuário';
+    $subTitle = 'Administração';
 @endphp
 
-@section('title', 'Novo Usuario')
+@section('title', 'Novo Usuário')
 
 @section('content')
 <div class="card radius-8 border-0">
@@ -46,7 +46,7 @@
                     </label>
                     <input type="password" name="password"
                            class="form-control radius-8 @error('password') is-invalid @enderror"
-                           placeholder="Minimo 8 caracteres" required>
+                           placeholder="Mínimo 8 caracteres" required>
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -95,7 +95,7 @@
                         Secretarias Vinculadas
                     </label>
                     <p class="text-secondary-light text-sm mb-12">
-                        Perfis estrategicos (Administrador, Controladoria, Gabinete) acessam todas as secretarias automaticamente.
+                        Perfis estratégicos (Administrador, Controladoria, Gabinete) acessam todas as secretarias automaticamente.
                     </p>
                     <div class="row">
                         @foreach ($secretarias as $secretaria)

@@ -19,8 +19,8 @@ class LgpdController extends Controller
 {
     public function index(): View
     {
-        // Registros derivados de processamento manual (nao-anonimizacao com status processado)
-        // Estes sao duplicatas append-only — ocultar da listagem para mostrar apenas o original
+        // Registros derivados de processamento manual (não-anonimização com status processado)
+        // Estes são duplicatas append-only — ocultar da listagem para mostrar apenas o original
         $idsDerivados = LogLgpdSolicitacao::where('status', 'processado')
             ->whereNot('tipo_solicitacao', TipoSolicitacaoLGPD::Anonimizacao->value)
             ->pluck('id');
@@ -29,7 +29,7 @@ class LgpdController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(25);
 
-        // Buscar registros de processamento para marcar quais pendentes ja foram processados
+        // Buscar registros de processamento para marcar quais pendentes já foram processados
         $processados = LogLgpdSolicitacao::where('status', 'processado')
             ->whereNot('tipo_solicitacao', TipoSolicitacaoLGPD::Anonimizacao->value)
             ->get(['entidade_tipo', 'entidade_id', 'tipo_solicitacao', 'data_solicitacao']);
@@ -79,7 +79,7 @@ class LgpdController extends Controller
         $entidade = $modelClass::findOrFail($data['entidade_id']);
         $tipoSolicitacao = TipoSolicitacaoLGPD::from($data['tipo_solicitacao']);
 
-        // Anonimizacao e processada automaticamente via LGPDService
+        // Anonimização é processada automaticamente via LGPDService
         if ($tipoSolicitacao === TipoSolicitacaoLGPD::Anonimizacao) {
             try {
                 $method = match ($data['entidade_tipo']) {
@@ -97,7 +97,7 @@ class LgpdController extends Controller
                 );
 
                 return redirect()->route('tenant.lgpd.index')
-                    ->with('success', 'Solicitacao LGPD processada com sucesso. Dados anonimizados.');
+                    ->with('success', 'Solicitação LGPD processada com sucesso. Dados anonimizados.');
             } catch (\RuntimeException $e) {
                 return redirect()->back()->withInput()
                     ->with('error', $e->getMessage());
@@ -117,12 +117,12 @@ class LgpdController extends Controller
         ]);
 
         return redirect()->route('tenant.lgpd.index')
-            ->with('success', 'Solicitacao LGPD registrada. Aguardando processamento.');
+            ->with('success', 'Solicitação LGPD registrada. Aguardando processamento.');
     }
 
     public function show(LogLgpdSolicitacao $solicitacao): View
     {
-        // Verificar se ja existe registro de processamento para esta solicitacao
+        // Verificar se já existe registro de processamento para esta solicitação
         $jaProcessado = $solicitacao->status === 'processado' || LogLgpdSolicitacao::where('entidade_tipo', $solicitacao->entidade_tipo)
             ->where('entidade_id', $solicitacao->entidade_id)
             ->where('tipo_solicitacao', $solicitacao->tipo_solicitacao->value)
@@ -135,7 +135,7 @@ class LgpdController extends Controller
 
     public function processar(Request $request, LogLgpdSolicitacao $solicitacao): RedirectResponse
     {
-        // Verificar se ja foi processado (registro original ou registro vinculado)
+        // Verificar se já foi processado (registro original ou registro vinculado)
         $jaProcessado = $solicitacao->status === 'processado' || LogLgpdSolicitacao::where('entidade_tipo', $solicitacao->entidade_tipo)
             ->where('entidade_id', $solicitacao->entidade_id)
             ->where('tipo_solicitacao', $solicitacao->tipo_solicitacao->value)
@@ -145,14 +145,14 @@ class LgpdController extends Controller
 
         if ($jaProcessado) {
             return redirect()->route('tenant.lgpd.show', $solicitacao)
-                ->with('error', 'Esta solicitacao ja foi processada.');
+                ->with('error', 'Esta solicitação já foi processada.');
         }
 
         $request->validate([
             'observacao' => ['required', 'string', 'min:10', 'max:500'],
         ], [
-            'observacao.required' => 'A observacao do processamento e obrigatoria.',
-            'observacao.min' => 'A observacao deve ter pelo menos 10 caracteres.',
+            'observacao.required' => 'A observação do processamento é obrigatória.',
+            'observacao.min' => 'A observação deve ter pelo menos 10 caracteres.',
         ]);
 
         // Tabela append-only: criar novo registro com status processado
@@ -169,6 +169,6 @@ class LgpdController extends Controller
         ]);
 
         return redirect()->route('tenant.lgpd.show', $solicitacao)
-            ->with('success', 'Solicitacao LGPD processada com sucesso.');
+            ->with('success', 'Solicitação LGPD processada com sucesso.');
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\View\View;
 class ConfiguracaoChecklistDocumentoController extends Controller
 {
     /**
-     * Exibe matriz de configuracao do checklist organizada por fase contratual.
+     * Exibe matriz de configuração do checklist organizada por fase contratual.
      */
     public function index(): View
     {
@@ -31,7 +31,7 @@ class ConfiguracaoChecklistDocumentoController extends Controller
                 ->map(fn ($subgrupo) => $subgrupo->keyBy(fn ($item) => $item->tipo_documento->value))
             );
 
-        // Mapeamento padrao para pre-popular a UI
+        // Mapeamento padrão para pré-popular a UI
         $mapeamentoPadrao = ChecklistService::MAPEAMENTO_FASE_DOCUMENTO;
 
         return view('tenant.configuracoes-checklist.index', compact(
@@ -72,6 +72,6 @@ class ConfiguracaoChecklistDocumentoController extends Controller
         DocumentoService::limparCacheChecklist();
 
         return redirect()->route('tenant.configuracoes-checklist.index')
-            ->with('success', 'Checklist de documentos obrigatorios atualizado com sucesso.');
+            ->with('success', 'Checklist de documentos obrigatórios atualizado com sucesso.');
     }
 }

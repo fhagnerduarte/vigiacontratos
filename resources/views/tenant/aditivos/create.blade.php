@@ -18,7 +18,7 @@
     <span class="text-primary-light fw-semibold">Novo Aditivo</span>
 </div>
 
-{{-- Erros de validacao --}}
+{{-- Erros de validação --}}
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show radius-8 mb-24" role="alert">
         <strong>Verifique os campos abaixo:</strong>
@@ -40,7 +40,7 @@
                 <strong>Limite legal excedido!</strong>
                 <p class="mb-0 mt-4">
                     O percentual acumulado de aditivos ({{ number_format($percentualAcumuladoAtual, 2, ',', '.') }}%) ultrapassa o limite legal de {{ number_format($limiteLegal['limite'], 2, ',', '.') }}%.
-                    O salvamento deste aditivo esta bloqueado. Consulte o setor juridico antes de prosseguir.
+                    O salvamento deste aditivo está bloqueado. Consulte o setor jurídico antes de prosseguir.
                 </p>
             </div>
         </div>
@@ -50,10 +50,10 @@
         <div class="d-flex align-items-start gap-2">
             <iconify-icon icon="solar:danger-triangle-bold" class="text-warning-main text-xl mt-2"></iconify-icon>
             <div>
-                <strong>Atencao: limite legal proximo de ser excedido!</strong>
+                <strong>Atenção: limite legal próximo de ser excedido!</strong>
                 <p class="mb-0 mt-4">
-                    O percentual acumulado de aditivos ({{ number_format($percentualAcumuladoAtual, 2, ',', '.') }}%) esta proximo ou acima do limite de {{ number_format($limiteLegal['limite'], 2, ',', '.') }}%.
-                    E obrigatorio informar uma justificativa para o excesso de limite no campo abaixo.
+                    O percentual acumulado de aditivos ({{ number_format($percentualAcumuladoAtual, 2, ',', '.') }}%) está próximo ou acima do limite de {{ number_format($limiteLegal['limite'], 2, ',', '.') }}%.
+                    É obrigatório informar uma justificativa para o excesso de limite no campo abaixo.
                 </p>
             </div>
         </div>
@@ -77,7 +77,7 @@
                 <span class="fw-semibold text-primary-light">R$ {{ number_format($contrato->valor_global, 2, ',', '.') }}</span>
             </div>
             <div class="col-md-2">
-                <span class="text-secondary-light text-sm d-block mb-4">Vigencia Atual</span>
+                <span class="text-secondary-light text-sm d-block mb-4">Vigência Atual</span>
                 <span class="fw-medium text-primary-light">{{ $contrato->data_fim->format('d/m/Y') }}</span>
             </div>
             <div class="col-md-2">
@@ -105,7 +105,7 @@
     </div>
 </div>
 
-{{-- Formulario principal --}}
+{{-- Formulário principal --}}
 <form action="{{ route('tenant.contratos.aditivos.store', $contrato) }}" method="POST" id="aditivo-form">
     @csrf
 
@@ -146,10 +146,10 @@
                     @enderror
                 </div>
 
-                {{-- Data de Inicio de Vigencia --}}
+                {{-- Data de Início de Vigência --}}
                 <div class="col-md-3">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Data Inicio Vigencia
+                        Data Início Vigência
                     </label>
                     <input type="date" name="data_inicio_vigencia" value="{{ old('data_inicio_vigencia') }}"
                            class="form-control radius-8 @error('data_inicio_vigencia') is-invalid @enderror">
@@ -158,10 +158,10 @@
                     @enderror
                 </div>
 
-                {{-- Fundamentacao Legal --}}
+                {{-- Fundamentação Legal --}}
                 <div class="col-12">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Fundamentacao Legal <span class="text-danger-main">*</span>
+                        Fundamentação Legal <span class="text-danger-main">*</span>
                     </label>
                     <textarea name="fundamentacao_legal" rows="2"
                               class="form-control radius-8 @error('fundamentacao_legal') is-invalid @enderror"
@@ -178,20 +178,20 @@
                     </label>
                     <textarea name="justificativa" rows="3"
                               class="form-control radius-8 @error('justificativa') is-invalid @enderror"
-                              placeholder="Justificativa administrativa para a celebracao deste aditivo" required>{{ old('justificativa') }}</textarea>
+                              placeholder="Justificativa administrativa para a celebração deste aditivo" required>{{ old('justificativa') }}</textarea>
                     @error('justificativa')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
-                {{-- Justificativa Tecnica --}}
+                {{-- Justificativa Técnica --}}
                 <div class="col-12">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Justificativa Tecnica <span class="text-danger-main">*</span>
+                        Justificativa Técnica <span class="text-danger-main">*</span>
                     </label>
                     <textarea name="justificativa_tecnica" rows="3"
                               class="form-control radius-8 @error('justificativa_tecnica') is-invalid @enderror"
-                              placeholder="Justificativa tecnica que embasa a necessidade deste aditivo" required>{{ old('justificativa_tecnica') }}</textarea>
+                              placeholder="Justificativa técnica que embasa a necessidade deste aditivo" required>{{ old('justificativa_tecnica') }}</textarea>
                     @error('justificativa_tecnica')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -200,11 +200,11 @@
 
             <hr class="my-24">
 
-            {{-- Secao: Prazo (prazo, prazo_e_valor, misto) --}}
+            {{-- Seção: Prazo (prazo, prazo_e_valor, misto) --}}
             <div id="secao-prazo" style="display: none;">
                 <h6 class="fw-semibold text-primary-light mb-16">
                     <iconify-icon icon="solar:calendar-bold" class="me-4"></iconify-icon>
-                    Alteracao de Prazo
+                    Alteração de Prazo
                 </h6>
                 <div class="row gy-3 mb-24">
                     <div class="col-md-4">
@@ -224,16 +224,16 @@
                 </div>
             </div>
 
-            {{-- Secao: Valor (valor, prazo_e_valor, misto, reequilibrio) --}}
+            {{-- Seção: Valor (valor, prazo_e_valor, misto, reequilíbrio) --}}
             <div id="secao-valor" style="display: none;">
                 <h6 class="fw-semibold text-primary-light mb-16">
                     <iconify-icon icon="solar:dollar-minimalistic-bold" class="me-4"></iconify-icon>
-                    Acrescimo de Valor
+                    Acréscimo de Valor
                 </h6>
                 <div class="row gy-3 mb-24">
                     <div class="col-md-4">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Valor do Acrescimo (R$) <span class="text-danger-main">*</span>
+                            Valor do Acréscimo (R$) <span class="text-danger-main">*</span>
                         </label>
                         <input type="text" name="valor_acrescimo" value="{{ old('valor_acrescimo') }}"
                                class="form-control radius-8 @error('valor_acrescimo') is-invalid @enderror"
@@ -245,16 +245,16 @@
                 </div>
             </div>
 
-            {{-- Secao: Supressao (supressao, misto) --}}
+            {{-- Seção: Supressão (supressão, misto) --}}
             <div id="secao-supressao" style="display: none;">
                 <h6 class="fw-semibold text-primary-light mb-16">
                     <iconify-icon icon="solar:minus-circle-bold" class="me-4"></iconify-icon>
-                    Supressao de Valor
+                    Supressão de Valor
                 </h6>
                 <div class="row gy-3 mb-24">
                     <div class="col-md-4">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Valor da Supressao (R$) <span class="text-danger-main">*</span>
+                            Valor da Supressão (R$) <span class="text-danger-main">*</span>
                         </label>
                         <input type="text" name="valor_supressao" value="{{ old('valor_supressao') }}"
                                class="form-control radius-8 @error('valor_supressao') is-invalid @enderror"
@@ -266,20 +266,20 @@
                 </div>
             </div>
 
-            {{-- Secao: Reequilibrio (reequilibrio) --}}
+            {{-- Seção: Reequilíbrio (reequilíbrio) --}}
             <div id="secao-reequilibrio" style="display: none;">
                 <h6 class="fw-semibold text-primary-light mb-16">
                     <iconify-icon icon="solar:chart-bold" class="me-4"></iconify-icon>
-                    Reequilibrio Economico-Financeiro
+                    Reequilíbrio Econômico-Financeiro
                 </h6>
                 <div class="row gy-3 mb-24">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Motivo do Reequilibrio <span class="text-danger-main">*</span>
+                            Motivo do Reequilíbrio <span class="text-danger-main">*</span>
                         </label>
                         <textarea name="motivo_reequilibrio" rows="3"
                                   class="form-control radius-8 @error('motivo_reequilibrio') is-invalid @enderror"
-                                  placeholder="Descreva o motivo que justifica o reequilibrio economico-financeiro">{{ old('motivo_reequilibrio') }}</textarea>
+                                  placeholder="Descreva o motivo que justifica o reequilíbrio econômico-financeiro">{{ old('motivo_reequilibrio') }}</textarea>
                         @error('motivo_reequilibrio')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -287,11 +287,11 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Indice Utilizado <span class="text-danger-main">*</span>
+                            Índice Utilizado <span class="text-danger-main">*</span>
                         </label>
                         <select name="indice_utilizado" id="indice_utilizado"
                                 class="form-control radius-8 form-select select2 @error('indice_utilizado') is-invalid @enderror"
-                                data-placeholder="Selecione o indice...">
+                                data-placeholder="Selecione o índice...">
                             <option value=""></option>
                             <option value="IPCA" {{ old('indice_utilizado') === 'IPCA' ? 'selected' : '' }}>IPCA</option>
                             <option value="INCC" {{ old('indice_utilizado') === 'INCC' ? 'selected' : '' }}>INCC</option>
@@ -350,7 +350,7 @@
                 </div>
             </div>
 
-            {{-- Justificativa Retroativa (RN-052) — obrigatoria se contrato vencido --}}
+            {{-- Justificativa Retroativa (RN-052) — obrigatória se contrato vencido --}}
             @if ($exigeJustificativaRetroativa)
                 <div class="alert alert-danger radius-8 mb-16">
                     <div class="d-flex align-items-start gap-2">
@@ -358,8 +358,8 @@
                         <div>
                             <strong>Aditivo Retroativo (RN-052)</strong>
                             <p class="mb-0 mt-4">
-                                Este contrato esta vencido. A justificativa retroativa e obrigatoria para fundamentar a regularizacao.
-                                Descreva os motivos que justificam o aditivo apos o vencimento do contrato original.
+                                Este contrato está vencido. A justificativa retroativa é obrigatória para fundamentar a regularização.
+                                Descreva os motivos que justificam o aditivo após o vencimento do contrato original.
                             </p>
                         </div>
                     </div>
@@ -371,7 +371,7 @@
                         </label>
                         <textarea name="justificativa_retroativa" rows="4"
                                   class="form-control radius-8 @error('justificativa_retroativa') is-invalid @enderror"
-                                  placeholder="Descreva detalhadamente os motivos que justificam a celebracao deste aditivo apos o vencimento do contrato. Minimo 50 caracteres." required>{{ old('justificativa_retroativa') }}</textarea>
+                                  placeholder="Descreva detalhadamente os motivos que justificam a celebração deste aditivo após o vencimento do contrato. Mínimo 50 caracteres." required>{{ old('justificativa_retroativa') }}</textarea>
                         @error('justificativa_retroativa')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -379,13 +379,13 @@
                 </div>
             @endif
 
-            {{-- Observacoes --}}
+            {{-- Observações --}}
             <div class="row gy-3">
                 <div class="col-12">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                     <textarea name="observacoes" rows="3"
                               class="form-control radius-8 @error('observacoes') is-invalid @enderror"
-                              placeholder="Observacoes adicionais sobre este aditivo (opcional)">{{ old('observacoes') }}</textarea>
+                              placeholder="Observações adicionais sobre este aditivo (opcional)">{{ old('observacoes') }}</textarea>
                     @error('observacoes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -394,7 +394,7 @@
         </div>
     </div>
 
-    {{-- Botoes de acao --}}
+    {{-- Botões de ação --}}
     <div class="d-flex align-items-center gap-3">
         <a href="{{ route('tenant.contratos.show', $contrato) }}"
            class="btn btn-outline-secondary text-sm btn-sm px-16 py-10 radius-8">

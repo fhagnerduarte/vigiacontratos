@@ -31,13 +31,13 @@ class LogAcessoDocumento extends Model
 
     protected static function booted(): void
     {
-        // Tabela imutavel — append-only (RN-122, ADR-035)
+        // Tabela imutável — append-only (RN-122, ADR-035)
         static::updating(function () {
-            throw new \RuntimeException('Registros de log de acesso a documentos sao imutaveis.');
+            throw new \RuntimeException('Registros de log de acesso a documentos são imutáveis.');
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Registros de log de acesso a documentos nao podem ser excluidos.');
+            throw new \RuntimeException('Registros de log de acesso a documentos não podem ser excluídos.');
         });
     }
 

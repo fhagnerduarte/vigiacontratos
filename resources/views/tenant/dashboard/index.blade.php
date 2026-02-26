@@ -2,20 +2,20 @@
 
 @php
     $title = 'Painel Executivo';
-    $subTitle = 'Visao estrategica da gestao contratual';
+    $subTitle = 'Visão estratégica da gestão contratual';
 @endphp
 
 @section('title', 'Painel Executivo')
 
 @section('content')
 
-{{-- Bloco 1 — Score de Gestao + Filtros Inteligentes --}}
+{{-- Bloco 1 — Score de Gestão + Filtros Inteligentes --}}
 <div class="row mb-24">
-    {{-- Score de Gestao (RN-075 a RN-077) --}}
+    {{-- Score de Gestão (RN-075 a RN-077) --}}
     <div class="col-lg-4">
         <div class="card h-100">
             <div class="card-body p-24 text-center">
-                <h6 class="fw-semibold text-primary-light mb-8">Score de Gestao</h6>
+                <h6 class="fw-semibold text-primary-light mb-8">Score de Gestão</h6>
                 <div id="chartScoreGestao"></div>
                 <p class="text-secondary-light text-sm mt-8 mb-0">
                     Atualizado em {{ $dados['data_agregacao'] ?? now()->format('d/m/Y H:i') }}
@@ -29,7 +29,7 @@
                         </button>
                     </form>
                 @endif
-                {{-- Acoes rapidas --}}
+                {{-- Ações rápidas --}}
                 <div class="d-flex flex-wrap justify-content-center gap-2 mt-12">
                     @if (auth()->user()->hasPermission('contrato.criar'))
                         <a href="{{ route('tenant.contratos.create') }}" class="btn btn-sm btn-primary-600">
@@ -43,7 +43,7 @@
                     @endif
                     @if (auth()->user()->hasPermission('relatorio.visualizar'))
                         <a href="{{ route('tenant.relatorios.index') }}" class="btn btn-sm btn-outline-info">
-                            <iconify-icon icon="solar:chart-bold" class="me-1"></iconify-icon> Relatorios
+                            <iconify-icon icon="solar:chart-bold" class="me-1"></iconify-icon> Relatórios
                         </a>
                     @endif
                 </div>
@@ -101,7 +101,7 @@
                         <div class="col-md-4">
                             <select name="faixa_valor" class="form-select">
                                 <option value="">Todas as Faixas</option>
-                                <option value="ate_100k" {{ (request('faixa_valor')) == 'ate_100k' ? 'selected' : '' }}>Ate R$ 100.000</option>
+                                <option value="ate_100k" {{ (request('faixa_valor')) == 'ate_100k' ? 'selected' : '' }}>Até R$ 100.000</option>
                                 <option value="100k_500k" {{ (request('faixa_valor')) == '100k_500k' ? 'selected' : '' }}>R$ 100.000 - R$ 500.000</option>
                                 <option value="500k_1m" {{ (request('faixa_valor')) == '500k_1m' ? 'selected' : '' }}>R$ 500.000 - R$ 1.000.000</option>
                                 <option value="acima_1m" {{ (request('faixa_valor')) == 'acima_1m' ? 'selected' : '' }}>Acima de R$ 1.000.000</option>
@@ -163,7 +163,7 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-3 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor ja executado com base no percentual de execucao">
+        <div class="card shadow-none border bg-gradient-start-3 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor já executado com base no percentual de execução">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
@@ -178,7 +178,7 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-4 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Diferenca entre valor contratado e executado">
+        <div class="card shadow-none border bg-gradient-start-4 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Diferença entre valor contratado e executado">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
@@ -193,11 +193,11 @@
         </div>
     </div>
     <div class="col">
-        <div class="card shadow-none border bg-gradient-start-5 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor medio por contrato vigente">
+        <div class="card shadow-none border bg-gradient-start-5 h-100" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Valor médio por contrato vigente">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Ticket Medio</p>
+                        <p class="fw-medium text-primary-light mb-1">Ticket Médio</p>
                         <h6 class="mb-0" data-countup="{{ $dados['financeiros']['ticket_medio'] }}" data-countup-prefix="R$ " data-countup-decimals="2">R$ {{ number_format($dados['financeiros']['ticket_medio'], 2, ',', '.') }}</h6>
                     </div>
                     <div class="w-40-px h-40-px bg-danger-main rounded-circle d-flex justify-content-center align-items-center">
@@ -209,7 +209,7 @@
     </div>
 </div>
 
-{{-- Bloco 3 — Graficos: Mapa de Risco + Vencimentos (RN-062 a RN-067) --}}
+{{-- Bloco 3 — Gráficos: Mapa de Risco + Vencimentos (RN-062 a RN-067) --}}
 <div class="row gy-4 mb-24">
     {{-- Donut Mapa de Risco --}}
     <div class="col-lg-4">
@@ -228,7 +228,7 @@
                         <h6>{{ $dados['mapa_risco']['baixo'] }}</h6>
                     </div>
                     <div class="text-center">
-                        <span class="badge bg-warning-focus text-warning-main px-8 py-4 radius-4 mb-4">Medio</span>
+                        <span class="badge bg-warning-focus text-warning-main px-8 py-4 radius-4 mb-4">Médio</span>
                         <h6>{{ $dados['mapa_risco']['medio'] }}</h6>
                     </div>
                     <div class="text-center">
@@ -251,7 +251,7 @@
     <div class="col-lg-8">
         <div class="card h-100">
             <div class="card-header">
-                <h6 class="text-lg fw-semibold mb-0">Vencimentos por Periodo</h6>
+                <h6 class="text-lg fw-semibold mb-0">Vencimentos por Período</h6>
             </div>
             <div class="card-body p-24">
                 <div id="chartVencimentos"></div>
@@ -263,7 +263,7 @@
 {{-- Bloco 4 — Ranking por Secretaria (RN-068/069) --}}
 <div class="card mb-24">
     <div class="card-header">
-        <h6 class="text-lg fw-semibold mb-0">Distribuicao por Secretaria</h6>
+        <h6 class="text-lg fw-semibold mb-0">Distribuição por Secretaria</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -315,7 +315,7 @@
     <div class="card-header bg-danger-focus">
         <div class="d-flex align-items-center gap-8">
             <iconify-icon icon="solar:star-bold" class="text-danger-main text-2xl"></iconify-icon>
-            <h6 class="text-lg fw-semibold mb-0 text-danger-main">Contratos Essenciais — Vencendo em ate 60 dias</h6>
+            <h6 class="text-lg fw-semibold mb-0 text-danger-main">Contratos Essenciais — Vencendo em até 60 dias</h6>
         </div>
     </div>
     <div class="card-body p-0">
@@ -361,19 +361,19 @@
             <div class="p-24">
                 <p class="text-success-main fw-medium mb-0">
                     <iconify-icon icon="ic:baseline-check-circle" class="me-1"></iconify-icon>
-                    Nenhum contrato essencial vencendo nos proximos 60 dias.
+                    Nenhum contrato essencial vencendo nos próximos 60 dias.
                 </p>
             </div>
         @endif
     </div>
 </div>
 
-{{-- Bloco 6 — Tendencias + Top 10 Fornecedores (RN-078 a RN-080) --}}
+{{-- Bloco 6 — Tendências + Top 10 Fornecedores (RN-078 a RN-080) --}}
 <div class="row gy-4 mb-24">
     <div class="col-lg-8">
         <div class="card h-100">
             <div class="card-header">
-                <h6 class="text-lg fw-semibold mb-0">Tendencias dos Ultimos 12 Meses</h6>
+                <h6 class="text-lg fw-semibold mb-0">Tendências dos Últimos 12 Meses</h6>
             </div>
             <div class="card-body p-24">
                 <div id="chartTendencias"></div>
@@ -392,7 +392,7 @@
     </div>
 </div>
 
-{{-- Bloco 7 — Visao Controlador (RN-081 a RN-083) --}}
+{{-- Bloco 7 — Visão Controlador (RN-081 a RN-083) --}}
 @if ($isControlador && !empty($dados['visao_controlador']))
 <div class="row gy-4 mb-24">
     {{-- Irregularidades --}}
@@ -422,13 +422,13 @@
         </div>
     </div>
 
-    {{-- Alteracoes Recentes --}}
+    {{-- Alterações Recentes --}}
     <div class="col-lg-7">
         <div class="card h-100">
             <div class="card-header">
                 <h6 class="text-lg fw-semibold mb-0">
                     <iconify-icon icon="solar:history-bold" class="text-info-main me-1"></iconify-icon>
-                    Alteracoes Recentes (30 dias)
+                    Alterações Recentes (30 dias)
                 </h6>
             </div>
             <div class="card-body p-0">
@@ -439,7 +439,7 @@
                                 <th class="px-24 py-12">Campo</th>
                                 <th class="px-24 py-12">De</th>
                                 <th class="px-24 py-12">Para</th>
-                                <th class="px-24 py-12">Usuario</th>
+                                <th class="px-24 py-12">Usuário</th>
                                 <th class="px-24 py-12">Data</th>
                             </tr>
                         </thead>
@@ -454,7 +454,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-16 text-secondary-light">Nenhuma alteracao nos ultimos 30 dias.</td>
+                                    <td colspan="5" class="text-center py-16 text-secondary-light">Nenhuma alteração nos últimos 30 dias.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -466,12 +466,12 @@
 </div>
 @endif
 
-{{-- Bloco 8 — Indicadores LAI / Transparencia (IMP-059) --}}
+{{-- Bloco 8 — Indicadores LAI / Transparência (IMP-059) --}}
 @if (auth()->user()->hasPermission('lai.visualizar') && !empty($dados['indicadores_lai']))
 <div class="card mb-24">
     <div class="card-header d-flex align-items-center gap-2">
         <iconify-icon icon="solar:eye-bold" class="text-info-main text-xl"></iconify-icon>
-        <h6 class="text-lg fw-semibold mb-0">Transparencia LAI</h6>
+        <h6 class="text-lg fw-semibold mb-0">Transparência LAI</h6>
     </div>
     <div class="card-body p-24">
         <div class="row gy-3">
@@ -482,7 +482,7 @@
                     </div>
                     <div>
                         <span class="text-warning-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['solicitacoes_pendentes'] }}</span>
-                        <span class="text-sm text-secondary-light">Solicitacoes Pendentes</span>
+                        <span class="text-sm text-secondary-light">Solicitações Pendentes</span>
                     </div>
                 </div>
             </div>
@@ -493,7 +493,7 @@
                     </div>
                     <div>
                         <span class="text-danger-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['solicitacoes_vencidas'] }}</span>
-                        <span class="text-sm text-secondary-light">Solicitacoes Vencidas</span>
+                        <span class="text-sm text-secondary-light">Solicitações Vencidas</span>
                     </div>
                 </div>
             </div>
@@ -504,7 +504,7 @@
                     </div>
                     <div>
                         <span class="text-info-main fw-bold text-xl d-block">{{ $dados['indicadores_lai']['contratos_nao_publicados'] }}</span>
-                        <span class="text-sm text-secondary-light">Contratos Nao Publicados</span>
+                        <span class="text-sm text-secondary-light">Contratos Não Publicados</span>
                     </div>
                 </div>
             </div>
@@ -515,7 +515,7 @@
                     </div>
                     <div>
                         <span class="text-primary-600 fw-bold text-xl d-block">{{ $dados['indicadores_lai']['tempo_medio_resposta'] }} dias</span>
-                        <span class="text-sm text-secondary-light">Tempo Medio Resposta</span>
+                        <span class="text-sm text-secondary-light">Tempo Médio Resposta</span>
                     </div>
                 </div>
             </div>

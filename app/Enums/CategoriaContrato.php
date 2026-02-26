@@ -11,7 +11,7 @@ enum CategoriaContrato: string
     {
         return match ($this) {
             self::Essencial => 'Essencial',
-            self::NaoEssencial => 'Nao Essencial',
+            self::NaoEssencial => 'Não Essencial',
         };
     }
 }

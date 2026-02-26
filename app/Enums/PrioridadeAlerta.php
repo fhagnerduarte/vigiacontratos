@@ -12,7 +12,7 @@ enum PrioridadeAlerta: string
     {
         return match ($this) {
             self::Informativo => 'Informativo',
-            self::Atencao => 'Atencao',
+            self::Atencao => 'Atenção',
             self::Urgente => 'Urgente',
         };
     }

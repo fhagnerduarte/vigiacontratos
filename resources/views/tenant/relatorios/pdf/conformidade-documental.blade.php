@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Relatorio de Conformidade Documental</title>
+    <title>Relatório de Conformidade Documental</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10px; color: #333; line-height: 1.4; }
@@ -42,26 +42,26 @@
 <body>
 
 <div class="footer">
-    vigiacontratos — Relatorio gerado automaticamente em {{ $dados['data_geracao'] }} | Pagina <span class="pagenum"></span>
+    vigiacontratos — Relatório gerado automaticamente em {{ $dados['data_geracao'] }} | Página <span class="pagenum"></span>
 </div>
 
 {{-- CABECALHO --}}
 <div class="header">
-    <h1>Relatorio de Conformidade Documental</h1>
+    <h1>Relatório de Conformidade Documental</h1>
     <h2>{{ $dados['municipio'] }}</h2>
     <div class="meta">
-        Gerado em: {{ $dados['data_geracao'] }} | Verificacao de Integridade SHA-256 (RN-225)
+        Gerado em: {{ $dados['data_geracao'] }} | Verificação de Integridade SHA-256 (RN-225)
     </div>
 </div>
 
 <p style="font-size: 9px; color: #555; margin-bottom: 15px;">
-    Este relatorio verifica a integridade de todos os documentos armazenados no sistema, recalculando o hash
+    Este relatório verifica a integridade de todos os documentos armazenados no sistema, recalculando o hash
     SHA-256 de cada arquivo e comparando com o valor registrado no momento do upload. Constitui instrumento
-    de defesa para auditoria externa, comprovando que os documentos nao foram adulterados.
+    de defesa para auditoria externa, comprovando que os documentos não foram adulterados.
 </p>
 
 {{-- RESUMO --}}
-<h3 class="section-title">1. Resumo da Verificacao</h3>
+<h3 class="section-title">1. Resumo da Verificação</h3>
 <div class="resumo">
     <div class="resumo-item">
         <div class="valor">{{ $dados['resumo']['total_documentos'] }}</div>
@@ -69,7 +69,7 @@
     </div>
     <div class="resumo-item bg-success">
         <div class="valor">{{ $dados['resumo']['integros'] }}</div>
-        <div class="label">Integros</div>
+        <div class="label">Íntegros</div>
     </div>
     <div class="resumo-item bg-danger">
         <div class="valor">{{ $dados['resumo']['corrompidos'] }}</div>
@@ -92,7 +92,7 @@
             <th style="width: 18%;">Arquivo</th>
             <th style="width: 25%;">Hash SHA-256</th>
             <th style="width: 10%;">Data Upload</th>
-            <th style="width: 12%;">Responsavel</th>
+            <th style="width: 12%;">Responsável</th>
             <th style="width: 8%;">Status</th>
         </tr>
     </thead>
@@ -114,7 +114,7 @@
                             default => 'badge-secondary',
                         };
                         $statusLabel = match($doc['status_integridade']) {
-                            'integro' => 'Integro',
+                            'integro' => 'Íntegro',
                             'corrompido' => 'Corrompido',
                             'arquivo_ausente' => 'Ausente',
                             'sem_hash' => 'Sem Hash',
@@ -133,7 +133,7 @@
 
 <p style="font-size: 8px; color: #888; margin-top: 20px; text-align: center;">
     Este documento foi gerado automaticamente pelo sistema vigiacontratos e constitui instrumento de defesa administrativa
-    perante orgaos de controle, comprovando a integridade e preservacao dos documentos contratuais do municipio.
+    perante órgãos de controle, comprovando a integridade e preservação dos documentos contratuais do município.
 </p>
 
 </body>

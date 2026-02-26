@@ -29,13 +29,13 @@ class StoreOcorrenciaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tipo_ocorrencia.required' => 'O tipo de ocorrencia e obrigatorio.',
-            'tipo_ocorrencia.in' => 'Tipo de ocorrencia invalido.',
-            'data_ocorrencia.required' => 'A data da ocorrencia e obrigatoria.',
-            'data_ocorrencia.before_or_equal' => 'A data da ocorrencia nao pode ser futura.',
-            'descricao.required' => 'A descricao e obrigatoria.',
-            'descricao.min' => 'A descricao deve ter no minimo 10 caracteres.',
-            'prazo_providencia.after_or_equal' => 'O prazo de providencia deve ser posterior a data da ocorrencia.',
+            'tipo_ocorrencia.required' => 'O tipo de ocorrência é obrigatório.',
+            'tipo_ocorrencia.in' => 'Tipo de ocorrência inválido.',
+            'data_ocorrencia.required' => 'A data da ocorrência é obrigatória.',
+            'data_ocorrencia.before_or_equal' => 'A data da ocorrência não pode ser futura.',
+            'descricao.required' => 'A descrição é obrigatória.',
+            'descricao.min' => 'A descrição deve ter no mínimo 10 caracteres.',
+            'prazo_providencia.after_or_equal' => 'O prazo de providência deve ser posterior à data da ocorrência.',
         ];
     }
 }

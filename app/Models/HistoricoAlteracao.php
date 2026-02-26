@@ -39,11 +39,11 @@ class HistoricoAlteracao extends Model
     protected static function booted(): void
     {
         static::updating(function () {
-            throw new \RuntimeException('Registros de auditoria sao imutaveis (RN-037).');
+            throw new \RuntimeException('Registros de auditoria são imutáveis (RN-037).');
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Registros de auditoria nao podem ser excluidos (RN-037).');
+            throw new \RuntimeException('Registros de auditoria não podem ser excluídos (RN-037).');
         });
     }
 

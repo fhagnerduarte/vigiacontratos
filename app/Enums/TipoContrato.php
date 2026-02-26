@@ -12,10 +12,10 @@ enum TipoContrato: string
     public function label(): string
     {
         return match ($this) {
-            self::Servico => 'Servico',
+            self::Servico => 'Serviço',
             self::Obra => 'Obra',
             self::Compra => 'Compra',
-            self::Locacao => 'Locacao',
+            self::Locacao => 'Locação',
         };
     }
 }

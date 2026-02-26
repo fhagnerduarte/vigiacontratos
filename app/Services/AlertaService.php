@@ -27,7 +27,7 @@ class AlertaService
 {
     /**
      * Motor principal: verifica todos os contratos vigentes e gera alertas (RN-014).
-     * Tambem atualiza status de contratos vencidos (RN-008).
+     * Também atualiza status de contratos vencidos (RN-008).
      *
      * @return array{alertas_gerados: int, contratos_vencidos: int, notificacoes_reenvio: int}
      */
@@ -42,11 +42,11 @@ class AlertaService
         // 1. Marcar contratos vencidos automaticamente (RN-008)
         $resultado['contratos_vencidos'] = self::marcarContratosVencidos();
 
-        // 2. Alertas LAI — Lei 12.527/2011 (IMP-059) — executam independente de configuracoes
+        // 2. Alertas LAI — Lei 12.527/2011 (IMP-059) — executam independente de configurações
         $resultado['alertas_gerados'] += self::verificarContratosNaoPublicados();
         $resultado['alertas_gerados'] += self::verificarSigiloSemJustificativa();
 
-        // 3. Buscar configuracoes ativas para alertas de vencimento
+        // 3. Buscar configurações ativas para alertas de vencimento
         $configuracoes = ConfiguracaoAlerta::where('is_ativo', true)
             ->orderByDesc('dias_antecedencia')
             ->get();
@@ -120,15 +120,15 @@ class AlertaService
         $resultado['alertas_gerados'] += self::verificarContratosParados();
         $resultado['alertas_gerados'] += self::verificarEmpenhoInsuficiente();
 
-        // 6. Re-enviar notificacoes para alertas pendentes nao resolvidos (RN-054)
+        // 6. Re-enviar notificações para alertas pendentes não resolvidos (RN-054)
         $resultado['notificacoes_reenvio'] = self::reenviarNotificacoesPendentes();
 
         return $resultado;
     }
 
     /**
-     * Gera um alerta com verificacao de deduplicacao (RN-016).
-     * Retorna null se alerta ja existe para o mesmo contrato+tipo+dias.
+     * Gera um alerta com verificação de deduplicação (RN-016).
+     * Retorna null se alerta já existe para o mesmo contrato+tipo+dias.
      */
     public static function gerarAlerta(
         Contrato $contrato,
@@ -137,7 +137,7 @@ class AlertaService
         int $diasRestantes,
         $dataVencimento
     ): ?Alerta {
-        // Deduplicacao: verifica se ja existe alerta nao-resolvido (RN-016)
+        // Deduplicação: verifica se já existe alerta não-resolvido (RN-016)
         $existente = Alerta::where('contrato_id', $contrato->id)
             ->where('tipo_evento', $tipoEvento->value)
             ->where('dias_antecedencia_config', $diasAntecedenciaConfig)
@@ -167,7 +167,7 @@ class AlertaService
             'tentativas_envio' => 0,
         ]);
 
-        // Despachar job para envio de notificacoes
+        // Despachar job para envio de notificações
         $destinatarios = self::obterDestinatarios($contrato);
         if (!empty($destinatarios)) {
             ProcessarAlertaJob::dispatch(
@@ -181,8 +181,8 @@ class AlertaService
     }
 
     /**
-     * Determina prioridade automatica (RN-043).
-     * Contratos essenciais elevam prioridade em um nivel (RN-051).
+     * Determina prioridade automática (RN-043).
+     * Contratos essenciais elevam prioridade em um nível (RN-051).
      */
     public static function determinarPrioridade(
         int $diasRestantes,
@@ -194,7 +194,7 @@ class AlertaService
             default => PrioridadeAlerta::Informativo,
         };
 
-        // Elevacao para contratos essenciais (RN-051)
+        // Elevação para contratos essenciais (RN-051)
         if ($categoria === CategoriaContrato::Essencial) {
             $prioridade = match ($prioridade) {
                 PrioridadeAlerta::Informativo => PrioridadeAlerta::Atencao,
@@ -208,7 +208,7 @@ class AlertaService
 
     /**
      * Resolve todos os alertas pendentes de um contrato (RN-017, RN-053).
-     * Chamado quando aditivo de prazo e registrado ou contrato e encerrado.
+     * Chamado quando aditivo de prazo é registrado ou contrato é encerrado.
      */
     public static function resolverAlertasPorContrato(
         Contrato $contrato,
@@ -231,7 +231,7 @@ class AlertaService
         User $user
     ): Alerta {
         if ($alerta->status === StatusAlerta::Resolvido) {
-            throw new \RuntimeException('Este alerta ja foi resolvido.');
+            throw new \RuntimeException('Este alerta já foi resolvido.');
         }
 
         $alerta->update([
@@ -244,7 +244,7 @@ class AlertaService
     }
 
     /**
-     * Marca alerta como visualizado pelo usuario.
+     * Marca alerta como visualizado pelo usuário.
      */
     public static function marcarVisualizado(Alerta $alerta, User $user): void
     {
@@ -258,7 +258,7 @@ class AlertaService
     }
 
     /**
-     * Identifica destinatarios do alerta baseado no contrato (RN-047).
+     * Identifica destinatários do alerta baseado no contrato (RN-047).
      *
      * @return array<int, array{user: ?User, email: string, tipo: string}>
      */
@@ -280,7 +280,7 @@ class AlertaService
             ];
         }
 
-        // 2. Usuarios com perfil secretario associados a secretaria do contrato
+        // 2. Usuários com perfil secretário associados à secretaria do contrato
         if ($contrato->secretaria_id) {
             $secretarios = User::where('is_ativo', true)
                 ->whereHas('role', fn ($q) => $q->where('nome', 'secretario'))
@@ -388,7 +388,7 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $aditivo->contrato,
                     TipoEventoAlerta::AditivoSemDocumento,
-                    "Aditivo #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} nao possui documento do tipo 'Aditivo' vinculado."
+                    "Aditivo #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} não possui documento do tipo 'Aditivo' vinculado."
                 );
 
                 if ($alerta) {
@@ -397,7 +397,7 @@ class AlertaService
             }
         }
 
-        // RN-126: Prorrogacao de prazo sem parecer_juridico
+        // RN-126: Prorrogação de prazo sem parecer_juridico
         $aditivosPrazo = Aditivo::whereIn('tipo', [
             TipoAditivo::Prazo->value,
             TipoAditivo::PrazoEValor->value,
@@ -423,7 +423,7 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $aditivo->contrato,
                     TipoEventoAlerta::ProrrogacaoSemParecer,
-                    "Prorrogacao #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} nao possui Parecer Juridico vinculado."
+                    "Prorrogação #{$aditivo->numero_sequencial} do contrato {$aditivo->contrato->numero} não possui Parecer Jurídico vinculado."
                 );
 
                 if ($alerta) {
@@ -449,7 +449,7 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $contrato,
                     TipoEventoAlerta::ContratoSemPublicacao,
-                    "Contrato {$contrato->numero} (R$ " . number_format((float) $contrato->valor_global, 2, ',', '.') . ") nao possui Publicacao Oficial."
+                    "Contrato {$contrato->numero} (R$ " . number_format((float) $contrato->valor_global, 2, ',', '.') . ") não possui Publicação Oficial."
                 );
 
                 if ($alerta) {
@@ -462,14 +462,14 @@ class AlertaService
     }
 
     /**
-     * Gera alerta de incompletude documental com deduplicacao (RN-125/126/127).
+     * Gera alerta de incompletude documental com deduplicação (RN-125/126/127).
      */
     private static function gerarAlertaDocumental(
         Contrato $contrato,
         TipoEventoAlerta $tipoEvento,
         string $mensagem,
     ): ?Alerta {
-        // Deduplicacao: verificar se ja existe alerta nao-resolvido do mesmo tipo
+        // Deduplicação: verificar se já existe alerta não-resolvido do mesmo tipo
         $existente = Alerta::where('contrato_id', $contrato->id)
             ->where('tipo_evento', $tipoEvento->value)
             ->naoResolvidos()
@@ -507,8 +507,8 @@ class AlertaService
     // --- Regras 2-10: Motor de Alertas Completo (IMP-051) ---
 
     /**
-     * Regra 2: Execucao financeira registrada apos vencimento do contrato.
-     * Risco critico para TCE — indica pagamento sem cobertura contratual.
+     * Regra 2: Execução financeira registrada após vencimento do contrato.
+     * Risco crítico para TCE — indica pagamento sem cobertura contratual.
      */
     public static function verificarExecucaoAposVencimento(): int
     {
@@ -537,7 +537,7 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $contrato,
                     TipoEventoAlerta::ExecucaoAposVencimento,
-                    "CRITICO: Execucao financeira de R$ " . number_format((float) $execucao->valor, 2, ',', '.') .
+                    "CRÍTICO: Execução financeira de R$ " . number_format((float) $execucao->valor, 2, ',', '.') .
                     " registrada em " . $execucao->data_execucao->format('d/m/Y') .
                     " para o contrato {$contrato->numero} que venceu em " .
                     $contrato->data_fim->format('d/m/Y') . ". Pagamento sem cobertura contratual."
@@ -555,7 +555,7 @@ class AlertaService
 
     /**
      * Regra 3: Aditivos que ultrapassam o limite legal de 25% (Lei 14.133 art. 125).
-     * Limite de supressao: 25%. Limite acrescimo: 25% (obras/servicos) ou 50% (reforma).
+     * Limite de supressão: 25%. Limite acréscimo: 25% (obras/serviços) ou 50% (reforma).
      */
     public static function verificarAditivosAcimaLimite(): int
     {
@@ -625,8 +625,8 @@ class AlertaService
             $alerta = self::gerarAlertaDocumental(
                 $contrato,
                 TipoEventoAlerta::ContratoSemFiscal,
-                "Contrato {$contrato->numero} esta vigente sem fiscal titular designado. " .
-                "Designacao obrigatoria conforme Lei 14.133/2021 art. 117."
+                "Contrato {$contrato->numero} está vigente sem fiscal titular designado. " .
+                "Designação obrigatória conforme Lei 14.133/2021 art. 117."
             );
 
             if ($alerta) {
@@ -638,7 +638,7 @@ class AlertaService
     }
 
     /**
-     * Regra 5: Fiscal sem relatorio recente (prazo configuravel, padrao 60 dias).
+     * Regra 5: Fiscal sem relatório recente (prazo configurável, padrão 60 dias).
      * Depende do campo data_ultimo_relatorio do IMP-049.
      */
     public static function verificarFiscalSemRelatorio(): int
@@ -670,7 +670,7 @@ class AlertaService
             $semRelatorio = false;
 
             if ($fiscal->data_ultimo_relatorio === null) {
-                // Nunca registrou relatorio — verificar se contrato tem mais de $diasLimite de vigencia
+                // Nunca registrou relatório — verificar se contrato tem mais de $diasLimite de vigência
                 $diasVigente = (int) $contrato->data_inicio->diffInDays(now());
                 if ($diasVigente >= $diasLimite) {
                     $semRelatorio = true;
@@ -690,8 +690,8 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $contrato,
                     TipoEventoAlerta::FiscalSemRelatorio,
-                    "Fiscal do contrato {$contrato->numero} ({$fiscal->nome}) nao registra relatorio ha mais de {$diasLimite} dias. " .
-                    "Ultimo relatorio: {$ultimoRelatorio}."
+                    "Fiscal do contrato {$contrato->numero} ({$fiscal->nome}) não registra relatório há mais de {$diasLimite} dias. " .
+                    "Último relatório: {$ultimoRelatorio}."
                 );
 
                 if ($alerta) {
@@ -704,7 +704,7 @@ class AlertaService
     }
 
     /**
-     * Regra 9: Prorrogacao assinada apos o vencimento do contrato (fora do prazo).
+     * Regra 9: Prorrogação assinada após o vencimento do contrato (fora do prazo).
      * Indica irregularidade — aditivo de prazo deveria ser assinado antes do vencimento.
      */
     public static function verificarProrrogacaoForaDoPrazo(): int
@@ -734,7 +734,7 @@ class AlertaService
             // Verifica se aditivo foi assinado DEPOIS do vencimento original
             $dataFimReferencia = $contrato->data_fim;
 
-            // Se ha aditivos anteriores de prazo, usar a data do aditivo anterior
+            // Se há aditivos anteriores de prazo, usar a data do aditivo anterior
             $aditivoAnterior = Aditivo::where('contrato_id', $contrato->id)
                 ->where('id', '<', $aditivo->id)
                 ->whereIn('tipo', [
@@ -757,8 +757,8 @@ class AlertaService
                     TipoEventoAlerta::ProrrogacaoForaDoPrazo,
                     "Aditivo de prazo #{$aditivo->numero_sequencial} do contrato {$contrato->numero} " .
                     "foi assinado em " . $aditivo->data_assinatura->format('d/m/Y') .
-                    ", apos o vencimento em " . $dataFimReferencia->format('d/m/Y') .
-                    ". Prorrogacao fora do prazo legal."
+                    ", após o vencimento em " . $dataFimReferencia->format('d/m/Y') .
+                    ". Prorrogação fora do prazo legal."
                 );
 
                 if ($alerta) {
@@ -772,8 +772,8 @@ class AlertaService
     }
 
     /**
-     * Regra 10: Contrato parado — sem nenhuma movimentacao ha N dias (configuravel, padrao 90).
-     * Movimentacao = execucao financeira, aditivo, documento ou auditoria.
+     * Regra 10: Contrato parado — sem nenhuma movimentação há N dias (configurável, padrão 90).
+     * Movimentação = execução financeira, aditivo, documento ou auditoria.
      */
     public static function verificarContratosParados(): int
     {
@@ -804,8 +804,8 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $contrato,
                     TipoEventoAlerta::ContratoParado,
-                    "Contrato {$contrato->numero} esta sem movimentacao ha {$diasParado} dia(s). " .
-                    "Nenhuma execucao financeira, aditivo ou documento registrado no periodo."
+                    "Contrato {$contrato->numero} está sem movimentação há {$diasParado} dia(s). " .
+                    "Nenhuma execução financeira, aditivo ou documento registrado no período."
                 );
 
                 if ($alerta) {
@@ -818,7 +818,7 @@ class AlertaService
     }
 
     /**
-     * Verifica se uma regra de alerta avancado esta ativa.
+     * Verifica se uma regra de alerta avançado está ativa.
      */
     private static function isRegraAtiva(TipoEventoAlerta $tipo): bool
     {
@@ -827,20 +827,20 @@ class AlertaService
 
             return $config === null || $config->is_ativo;
         } catch (\Throwable) {
-            // Tabela pode nao existir ainda — considera ativa por padrao
+            // Tabela pode não existir ainda — considera ativa por padrão
             return true;
         }
     }
 
     /**
-     * Obtem a data da ultima movimentacao de um contrato.
-     * Considera: execucoes financeiras, aditivos, documentos e auditoria.
+     * Obtém a data da última movimentação de um contrato.
+     * Considera: execuções financeiras, aditivos, documentos e auditoria.
      */
     private static function obterUltimaMovimentacao(Contrato $contrato): ?\Carbon\Carbon
     {
         $datas = [];
 
-        // Ultima execucao financeira
+        // Última execução financeira
         $ultimaExecucao = $contrato->execucoesFinanceiras()
             ->orderByDesc('created_at')
             ->value('created_at');
@@ -848,7 +848,7 @@ class AlertaService
             $datas[] = \Carbon\Carbon::parse($ultimaExecucao);
         }
 
-        // Ultimo aditivo
+        // Último aditivo
         $ultimoAditivo = $contrato->aditivos()
             ->orderByDesc('created_at')
             ->value('created_at');
@@ -856,7 +856,7 @@ class AlertaService
             $datas[] = \Carbon\Carbon::parse($ultimoAditivo);
         }
 
-        // Ultimo documento
+        // Último documento
         $ultimoDocumento = $contrato->documentos()
             ->orderByDesc('created_at')
             ->value('created_at');
@@ -864,7 +864,7 @@ class AlertaService
             $datas[] = \Carbon\Carbon::parse($ultimoDocumento);
         }
 
-        // Ultima alteracao via auditoria
+        // Última alteração via auditoria
         $ultimaAuditoria = HistoricoAlteracao::where('auditable_type', Contrato::class)
             ->where('auditable_id', $contrato->id)
             ->orderByDesc('created_at')
@@ -904,10 +904,10 @@ class AlertaService
                 $alerta = self::gerarAlertaDocumental(
                     $contrato,
                     TipoEventoAlerta::EmpenhoInsuficiente,
-                    "CRITICO: Empenho insuficiente no contrato {$contrato->numero}. " .
+                    "CRÍTICO: Empenho insuficiente no contrato {$contrato->numero}. " .
                     "Total pago: R$ " . number_format($saldo['total_pago'], 2, ',', '.') .
                     " excede o valor empenhado: R$ " . number_format($saldo['valor_empenhado'], 2, ',', '.') .
-                    ". Risco de pagamento sem cobertura orcamentaria."
+                    ". Risco de pagamento sem cobertura orçamentária."
                 );
 
                 if ($alerta) {
@@ -923,8 +923,8 @@ class AlertaService
     // --- Alertas LAI — Lei 12.527/2011 (IMP-059) ---
 
     /**
-     * Verifica contratos publicos que deveriam estar publicados no portal
-     * mas nao estao (LAI art. 8 — transparencia ativa).
+     * Verifica contratos públicos que deveriam estar publicados no portal
+     * mas não estão (LAI art. 8 — transparência ativa).
      */
     public static function verificarContratosNaoPublicados(): int
     {
@@ -944,9 +944,9 @@ class AlertaService
             $alerta = self::gerarAlertaDocumental(
                 $contrato,
                 TipoEventoAlerta::ContratoNaoPublicadoPortal,
-                "Contrato {$contrato->numero} e publico (classificacao: publico) " .
-                "mas nao foi publicado no portal de transparencia. " .
-                "A LAI (art. 8) exige publicacao proativa de informacoes publicas."
+                "Contrato {$contrato->numero} é público (classificação: público) " .
+                "mas não foi publicado no portal de transparência. " .
+                "A LAI (art. 8) exige publicação proativa de informações públicas."
             );
 
             if ($alerta) {
@@ -958,8 +958,8 @@ class AlertaService
     }
 
     /**
-     * Verifica contratos com classificacao de sigilo (reservado/secreto/ultrassecreto)
-     * que nao possuem justificativa (LAI art. 24 — obrigatoriedade de fundamentacao).
+     * Verifica contratos com classificação de sigilo (reservado/secreto/ultrassecreto)
+     * que não possuem justificativa (LAI art. 24 — obrigatoriedade de fundamentação).
      */
     public static function verificarSigiloSemJustificativa(): int
     {
@@ -987,9 +987,9 @@ class AlertaService
             $alerta = self::gerarAlertaDocumental(
                 $contrato,
                 TipoEventoAlerta::SigiloSemJustificativa,
-                "Contrato {$contrato->numero} possui classificacao de sigilo '{$label}' " .
-                "mas nao tem justificativa registrada. " .
-                "A LAI (art. 24) exige fundamentacao para toda classificacao de sigilo."
+                "Contrato {$contrato->numero} possui classificação de sigilo '{$label}' " .
+                "mas não tem justificativa registrada. " .
+                "A LAI (art. 24) exige fundamentação para toda classificação de sigilo."
             );
 
             if ($alerta) {
@@ -1002,8 +1002,8 @@ class AlertaService
 
     /**
      * Indicadores LAI para dashboard (IMP-059).
-     * Solicitacoes LAI nao geram alertas na tabela (sem contrato_id),
-     * mas sao exibidas como indicadores no dashboard.
+     * Solicitações LAI não geram alertas na tabela (sem contrato_id),
+     * mas são exibidas como indicadores no dashboard.
      *
      * @return array{solicitacoes_pendentes: int, solicitacoes_vencidas: int, contratos_nao_publicados: int}
      */
@@ -1016,7 +1016,7 @@ class AlertaService
             $solicitacoesPendentes = SolicitacaoLai::pendentes()->count();
             $solicitacoesVencidas = SolicitacaoLai::vencidas()->count();
         } catch (\Throwable) {
-            // Tabela pode nao existir em tenants antigos
+            // Tabela pode não existir em tenants antigos
         }
 
         $contratosNaoPublicados = Contrato::withoutGlobalScopes()
@@ -1032,7 +1032,7 @@ class AlertaService
         ];
     }
 
-    // --- Metodos privados ---
+    // --- Métodos privados ---
 
     /**
      * Marca contratos com data_fim < hoje como vencidos e irregulares (RN-008, RN-046).
@@ -1048,8 +1048,8 @@ class AlertaService
     }
 
     /**
-     * Remove flag IRREGULAR quando contrato e regularizado (RN-046).
-     * Chamado quando aditivo retroativo e registrado ou contrato e encerrado formalmente.
+     * Remove flag IRREGULAR quando contrato é regularizado (RN-046).
+     * Chamado quando aditivo retroativo é registrado ou contrato é encerrado formalmente.
      */
     public static function regularizarContrato(Contrato $contrato): void
     {
@@ -1059,8 +1059,8 @@ class AlertaService
     }
 
     /**
-     * Re-envia notificacoes para alertas nao resolvidos (RN-054).
-     * Alerta continua gerando notificacoes enquanto nao resolvido.
+     * Re-envia notificações para alertas não resolvidos (RN-054).
+     * Alerta continua gerando notificações enquanto não resolvido.
      */
     private static function reenviarNotificacoesPendentes(): int
     {
@@ -1070,7 +1070,7 @@ class AlertaService
 
         $count = 0;
         foreach ($alertasAtivos as $alerta) {
-            // Evitar re-envio excessivo: so reenvia se ultimo envio foi ha mais de 24h
+            // Evitar re-envio excessivo: só reenvia se último envio foi há mais de 24h
             $ultimoLog = $alerta->logNotificacoes()
                 ->where('sucesso', true)
                 ->orderByDesc('data_envio')
@@ -1106,9 +1106,9 @@ class AlertaService
         $evento = $tipoEvento->label();
 
         if ($diasRestantes <= 0) {
-            return "ATENCAO: O contrato {$numero} esta VENCIDO. Evento: {$evento}. Regularizacao imediata necessaria.";
+            return "ATENÇÃO: O contrato {$numero} está VENCIDO. Evento: {$evento}. Regularização imediata necessária.";
         }
 
-        return "O contrato {$numero} vencera em {$diasRestantes} dia(s). Evento: {$evento}. Prazo para regularizacao esta se esgotando.";
+        return "O contrato {$numero} vencerá em {$diasRestantes} dia(s). Evento: {$evento}. Prazo para regularização está se esgotando.";
     }
 }

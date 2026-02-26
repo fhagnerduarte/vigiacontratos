@@ -15,7 +15,7 @@ class FiscaisController extends Controller
     {
         $dados = $request->validated();
 
-        // Verifica se ja existe fiscal atual — se sim, e troca (RN-034)
+        // Verifica se já existe fiscal atual — se sim, é troca (RN-034)
         if ($contrato->fiscalAtual) {
             $fiscalAnterior = $contrato->fiscalAtual->nome;
             $novoFiscal = FiscalService::trocar($contrato, $dados);
@@ -31,10 +31,10 @@ class FiscaisController extends Controller
             );
 
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('success', 'Fiscal trocado com sucesso. O fiscal anterior foi mantido no historico.');
+                ->with('success', 'Fiscal trocado com sucesso. O fiscal anterior foi mantido no histórico.');
         }
 
-        // Primeira designacao
+        // Primeira designação
         FiscalService::designar($contrato, $dados);
 
         return redirect()->route('tenant.contratos.show', $contrato)

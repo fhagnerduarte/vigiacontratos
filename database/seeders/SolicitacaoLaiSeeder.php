@@ -28,8 +28,8 @@ class SolicitacaoLaiSeeder extends Seeder
                 'email_solicitante' => 'maria.silva@email.com',
                 'cpf_solicitante' => '123.456.789-00',
                 'telefone_solicitante' => '(11) 99999-0001',
-                'assunto' => 'Contratos de limpeza publica 2025',
-                'descricao' => 'Solicito informacoes sobre todos os contratos de limpeza publica firmados no exercicio de 2025, incluindo valores, empresas contratadas e vigencia.',
+                'assunto' => 'Contratos de limpeza pública 2025',
+                'descricao' => 'Solicito informações sobre todos os contratos de limpeza pública firmados no exercício de 2025, incluindo valores, empresas contratadas e vigência.',
                 'status' => StatusSolicitacaoLai::Recebida->value,
                 'prazo_legal' => now()->addDays(18)->toDateString(),
             ],
@@ -40,7 +40,7 @@ class SolicitacaoLaiSeeder extends Seeder
                 'cpf_solicitante' => '987.654.321-00',
                 'telefone_solicitante' => '(21) 98888-0002',
                 'assunto' => 'Gastos com merenda escolar',
-                'descricao' => 'Solicito relatorio detalhado dos gastos com merenda escolar nos ultimos 12 meses, discriminando por escola e fornecedor.',
+                'descricao' => 'Solicito relatório detalhado dos gastos com merenda escolar nos últimos 12 meses, discriminando por escola e fornecedor.',
                 'status' => StatusSolicitacaoLai::EmAnalise->value,
                 'prazo_legal' => now()->addDays(10)->toDateString(),
             ],
@@ -49,11 +49,11 @@ class SolicitacaoLaiSeeder extends Seeder
                 'nome_solicitante' => 'Ana Carolina Ferreira',
                 'email_solicitante' => 'ana.ferreira@email.com',
                 'cpf_solicitante' => '111.222.333-44',
-                'assunto' => 'Obras de pavimentacao do bairro Centro',
-                'descricao' => 'Solicito copia do contrato de pavimentacao do bairro Centro, incluindo cronograma fisico-financeiro e empresa responsavel pela execucao da obra.',
+                'assunto' => 'Obras de pavimentação do bairro Centro',
+                'descricao' => 'Solicito cópia do contrato de pavimentação do bairro Centro, incluindo cronograma físico-financeiro e empresa responsável pela execução da obra.',
                 'status' => StatusSolicitacaoLai::Respondida->value,
                 'classificacao_resposta' => ClassificacaoRespostaLai::Deferida->value,
-                'resposta' => 'Segue em anexo o contrato solicitado (Contrato 045/2025) firmado com a empresa ABC Pavimentacao Ltda, no valor de R$ 2.500.000,00, com prazo de 180 dias.',
+                'resposta' => 'Segue em anexo o contrato solicitado (Contrato 045/2025) firmado com a empresa ABC Pavimentação Ltda, no valor de R$ 2.500.000,00, com prazo de 180 dias.',
                 'respondido_por' => $userId,
                 'data_resposta' => now()->subDays(5),
                 'prazo_legal' => now()->subDays(3)->toDateString(),
@@ -64,24 +64,24 @@ class SolicitacaoLaiSeeder extends Seeder
                 'email_solicitante' => 'carlos.lima@email.com',
                 'cpf_solicitante' => '555.666.777-88',
                 'telefone_solicitante' => '(31) 97777-0004',
-                'assunto' => 'Contratos de tecnologia da informacao',
-                'descricao' => 'Solicito lista de todos os contratos de TI vigentes, com valores mensais, empresas e descricao dos servicos prestados ao municipio.',
+                'assunto' => 'Contratos de tecnologia da informação',
+                'descricao' => 'Solicito lista de todos os contratos de TI vigentes, com valores mensais, empresas e descrição dos serviços prestados ao município.',
                 'status' => StatusSolicitacaoLai::Prorrogada->value,
                 'prazo_legal' => now()->addDays(2)->toDateString(),
                 'prazo_estendido' => now()->addDays(12)->toDateString(),
                 'data_prorrogacao' => now()->subDays(3),
-                'justificativa_prorrogacao' => 'Necessidade de consolidar informacoes de multiplas secretarias para atendimento completo da solicitacao.',
+                'justificativa_prorrogacao' => 'Necessidade de consolidar informações de múltiplas secretarias para atendimento completo da solicitação.',
             ],
             [
                 'protocolo' => 'LAI-' . now()->year . '-000005',
                 'nome_solicitante' => 'Patricia Souza Mendes',
                 'email_solicitante' => 'patricia.mendes@email.com',
                 'cpf_solicitante' => '999.888.777-66',
-                'assunto' => 'Informacoes sobre contrato de seguranca',
-                'descricao' => 'Solicito informacoes detalhadas sobre contrato de seguranca patrimonial dos predios publicos, incluindo efetivo por unidade e custos.',
+                'assunto' => 'Informações sobre contrato de segurança',
+                'descricao' => 'Solicito informações detalhadas sobre contrato de segurança patrimonial dos prédios públicos, incluindo efetivo por unidade e custos.',
                 'status' => StatusSolicitacaoLai::Indeferida->value,
                 'classificacao_resposta' => ClassificacaoRespostaLai::Indeferida->value,
-                'resposta' => 'Informacao classificada como reservada por envolver seguranca publica, conforme art. 23, inciso II, da Lei 12.527/2011.',
+                'resposta' => 'Informação classificada como reservada por envolver segurança pública, conforme art. 23, inciso II, da Lei 12.527/2011.',
                 'respondido_por' => $userId,
                 'data_resposta' => now()->subDays(8),
                 'prazo_legal' => now()->subDays(10)->toDateString(),
@@ -91,8 +91,8 @@ class SolicitacaoLaiSeeder extends Seeder
                 'nome_solicitante' => 'Roberto Alves Costa',
                 'email_solicitante' => 'roberto.costa@email.com',
                 'cpf_solicitante' => '444.333.222-11',
-                'assunto' => 'Contratos de manutencao predial',
-                'descricao' => 'Gostaria de obter informacoes sobre os contratos de manutencao predial vigentes, incluindo valores e empresas responsaveis pela manutencao dos predios publicos municipais.',
+                'assunto' => 'Contratos de manutenção predial',
+                'descricao' => 'Gostaria de obter informações sobre os contratos de manutenção predial vigentes, incluindo valores e empresas responsáveis pela manutenção dos prédios públicos municipais.',
                 'status' => StatusSolicitacaoLai::Recebida->value,
                 'prazo_legal' => now()->subDays(5)->toDateString(),
             ],
@@ -110,7 +110,7 @@ class SolicitacaoLaiSeeder extends Seeder
                 'solicitacao_lai_id' => $solicitacao->id,
                 'status_anterior' => null,
                 'status_novo' => StatusSolicitacaoLai::Recebida->value,
-                'observacao' => 'Solicitacao registrada pelo cidadao',
+                'observacao' => 'Solicitação registrada pelo cidadão',
                 'created_at' => $solicitacao->created_at,
             ]);
 
@@ -122,7 +122,7 @@ class SolicitacaoLaiSeeder extends Seeder
                     'status_novo' => $data['status'] === StatusSolicitacaoLai::Prorrogada->value
                         ? StatusSolicitacaoLai::EmAnalise->value
                         : $data['status'],
-                    'observacao' => 'Transicao de status',
+                    'observacao' => 'Transição de status',
                     'user_id' => $userId,
                     'created_at' => $solicitacao->created_at->addDays(2),
                 ]);
@@ -140,6 +140,6 @@ class SolicitacaoLaiSeeder extends Seeder
             }
         }
 
-        $this->command->info('SolicitacaoLaiSeeder: ' . count($solicitacoes) . ' solicitacoes criadas.');
+        $this->command->info('SolicitacaoLaiSeeder: ' . count($solicitacoes) . ' solicitações criadas.');
     }
 }

@@ -105,7 +105,7 @@ class AditivosController extends Controller
     }
 
     /**
-     * Formulario de criacao de aditivo aninhado ao contrato.
+     * Formulário de criação de aditivo aninhado ao contrato.
      */
     public function create(Contrato $contrato): View|RedirectResponse
     {
@@ -114,7 +114,7 @@ class AditivosController extends Controller
         // RN-009/RN-052: Contrato precisa estar vigente ou vencido (retroativo com justificativa)
         if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
+                ->with('error', 'Aditivo só pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
         }
 
         $contrato->load('fornecedor', 'secretaria');
@@ -122,7 +122,7 @@ class AditivosController extends Controller
         // Flag para view: contrato vencido exige justificativa retroativa (RN-052)
         $exigeJustificativaRetroativa = $contrato->status === StatusContrato::Vencido;
 
-        // Dados para o formulario
+        // Dados para o formulário
         $proximoSequencial = AditivoService::gerarNumeroSequencial($contrato);
         $percentualAcumuladoAtual = AditivoService::calcularPercentualAcumulado($contrato);
         $valorOriginal = AditivoService::obterValorOriginal($contrato);
@@ -139,7 +139,7 @@ class AditivosController extends Controller
     }
 
     /**
-     * Salva o aditivo com validacao de limites legais.
+     * Salva o aditivo com validação de limites legais.
      */
     public function store(StoreAditivoRequest $request, Contrato $contrato): RedirectResponse
     {
@@ -148,7 +148,7 @@ class AditivosController extends Controller
         // RN-009/RN-052: Contrato precisa estar vigente ou vencido
         if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Aditivo so pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
+                ->with('error', 'Aditivo só pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).');
         }
 
         $dados = $request->validated();
@@ -162,13 +162,13 @@ class AditivosController extends Controller
             // Bloqueante: impede salvamento (RN-101)
             if ($limiteLegal['is_bloqueante']) {
                 return redirect()->back()->withInput()
-                    ->with('error', 'O percentual acumulado de acrescimos (' . $percentualProjetado . '%) ultrapassa o limite legal de ' . $limiteLegal['limite'] . '%. Salvamento bloqueado (RN-101).');
+                    ->with('error', 'O percentual acumulado de acréscimos (' . $percentualProjetado . '%) ultrapassa o limite legal de ' . $limiteLegal['limite'] . '%. Salvamento bloqueado (RN-101).');
             }
 
-            // Nao-bloqueante: exige justificativa (RN-102)
+            // Não-bloqueante: exige justificativa (RN-102)
             if (empty($dados['justificativa_excesso_limite'])) {
                 return redirect()->back()->withInput()
-                    ->withErrors(['justificativa_excesso_limite' => 'O percentual acumulado ultrapassa o limite legal. Justificativa obrigatoria para prosseguir (RN-102).']);
+                    ->withErrors(['justificativa_excesso_limite' => 'O percentual acumulado ultrapassa o limite legal. Justificativa obrigatória para prosseguir (RN-102).']);
             }
         }
 
@@ -176,7 +176,7 @@ class AditivosController extends Controller
             $aditivo = AditivoService::criar($dados, $contrato, $request->user(), $request->ip());
 
             return redirect()->route('tenant.aditivos.show', $aditivo)
-                ->with('success', $aditivo->numero_sequencial . 'o Termo Aditivo registrado com sucesso. Workflow de aprovacao iniciado.');
+                ->with('success', $aditivo->numero_sequencial . 'o Termo Aditivo registrado com sucesso. Workflow de aprovação iniciado.');
         } catch (\RuntimeException $e) {
             return redirect()->back()->withInput()
                 ->with('error', $e->getMessage());
@@ -184,7 +184,7 @@ class AditivosController extends Controller
     }
 
     /**
-     * Detalhes do aditivo com timeline e workflow (padroes-aditivos.md).
+     * Detalhes do aditivo com timeline e workflow (padrões-aditivos.md).
      */
     public function show(Aditivo $aditivo): View
     {
@@ -232,7 +232,7 @@ class AditivosController extends Controller
 
         if (! $etapaAtual) {
             return redirect()->route('tenant.aditivos.show', $aditivo)
-                ->with('error', 'Nao ha etapa pendente para aprovacao.');
+                ->with('error', 'Não há etapa pendente para aprovação.');
         }
 
         try {
@@ -270,7 +270,7 @@ class AditivosController extends Controller
     }
 
     /**
-     * Reprova a etapa atual do workflow (RN-338). Parecer obrigatorio.
+     * Reprova a etapa atual do workflow (RN-338). Parecer obrigatório.
      */
     public function reprovar(Request $request, Aditivo $aditivo): RedirectResponse
     {
@@ -279,14 +279,14 @@ class AditivosController extends Controller
         $request->validate([
             'parecer' => ['required', 'string'],
         ], [
-            'parecer.required' => 'O parecer/motivo e obrigatorio na reprovacao (RN-338).',
+            'parecer.required' => 'O parecer/motivo é obrigatório na reprovação (RN-338).',
         ]);
 
         $etapaAtual = WorkflowService::obterEtapaAtual($aditivo);
 
         if (! $etapaAtual) {
             return redirect()->route('tenant.aditivos.show', $aditivo)
-                ->with('error', 'Nao ha etapa pendente para reprovacao.');
+                ->with('error', 'Não há etapa pendente para reprovação.');
         }
 
         try {
@@ -298,7 +298,7 @@ class AditivosController extends Controller
             );
 
             return redirect()->route('tenant.aditivos.show', $aditivo)
-                ->with('success', 'Etapa "' . $etapaAtual->etapa->label() . '" reprovada. O solicitante sera notificado.');
+                ->with('success', 'Etapa "' . $etapaAtual->etapa->label() . '" reprovada. O solicitante será notificado.');
         } catch (\RuntimeException $e) {
             return redirect()->route('tenant.aditivos.show', $aditivo)
                 ->with('error', $e->getMessage());

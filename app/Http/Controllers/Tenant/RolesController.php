@@ -43,7 +43,7 @@ class RolesController extends Controller
     {
         $data = $request->validated();
 
-        // Perfis padrao nao podem ter nome alterado
+        // Perfis padrão não podem ter nome alterado
         if ($role->is_padrao) {
             unset($data['nome']);
         }
@@ -58,12 +58,12 @@ class RolesController extends Controller
     {
         if ($role->is_padrao) {
             return redirect()->route('tenant.roles.index')
-                ->with('error', 'Perfis padrao do sistema nao podem ser removidos.');
+                ->with('error', 'Perfis padrão do sistema não podem ser removidos.');
         }
 
         if ($role->users()->exists()) {
             return redirect()->route('tenant.roles.index')
-                ->with('error', 'Nao e possivel remover um perfil com usuarios vinculados.');
+                ->with('error', 'Não é possível remover um perfil com usuários vinculados.');
         }
 
         $role->delete();

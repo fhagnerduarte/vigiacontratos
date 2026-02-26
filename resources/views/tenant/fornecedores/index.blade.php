@@ -26,12 +26,12 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th class="px-24 py-16">Razao Social</th>
+                    <th class="px-24 py-16">Razão Social</th>
                     <th class="px-24 py-16">Nome Fantasia</th>
                     <th class="px-24 py-16">CNPJ</th>
                     <th class="px-24 py-16">E-mail</th>
                     <th class="px-24 py-16">Telefone</th>
-                    <th class="px-24 py-16 text-center">Acoes</th>
+                    <th class="px-24 py-16 text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>

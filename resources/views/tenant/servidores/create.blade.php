@@ -16,7 +16,7 @@
             @csrf
 
             <div class="row gy-3">
-                {{-- Identificacao --}}
+                {{-- Identificação --}}
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
                         Nome Completo <span class="text-danger-main">*</span>
@@ -41,7 +41,7 @@
 
                 <div class="col-md-3">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Matricula <span class="text-danger-main">*</span>
+                        Matrícula <span class="text-danger-main">*</span>
                     </label>
                     <input type="text" name="matricula" value="{{ old('matricula') }}"
                            class="form-control radius-8 @error('matricula') is-invalid @enderror"
@@ -53,18 +53,18 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                        Cargo / Funcao <span class="text-danger-main">*</span>
+                        Cargo / Função <span class="text-danger-main">*</span>
                     </label>
                     <input type="text" name="cargo" value="{{ old('cargo') }}"
                            class="form-control radius-8 @error('cargo') is-invalid @enderror"
-                           placeholder="Cargo ou funcao exercida" required>
+                           placeholder="Cargo ou função exercida" required>
                     @error('cargo')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Secretaria (Lotacao)</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Secretaria (Lotação)</label>
                     <select name="secretaria_id"
                             class="form-control radius-8 form-select select2 @error('secretaria_id') is-invalid @enderror">
                         <option value="">Selecione uma secretaria...</option>
@@ -112,14 +112,14 @@
                     </div>
                 </div>
 
-                {{-- Observacoes --}}
+                {{-- Observações --}}
                 <div class="col-12"><hr class="my-8"></div>
 
                 <div class="col-12">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                     <textarea name="observacoes" rows="3"
                               class="form-control radius-8 @error('observacoes') is-invalid @enderror"
-                              placeholder="Observacoes adicionais sobre o servidor">{{ old('observacoes') }}</textarea>
+                              placeholder="Observações adicionais sobre o servidor">{{ old('observacoes') }}</textarea>
                     @error('observacoes')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

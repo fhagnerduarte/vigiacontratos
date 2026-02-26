@@ -36,13 +36,13 @@ class LogNotificacao extends Model
 
     protected static function booted(): void
     {
-        // Tabela imutavel — append-only (RN-049)
+        // Tabela imutável — append-only (RN-049)
         static::updating(function () {
-            throw new \RuntimeException('Registros de log de notificacao sao imutaveis.');
+            throw new \RuntimeException('Registros de log de notificação são imutáveis.');
         });
 
         static::deleting(function () {
-            throw new \RuntimeException('Registros de log de notificacao nao podem ser excluidos.');
+            throw new \RuntimeException('Registros de log de notificação não podem ser excluídos.');
         });
     }
 

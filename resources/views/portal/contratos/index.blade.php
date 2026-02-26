@@ -1,14 +1,14 @@
 @extends('portal.layout')
 
-@section('title', 'Contratos Publicos')
+@section('title', 'Contratos Públicos')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Início</a></li>
     <li class="breadcrumb-item active" aria-current="page">Contratos</li>
 @endsection
 
 @section('content')
-<h2 class="portal-section-title">Contratos Publicos</h2>
+<h2 class="portal-section-title">Contratos Públicos</h2>
 
 {{-- Painel de Filtros --}}
 <div class="portal-filter-panel">
@@ -18,7 +18,7 @@
                 <label class="form-label">Buscar</label>
                 <div class="portal-search-wrapper">
                     <iconify-icon icon="solar:magnifer-bold" width="16" class="search-icon"></iconify-icon>
-                    <input type="text" name="busca" class="form-control" placeholder="Numero ou objeto do contrato..." value="{{ request('busca') }}">
+                    <input type="text" name="busca" class="form-control" placeholder="Número ou objeto do contrato..." value="{{ request('busca') }}">
                 </div>
             </div>
             <div class="col-md-2">
@@ -77,14 +77,14 @@
     <table class="table portal-table">
         <thead>
             <tr>
-                <th>Numero</th>
+                <th>Número</th>
                 <th>Objeto</th>
                 <th>Fornecedor</th>
                 <th>Secretaria</th>
                 <th class="text-end">Valor Global</th>
-                <th>Vigencia</th>
+                <th>Vigência</th>
                 <th>Status</th>
-                <th class="text-center">Acao</th>
+                <th class="text-center">Ação</th>
             </tr>
         </thead>
         <tbody>

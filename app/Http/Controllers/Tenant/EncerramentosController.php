@@ -20,7 +20,7 @@ class EncerramentosController extends Controller
     {
         if (!in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido, StatusContrato::Encerrado])) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Este contrato nao pode ser encerrado no status atual.');
+                ->with('error', 'Este contrato não pode ser encerrado no status atual.');
         }
 
         $contrato->load([
@@ -56,7 +56,7 @@ class EncerramentosController extends Controller
     }
 
     /**
-     * Etapa 1: Verificacao Financeira.
+     * Etapa 1: Verificação Financeira.
      */
     public function verificarFinanceiro(Request $request, Contrato $contrato): RedirectResponse
     {
@@ -69,7 +69,7 @@ class EncerramentosController extends Controller
 
         if (!$encerramento) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Processo de encerramento nao iniciado.');
+                ->with('error', 'Processo de encerramento não iniciado.');
         }
 
         try {
@@ -82,14 +82,14 @@ class EncerramentosController extends Controller
             );
 
             return redirect()->route('tenant.contratos.encerramento.show', $contrato)
-                ->with('success', 'Verificacao financeira registrada.');
+                ->with('success', 'Verificação financeira registrada.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Etapa 2: Termo de Recebimento Provisorio.
+     * Etapa 2: Termo de Recebimento Provisório.
      */
     public function termoProvisorio(Request $request, Contrato $contrato): RedirectResponse
     {
@@ -101,7 +101,7 @@ class EncerramentosController extends Controller
 
         if (!$encerramento) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Processo de encerramento nao iniciado.');
+                ->with('error', 'Processo de encerramento não iniciado.');
         }
 
         try {
@@ -113,14 +113,14 @@ class EncerramentosController extends Controller
             );
 
             return redirect()->route('tenant.contratos.encerramento.show', $contrato)
-                ->with('success', 'Termo de recebimento provisorio registrado.');
+                ->with('success', 'Termo de recebimento provisório registrado.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Etapa 3: Avaliacao do Fiscal.
+     * Etapa 3: Avaliação do Fiscal.
      */
     public function avaliacaoFiscal(Request $request, Contrato $contrato): RedirectResponse
     {
@@ -133,7 +133,7 @@ class EncerramentosController extends Controller
 
         if (!$encerramento) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Processo de encerramento nao iniciado.');
+                ->with('error', 'Processo de encerramento não iniciado.');
         }
 
         try {
@@ -146,7 +146,7 @@ class EncerramentosController extends Controller
             );
 
             return redirect()->route('tenant.contratos.encerramento.show', $contrato)
-                ->with('success', 'Avaliacao fiscal registrada.');
+                ->with('success', 'Avaliação fiscal registrada.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -161,7 +161,7 @@ class EncerramentosController extends Controller
 
         if (!$encerramento) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Processo de encerramento nao iniciado.');
+                ->with('error', 'Processo de encerramento não iniciado.');
         }
 
         try {
@@ -179,7 +179,7 @@ class EncerramentosController extends Controller
     }
 
     /**
-     * Etapa 5: Quitacao (finaliza o encerramento).
+     * Etapa 5: Quitação (finaliza o encerramento).
      */
     public function quitacao(Request $request, Contrato $contrato): RedirectResponse
     {
@@ -191,7 +191,7 @@ class EncerramentosController extends Controller
 
         if (!$encerramento) {
             return redirect()->route('tenant.contratos.show', $contrato)
-                ->with('error', 'Processo de encerramento nao iniciado.');
+                ->with('error', 'Processo de encerramento não iniciado.');
         }
 
         try {

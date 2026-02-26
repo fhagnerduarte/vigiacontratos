@@ -2,7 +2,7 @@
 
 @php
     $title = 'Encerramento — ' . $contrato->numero;
-    $subTitle = 'Gestao Contratual';
+    $subTitle = 'Gestão Contratual';
     $encerramento = $contrato->encerramento;
     $etapaAtual = $encerramento?->etapa_atual;
 @endphp
@@ -41,7 +41,7 @@
             <h5 class="fw-semibold mb-12">Iniciar Encerramento</h5>
             <p class="text-secondary-light mb-24">
                 O encerramento contratual segue um workflow de 6 etapas conforme Lei 14.133/2021:
-                verificacao financeira, termo provisorio, avaliacao fiscal, termo definitivo, quitacao e conclusao.
+                verificação financeira, termo provisório, avaliação fiscal, termo definitivo, quitação e conclusão.
             </p>
             @if (auth()->user()->hasPermission('encerramento.iniciar'))
                 <form action="{{ route('tenant.contratos.encerramento.iniciar', $contrato) }}" method="POST" class="d-inline"
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    {{-- Formulario da etapa atual --}}
+    {{-- Formulário da etapa atual --}}
     @if ($etapaAtual !== \App\Enums\EtapaEncerramento::Encerrado)
         <div class="card radius-8 border-0 mb-24">
             <div class="card-header bg-transparent border-0 p-24 pb-0">
@@ -131,7 +131,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="p-16 border rounded text-center">
-                                <p class="text-secondary-light text-sm mb-4">Execucoes Registradas</p>
+                                <p class="text-secondary-light text-sm mb-4">Execuções Registradas</p>
                                 <h6 class="mb-0">{{ $contrato->execucoesFinanceiras()->count() }}</h6>
                             </div>
                         </div>
@@ -141,53 +141,53 @@
                         <form action="{{ route('tenant.contratos.encerramento.verificar-financeiro', $contrato) }}" method="POST">
                             @csrf
                             <div class="mb-16">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Situacao Financeira <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Situação Financeira <span class="text-danger-main">*</span></label>
                                 <select name="verificacao_financeira_ok" class="form-select radius-8" required>
                                     <option value="">Selecione...</option>
-                                    <option value="1">Aprovada — todas as obrigacoes financeiras estao regulares</option>
-                                    <option value="0">Com ressalvas — ha pendencias financeiras</option>
+                                    <option value="1">Aprovada — todas as obrigações financeiras estão regulares</option>
+                                    <option value="0">Com ressalvas — há pendências financeiras</option>
                                 </select>
                             </div>
                             <div class="mb-16">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações</label>
                                 <textarea name="verificacao_financeira_obs" class="form-control radius-8" rows="3" maxlength="2000"
-                                          placeholder="Observacoes sobre a verificacao financeira..."></textarea>
+                                          placeholder="Observações sobre a verificação financeira..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary radius-8">
-                                <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Registrar Verificacao
+                                <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Registrar Verificação
                             </button>
                         </form>
                     @endif
 
                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::TermoProvisorio)
                     <p class="text-secondary-light mb-16">
-                        Registre o termo de recebimento provisorio do objeto contratado.
-                        Informe o prazo (em dias) para observacao antes do recebimento definitivo.
+                        Registre o termo de recebimento provisório do objeto contratado.
+                        Informe o prazo (em dias) para observação antes do recebimento definitivo.
                     </p>
 
                     @if (auth()->user()->hasPermission('encerramento.registrar_termo'))
                         <form action="{{ route('tenant.contratos.encerramento.termo-provisorio', $contrato) }}" method="POST">
                             @csrf
                             <div class="mb-16">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Prazo de Observacao (dias) <span class="text-danger-main">*</span></label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Prazo de Observação (dias) <span class="text-danger-main">*</span></label>
                                 <input type="number" name="termo_provisorio_prazo_dias" class="form-control radius-8"
                                        min="1" max="365" value="15" required style="max-width: 200px;">
                                 <small class="text-secondary-light">Prazo usual: 15 dias (Lei 14.133 art. 140)</small>
                             </div>
                             <button type="submit" class="btn btn-primary radius-8">
-                                <iconify-icon icon="solar:clipboard-check-bold" class="me-4"></iconify-icon> Registrar Termo Provisorio
+                                <iconify-icon icon="solar:clipboard-check-bold" class="me-4"></iconify-icon> Registrar Termo Provisório
                             </button>
                         </form>
                     @endif
 
                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::AvaliacaoFiscal)
                     <p class="text-secondary-light mb-16">
-                        Registre a avaliacao do fiscal sobre o desempenho do fornecedor durante a execucao do contrato.
+                        Registre a avaliação do fiscal sobre o desempenho do fornecedor durante a execução do contrato.
                     </p>
 
                     @if ($contrato->fiscalAtual)
                         <div class="alert alert-info-100 radius-8 mb-16">
-                            <strong>Fiscal responsavel:</strong> {{ $contrato->fiscalAtual->nome }}
+                            <strong>Fiscal responsável:</strong> {{ $contrato->fiscalAtual->nome }}
                             — Mat: {{ $contrato->fiscalAtual->matricula }}
                         </div>
                     @endif
@@ -201,20 +201,20 @@
                                        min="1" max="10" step="0.5" required style="max-width: 150px;">
                             </div>
                             <div class="mb-16">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes da Avaliacao</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações da Avaliação</label>
                                 <textarea name="avaliacao_fiscal_obs" class="form-control radius-8" rows="3" maxlength="2000"
-                                          placeholder="Observacoes sobre o desempenho do fornecedor..."></textarea>
+                                          placeholder="Observações sobre o desempenho do fornecedor..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary radius-8">
-                                <iconify-icon icon="solar:user-check-bold" class="me-4"></iconify-icon> Registrar Avaliacao
+                                <iconify-icon icon="solar:user-check-bold" class="me-4"></iconify-icon> Registrar Avaliação
                             </button>
                         </form>
                     @endif
 
                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::TermoDefinitivo)
                     <p class="text-secondary-light mb-16">
-                        Registre o termo de recebimento definitivo. Esta acao confirma que o objeto contratado
-                        foi entregue conforme especificacoes.
+                        Registre o termo de recebimento definitivo. Esta ação confirma que o objeto contratado
+                        foi entregue conforme especificações.
                     </p>
 
                     @if (auth()->user()->hasPermission('encerramento.registrar_termo'))
@@ -229,22 +229,22 @@
 
                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::Quitacao)
                     <div class="alert alert-warning-100 radius-8 mb-16">
-                        <strong>Atencao:</strong> Esta e a etapa final. Ao registrar a quitacao, o contrato sera
-                        encerrado formalmente e todos os alertas pendentes serao resolvidos automaticamente.
+                        <strong>Atenção:</strong> Esta é a etapa final. Ao registrar a quitação, o contrato será
+                        encerrado formalmente e todos os alertas pendentes serão resolvidos automaticamente.
                     </div>
 
                     @if (auth()->user()->hasPermission('encerramento.quitar'))
                         <form action="{{ route('tenant.contratos.encerramento.quitacao', $contrato) }}" method="POST"
-                              data-confirm="Confirma a quitacao e encerramento formal do contrato? Esta acao nao pode ser desfeita."
+                              data-confirm="Confirma a quitação e encerramento formal do contrato? Esta ação não pode ser desfeita."
                               data-confirm-title="Encerrar contrato">
                             @csrf
                             <div class="mb-16">
-                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observacoes da Quitacao</label>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Observações da Quitação</label>
                                 <textarea name="quitacao_obs" class="form-control radius-8" rows="3" maxlength="2000"
-                                          placeholder="Observacoes finais sobre a quitacao..."></textarea>
+                                          placeholder="Observações finais sobre a quitação..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-success radius-8">
-                                <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Registrar Quitacao e Encerrar
+                                <iconify-icon icon="solar:check-circle-bold" class="me-4"></iconify-icon> Registrar Quitação e Encerrar
                             </button>
                         </form>
                     @endif
@@ -253,10 +253,10 @@
         </div>
     @endif
 
-    {{-- Historico de etapas concluidas --}}
+    {{-- Histórico de etapas concluídas --}}
     <div class="card radius-8 border-0">
         <div class="card-header bg-transparent border-0 p-24 pb-0">
-            <h6 class="fw-semibold mb-0">Historico do Encerramento</h6>
+            <h6 class="fw-semibold mb-0">Histórico do Encerramento</h6>
         </div>
         <div class="card-body p-24">
             <div class="table-responsive">
@@ -265,15 +265,15 @@
                         <tr>
                             <th class="px-16 py-12">Etapa</th>
                             <th class="px-16 py-12">Data</th>
-                            <th class="px-16 py-12">Responsavel</th>
+                            <th class="px-16 py-12">Responsável</th>
                             <th class="px-16 py-12">Detalhes</th>
                             <th class="px-16 py-12 text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 1. Verificacao Financeira --}}
+                        {{-- 1. Verificação Financeira --}}
                         <tr>
-                            <td class="px-16 py-12 fw-medium">1. Verificacao Financeira</td>
+                            <td class="px-16 py-12 fw-medium">1. Verificação Financeira</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->verificacao_financeira_em ? $encerramento->verificacao_financeira_em->format('d/m/Y H:i') : '-' }}</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->verificadorFinanceiro?->nome ?? '-' }}</td>
                             <td class="px-16 py-12 text-sm">
@@ -288,7 +288,7 @@
                             </td>
                             <td class="px-16 py-12 text-center">
                                 @if ($encerramento->verificacao_financeira_em)
-                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluida</span>
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluída</span>
                                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::VerificacaoFinanceira)
                                     <span class="badge bg-primary-focus text-primary-main px-12 py-4 radius-4">Em andamento</span>
                                 @else
@@ -297,9 +297,9 @@
                             </td>
                         </tr>
 
-                        {{-- 2. Termo Provisorio --}}
+                        {{-- 2. Termo Provisório --}}
                         <tr>
-                            <td class="px-16 py-12 fw-medium">2. Termo Provisorio</td>
+                            <td class="px-16 py-12 fw-medium">2. Termo Provisório</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->termo_provisorio_em ? $encerramento->termo_provisorio_em->format('d/m/Y H:i') : '-' }}</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->registradorTermoProvisorio?->nome ?? '-' }}</td>
                             <td class="px-16 py-12 text-sm">
@@ -311,7 +311,7 @@
                             </td>
                             <td class="px-16 py-12 text-center">
                                 @if ($encerramento->termo_provisorio_em)
-                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluida</span>
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluída</span>
                                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::TermoProvisorio)
                                     <span class="badge bg-primary-focus text-primary-main px-12 py-4 radius-4">Em andamento</span>
                                 @else
@@ -320,9 +320,9 @@
                             </td>
                         </tr>
 
-                        {{-- 3. Avaliacao Fiscal --}}
+                        {{-- 3. Avaliação Fiscal --}}
                         <tr>
-                            <td class="px-16 py-12 fw-medium">3. Avaliacao Fiscal</td>
+                            <td class="px-16 py-12 fw-medium">3. Avaliação Fiscal</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->avaliacao_fiscal_em ? $encerramento->avaliacao_fiscal_em->format('d/m/Y H:i') : '-' }}</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->avaliadorFiscal?->nome ?? '-' }}</td>
                             <td class="px-16 py-12 text-sm">
@@ -337,7 +337,7 @@
                             </td>
                             <td class="px-16 py-12 text-center">
                                 @if ($encerramento->avaliacao_fiscal_em)
-                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluida</span>
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluída</span>
                                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::AvaliacaoFiscal)
                                     <span class="badge bg-primary-focus text-primary-main px-12 py-4 radius-4">Em andamento</span>
                                 @else
@@ -354,7 +354,7 @@
                             <td class="px-16 py-12 text-sm">-</td>
                             <td class="px-16 py-12 text-center">
                                 @if ($encerramento->termo_definitivo_em)
-                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluida</span>
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluída</span>
                                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::TermoDefinitivo)
                                     <span class="badge bg-primary-focus text-primary-main px-12 py-4 radius-4">Em andamento</span>
                                 @else
@@ -363,9 +363,9 @@
                             </td>
                         </tr>
 
-                        {{-- 5. Quitacao --}}
+                        {{-- 5. Quitação --}}
                         <tr>
-                            <td class="px-16 py-12 fw-medium">5. Quitacao</td>
+                            <td class="px-16 py-12 fw-medium">5. Quitação</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->quitacao_em ? $encerramento->quitacao_em->format('d/m/Y H:i') : '-' }}</td>
                             <td class="px-16 py-12 text-sm">{{ $encerramento->registradorQuitacao?->nome ?? '-' }}</td>
                             <td class="px-16 py-12 text-sm">
@@ -377,7 +377,7 @@
                             </td>
                             <td class="px-16 py-12 text-center">
                                 @if ($encerramento->quitacao_em)
-                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluida</span>
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">Concluída</span>
                                 @elseif ($etapaAtual === \App\Enums\EtapaEncerramento::Quitacao)
                                     <span class="badge bg-primary-focus text-primary-main px-12 py-4 radius-4">Em andamento</span>
                                 @else
@@ -386,7 +386,7 @@
                             </td>
                         </tr>
 
-                        {{-- Conclusao --}}
+                        {{-- Conclusão --}}
                         @if ($etapaAtual === \App\Enums\EtapaEncerramento::Encerrado)
                             <tr class="table-success">
                                 <td class="px-16 py-12 fw-semibold" colspan="2">

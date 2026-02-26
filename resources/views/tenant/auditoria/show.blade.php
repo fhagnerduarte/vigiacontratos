@@ -4,7 +4,7 @@
     $title = 'Auditoria';
     $subTitle = 'Detalhe do registro de auditoria';
     $tipoLabel = match($tipo) {
-        'alteracao' => 'Alteracao',
+        'alteracao' => 'Alteração',
         'login' => 'Login',
         'acesso_documento' => 'Acesso a Documento',
         default => $tipo,
@@ -29,7 +29,7 @@
             <div class="card-header d-flex align-items-center gap-8">
                 @if ($tipo === 'alteracao')
                     <span class="badge bg-info-focus text-info-main px-12 py-6 radius-4 fw-semibold">
-                        <iconify-icon icon="solar:refresh-circle-bold" class="me-1"></iconify-icon> Alteracao
+                        <iconify-icon icon="solar:refresh-circle-bold" class="me-1"></iconify-icon> Alteração
                     </span>
                 @elseif ($tipo === 'login')
                     @if ($registro->success)
@@ -57,7 +57,7 @@
                                 <td>{{ $registro->created_at->format('d/m/Y H:i:s') }}</td>
                             </tr>
                             <tr>
-                                <th>Usuario</th>
+                                <th>Usuário</th>
                                 <td>{{ $registro->user?->nome ?? '-' }}</td>
                             </tr>
                             <tr>
@@ -103,7 +103,7 @@
                                 </tr>
                             @else
                                 <tr>
-                                    <th>Acao</th>
+                                    <th>Ação</th>
                                     <td>
                                         <span class="fw-medium">{{ ucfirst($registro->acao->value) }}</span>
                                     </td>

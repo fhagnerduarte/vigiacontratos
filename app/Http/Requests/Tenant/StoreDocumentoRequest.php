@@ -25,13 +25,13 @@ class StoreDocumentoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'arquivo.required' => 'O arquivo e obrigatorio.',
-            'arquivo.file' => 'O upload deve ser um arquivo valido.',
-            'arquivo.mimes' => 'Apenas arquivos PDF sao aceitos (RN-021).',
-            'arquivo.max' => 'O arquivo nao pode exceder 20MB (RN-119).',
-            'tipo_documento.required' => 'O tipo de documento e obrigatorio (RN-040).',
-            'tipo_documento.Illuminate\Validation\Rules\Enum' => 'Tipo de documento invalido.',
-            'descricao.max' => 'A descricao nao pode exceder 255 caracteres.',
+            'arquivo.required' => 'O arquivo é obrigatório.',
+            'arquivo.file' => 'O upload deve ser um arquivo válido.',
+            'arquivo.mimes' => 'Apenas arquivos PDF são aceitos (RN-021).',
+            'arquivo.max' => 'O arquivo não pode exceder 20MB (RN-119).',
+            'tipo_documento.required' => 'O tipo de documento é obrigatório (RN-040).',
+            'tipo_documento.Illuminate\Validation\Rules\Enum' => 'Tipo de documento inválido.',
+            'descricao.max' => 'A descrição não pode exceder 255 caracteres.',
         ];
     }
 }

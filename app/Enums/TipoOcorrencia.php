@@ -14,11 +14,11 @@ enum TipoOcorrencia: string
     public function label(): string
     {
         return match ($this) {
-            self::Atraso => 'Atraso na Execucao',
+            self::Atraso => 'Atraso na Execução',
             self::Inconformidade => 'Inconformidade Contratual',
-            self::Notificacao => 'Notificacao ao Contratado',
-            self::Medicao => 'Medicao/Avaliacao',
-            self::Penalidade => 'Aplicacao de Penalidade',
+            self::Notificacao => 'Notificação ao Contratado',
+            self::Medicao => 'Medição/Avaliação',
+            self::Penalidade => 'Aplicação de Penalidade',
             self::Outros => 'Outros',
         };
     }

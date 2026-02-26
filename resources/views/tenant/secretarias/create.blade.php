@@ -39,10 +39,10 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Responsavel</label>
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Responsável</label>
                     <input type="text" name="responsavel" value="{{ old('responsavel') }}"
                            class="form-control radius-8 @error('responsavel') is-invalid @enderror"
-                           placeholder="Nome do responsavel">
+                           placeholder="Nome do responsável">
                     @error('responsavel')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

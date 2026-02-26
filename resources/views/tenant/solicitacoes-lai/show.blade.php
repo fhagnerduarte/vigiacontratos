@@ -1,11 +1,11 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Transparencia';
-    $subTitle = 'Detalhes da Solicitacao LAI';
+    $title = 'Transparência';
+    $subTitle = 'Detalhes da Solicitação LAI';
 @endphp
 
-@section('title', 'Solicitacao ' . $solicitacao->protocolo)
+@section('title', 'Solicitação ' . $solicitacao->protocolo)
 
 @section('content')
 
@@ -42,7 +42,7 @@
         {{-- Dados da solicitacao --}}
         <div class="card mb-24">
             <div class="card-header">
-                <h6 class="mb-0">Dados da Solicitacao</h6>
+                <h6 class="mb-0">Dados da Solicitação</h6>
             </div>
             <div class="card-body">
                 <div class="row mb-16">
@@ -70,7 +70,7 @@
                     <p class="fw-semibold mb-0">{{ $solicitacao->assunto }}</p>
                 </div>
                 <div>
-                    <small class="text-muted">Descricao</small>
+                    <small class="text-muted">Descrição</small>
                     <p class="mb-0">{{ $solicitacao->descricao }}</p>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                             @csrf
                             <button type="submit" class="btn btn-warning d-flex align-items-center gap-8">
                                 <iconify-icon icon="solar:magnifer-bold" class="text-lg"></iconify-icon>
-                                Marcar como Em Analise
+                                Marcar como Em Análise
                             </button>
                         </form>
                     </div>
@@ -125,7 +125,7 @@
                         <form action="{{ route('tenant.solicitacoes-lai.responder', $solicitacao) }}" method="POST">
                             @csrf
                             <div class="mb-16">
-                                <label for="classificacao_resposta" class="form-label">Classificacao <span class="text-danger">*</span></label>
+                                <label for="classificacao_resposta" class="form-label">Classificação <span class="text-danger">*</span></label>
                                 <select name="classificacao_resposta" id="classificacao_resposta" class="form-select" required>
                                     <option value="">Selecione...</option>
                                     @foreach (\App\Enums\ClassificacaoRespostaLai::cases() as $c)
@@ -136,7 +136,7 @@
                             <div class="mb-16">
                                 <label for="resposta" class="form-label">Resposta <span class="text-danger">*</span></label>
                                 <textarea name="resposta" id="resposta" class="form-control" rows="5"
-                                          placeholder="Minimo 20 caracteres" required></textarea>
+                                          placeholder="Mínimo 20 caracteres" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-success d-flex align-items-center gap-8">
                                 <iconify-icon icon="solar:check-circle-bold" class="text-lg"></iconify-icon>
@@ -155,14 +155,14 @@
                     </div>
                     <div class="card-body">
                         <p class="text-muted small mb-16">
-                            Conforme LAI art. 11, §2o, e permitida uma unica prorrogacao de 10 dias mediante justificativa expressa.
+                            Conforme LAI art. 11, §2o, é permitida uma única prorrogação de 10 dias mediante justificativa expressa.
                         </p>
                         <form action="{{ route('tenant.solicitacoes-lai.prorrogar', $solicitacao) }}" method="POST">
                             @csrf
                             <div class="mb-16">
                                 <label for="justificativa_prorrogacao" class="form-label">Justificativa <span class="text-danger">*</span></label>
                                 <textarea name="justificativa_prorrogacao" id="justificativa_prorrogacao" class="form-control" rows="3"
-                                          placeholder="Minimo 20 caracteres" required></textarea>
+                                          placeholder="Mínimo 20 caracteres" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary d-flex align-items-center gap-8">
                                 <iconify-icon icon="solar:clock-circle-bold" class="text-lg"></iconify-icon>
@@ -177,13 +177,13 @@
             @if (!$solicitacao->status->isFinalizado() && auth()->user()->hasPermission('lai.indeferir'))
                 <div class="card mb-24">
                     <div class="card-header bg-danger-focus">
-                        <h6 class="mb-0">Indeferir Solicitacao</h6>
+                        <h6 class="mb-0">Indeferir Solicitação</h6>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('tenant.solicitacoes-lai.indeferir', $solicitacao) }}" method="POST">
                             @csrf
                             <div class="mb-16">
-                                <label for="classificacao_indeferir" class="form-label">Classificacao <span class="text-danger">*</span></label>
+                                <label for="classificacao_indeferir" class="form-label">Classificação <span class="text-danger">*</span></label>
                                 <select name="classificacao_resposta" id="classificacao_indeferir" class="form-select" required>
                                     <option value="">Selecione...</option>
                                     @foreach (\App\Enums\ClassificacaoRespostaLai::cases() as $c)
@@ -194,7 +194,7 @@
                             <div class="mb-16">
                                 <label for="resposta_indeferir" class="form-label">Justificativa do Indeferimento <span class="text-danger">*</span></label>
                                 <textarea name="resposta" id="resposta_indeferir" class="form-control" rows="4"
-                                          placeholder="Minimo 20 caracteres" required></textarea>
+                                          placeholder="Mínimo 20 caracteres" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-danger d-flex align-items-center gap-8">
                                 <iconify-icon icon="solar:close-circle-bold" class="text-lg"></iconify-icon>
@@ -227,10 +227,10 @@
                 @endif
                 @if (!$solicitacao->status->isFinalizado())
                     <div>
-                        <small class="text-muted">Situacao</small>
+                        <small class="text-muted">Situação</small>
                         <p class="fw-semibold mb-0">
                             @if ($solicitacao->is_vencida)
-                                <span class="text-danger">Vencida ha {{ abs($solicitacao->dias_restantes) }} dias</span>
+                                <span class="text-danger">Vencida há {{ abs($solicitacao->dias_restantes) }} dias</span>
                             @elseif ($solicitacao->dias_restantes <= 5)
                                 <span class="text-warning">{{ $solicitacao->dias_restantes }} dias restantes</span>
                             @else
@@ -245,7 +245,7 @@
         {{-- Timeline do historico --}}
         <div class="card">
             <div class="card-header">
-                <h6 class="mb-0">Historico</h6>
+                <h6 class="mb-0">Histórico</h6>
             </div>
             <div class="card-body">
                 @forelse ($solicitacao->historicos as $historico)

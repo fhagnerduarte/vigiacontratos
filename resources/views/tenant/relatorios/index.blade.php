@@ -1,21 +1,21 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Relatorios';
+    $title = 'Relatórios';
     $subTitle = 'Monitoramento';
 @endphp
 
-@section('title', 'Relatorios')
+@section('title', 'Relatórios')
 
 @section('content')
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-4">Central de Relatorios</h6>
-        <p class="text-neutral-500 text-sm mb-0">Gere relatorios em PDF e exporte dados em Excel</p>
+        <h6 class="fw-semibold mb-4">Central de Relatórios</h6>
+        <p class="text-neutral-500 text-sm mb-0">Gere relatórios em PDF e exporte dados em Excel</p>
     </div>
 </div>
 
-{{-- SECAO 1: Tribunal de Contas --}}
+{{-- SEÇÃO 1: Tribunal de Contas --}}
 @if (auth()->user()->hasPermission('relatorio.gerar') || auth()->user()->hasPermission('documento.download') || auth()->user()->hasPermission('painel-risco.exportar'))
 <div class="mb-24">
     <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
@@ -34,7 +34,7 @@
                         </div>
                         <div>
                             <h6 class="fw-semibold mb-0 text-sm">Documentos por Contrato</h6>
-                            <span class="text-neutral-500 text-xs">RN-133 — Relatorio TCE</span>
+                            <span class="text-neutral-500 text-xs">RN-133 — Relatório TCE</span>
                         </div>
                     </div>
                     <p class="text-neutral-500 text-sm mb-16">Lista todos os documentos vinculados a um contrato com status de completude.</p>
@@ -89,11 +89,11 @@
                             <iconify-icon icon="solar:danger-triangle-bold" class="text-danger-600 text-xl"></iconify-icon>
                         </div>
                         <div>
-                            <h6 class="fw-semibold mb-0 text-sm">Relatorio de Risco — TCE</h6>
+                            <h6 class="fw-semibold mb-0 text-sm">Relatório de Risco — TCE</h6>
                             <span class="text-neutral-500 text-xs">RN-150 — Defesa Administrativa</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Analise de risco contratual com score, categorias e plano de acao sugerido para o TCE.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Análise de risco contratual com score, categorias e plano de ação sugerido para o TCE.</p>
                     <a href="{{ route('tenant.painel-risco.exportar-tce') }}" class="btn btn-outline-danger-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
                         <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Gerar PDF
                     </a>
@@ -105,7 +105,7 @@
 </div>
 @endif
 
-{{-- SECAO 2: Auditoria --}}
+{{-- SEÇÃO 2: Auditoria --}}
 @if (auth()->user()->hasPermission('relatorio.gerar'))
 <div class="mb-24">
     <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
@@ -125,7 +125,7 @@
                             <span class="text-neutral-500 text-xs">RN-222 — PDF ou CSV</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Relatorio filtravel por periodo, tipo de acao, usuario e entidade. Exportavel em PDF e CSV.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Relatório filtrável por período, tipo de ação, usuário e entidade. Exportável em PDF e CSV.</p>
                     <a href="{{ route('tenant.relatorios.auditoria') }}" class="btn btn-outline-warning-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
                         <iconify-icon icon="solar:filter-bold" class="text-lg"></iconify-icon> Configurar Filtros
                     </a>
@@ -146,9 +146,9 @@
                             <span class="text-neutral-500 text-xs">RN-057 — Alertas</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Contratos regularizados a tempo vs. vencidos sem acao. Mede a efetividade do sistema de alertas.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Contratos regularizados a tempo vs. vencidos sem ação. Mede a efetividade do sistema de alertas.</p>
                     <a href="{{ route('tenant.relatorios.efetividade-mensal') }}" class="btn btn-outline-success-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
-                        <iconify-icon icon="solar:chart-2-bold" class="text-lg"></iconify-icon> Gerar Relatorio
+                        <iconify-icon icon="solar:chart-2-bold" class="text-lg"></iconify-icon> Gerar Relatório
                     </a>
                 </div>
             </div>
@@ -157,12 +157,12 @@
 </div>
 @endif
 
-{{-- SECAO 3: Transparencia LAI --}}
+{{-- SEÇÃO 3: Transparência LAI --}}
 @if (auth()->user()->hasPermission('lai.relatorio'))
 <div class="mb-24">
     <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
         <iconify-icon icon="solar:eye-bold" class="text-success-600 me-4"></iconify-icon>
-        Transparencia LAI — Lei 12.527/2011
+        Transparência LAI — Lei 12.527/2011
     </h6>
     <div class="row g-16">
         <div class="col-md-6 col-lg-4">
@@ -173,11 +173,11 @@
                             <iconify-icon icon="solar:eye-bold" class="text-success-600 text-xl"></iconify-icon>
                         </div>
                         <div>
-                            <h6 class="fw-semibold mb-0 text-sm">Relatorio de Transparencia</h6>
+                            <h6 class="fw-semibold mb-0 text-sm">Relatório de Transparência</h6>
                             <span class="text-neutral-500 text-xs">LAI 12.527/2011</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Indicadores de publicacao no portal, classificacao de sigilo e status das solicitacoes SIC/e-SIC.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Indicadores de publicação no portal, classificação de sigilo e status das solicitações SIC/e-SIC.</p>
                     <a href="{{ route('tenant.relatorios.lai') }}" class="btn btn-outline-success-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
                         <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Gerar PDF
                     </a>
@@ -188,7 +188,7 @@
 </div>
 @endif
 
-{{-- SECAO 4: Exportar Listagens --}}
+{{-- SEÇÃO 4: Exportar Listagens --}}
 <div class="mb-24">
     <h6 class="text-neutral-600 fw-semibold text-sm mb-16">
         <iconify-icon icon="solar:chart-2-bold" class="text-info-600 me-4"></iconify-icon>
@@ -208,7 +208,7 @@
                             <span class="text-neutral-500 text-xs">Listagem completa em .xlsx</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Exporta todos os contratos com filtros aplicados da pagina de listagem.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Exporta todos os contratos com filtros aplicados da página de listagem.</p>
                     <a href="{{ route('tenant.exportar.contratos') }}" class="btn btn-outline-info-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
                         <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Exportar Excel
                     </a>
@@ -230,7 +230,7 @@
                             <span class="text-neutral-500 text-xs">Listagem completa em .xlsx</span>
                         </div>
                     </div>
-                    <p class="text-neutral-500 text-sm mb-16">Exporta alertas de vencimento nao-resolvidos com dados do contrato.</p>
+                    <p class="text-neutral-500 text-sm mb-16">Exporta alertas de vencimento não-resolvidos com dados do contrato.</p>
                     <a href="{{ route('tenant.exportar.alertas') }}" class="btn btn-outline-info-600 btn-sm d-flex align-items-center gap-4" style="width: fit-content;">
                         <iconify-icon icon="solar:file-download-bold" class="text-lg"></iconify-icon> Exportar Excel
                     </a>
@@ -273,7 +273,7 @@
                 const select = document.getElementById('select-contrato-doc');
                 const contratoId = select.value;
                 if (!contratoId) {
-                    alert('Selecione um contrato para gerar o relatorio.');
+                    alert('Selecione um contrato para gerar o relatório.');
                     return;
                 }
                 const url = '{{ url("contratos") }}/' + contratoId + '/relatorio-documentos';

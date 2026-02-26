@@ -27,13 +27,13 @@ class StoreRelatorioFiscalRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'periodo_inicio.required' => 'O periodo de inicio e obrigatorio.',
-            'periodo_fim.required' => 'O periodo final e obrigatorio.',
-            'periodo_fim.after_or_equal' => 'O periodo final deve ser posterior ao inicio.',
-            'descricao_atividades.required' => 'A descricao das atividades e obrigatoria.',
-            'descricao_atividades.min' => 'A descricao deve ter no minimo 10 caracteres.',
-            'nota_desempenho.min' => 'A nota de desempenho minima e 1.',
-            'nota_desempenho.max' => 'A nota de desempenho maxima e 10.',
+            'periodo_inicio.required' => 'O período de início é obrigatório.',
+            'periodo_fim.required' => 'O período final é obrigatório.',
+            'periodo_fim.after_or_equal' => 'O período final deve ser posterior ao início.',
+            'descricao_atividades.required' => 'A descrição das atividades é obrigatória.',
+            'descricao_atividades.min' => 'A descrição deve ter no mínimo 10 caracteres.',
+            'nota_desempenho.min' => 'A nota de desempenho mínima é 1.',
+            'nota_desempenho.max' => 'A nota de desempenho máxima é 10.',
         ];
     }
 }

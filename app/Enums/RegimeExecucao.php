@@ -14,10 +14,10 @@ enum RegimeExecucao: string
     {
         return match ($this) {
             self::EmpreitadaIntegral => 'Empreitada Integral',
-            self::PrecoUnitario => 'Preco Unitario',
-            self::PrecoGlobal => 'Preco Global',
+            self::PrecoUnitario => 'Preço Unitário',
+            self::PrecoGlobal => 'Preço Global',
             self::Tarefa => 'Tarefa',
-            self::ContratacaoIntegrada => 'Contratacao Integrada',
+            self::ContratacaoIntegrada => 'Contratação Integrada',
         };
     }
 }

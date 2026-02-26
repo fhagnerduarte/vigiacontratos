@@ -15,9 +15,9 @@ enum AcaoLogDocumento: string
         return match ($this) {
             self::Upload => 'Upload',
             self::Download => 'Download',
-            self::Substituicao => 'Substituicao',
-            self::Exclusao => 'Exclusao',
-            self::Visualizacao => 'Visualizacao',
+            self::Substituicao => 'Substituição',
+            self::Exclusao => 'Exclusão',
+            self::Visualizacao => 'Visualização',
         };
     }
 }

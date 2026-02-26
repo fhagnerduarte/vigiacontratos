@@ -29,13 +29,13 @@ class UpdateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required'      => 'O nome e obrigatorio.',
-            'email.required'     => 'O e-mail e obrigatorio.',
-            'email.email'        => 'Informe um e-mail valido.',
-            'email.unique'       => 'Este e-mail ja esta em uso.',
-            'password.confirmed' => 'A confirmacao de senha nao confere.',
+            'nome.required'      => 'O nome é obrigatório.',
+            'email.required'     => 'O e-mail é obrigatório.',
+            'email.email'        => 'Informe um e-mail válido.',
+            'email.unique'       => 'Este e-mail já está em uso.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
             'role_id.required'   => 'Selecione um perfil.',
-            'role_id.exists'     => 'Perfil selecionado invalido.',
+            'role_id.exists'     => 'Perfil selecionado inválido.',
         ];
     }
 }

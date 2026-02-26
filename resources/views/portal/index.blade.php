@@ -1,9 +1,9 @@
 @extends('portal.layout')
 
-@section('title', 'Portal de Transparencia')
+@section('title', 'Portal de Transparência')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Inicio</li>
+    <li class="breadcrumb-item active" aria-current="page">Início</li>
 @endsection
 
 @section('content')
@@ -12,8 +12,8 @@
     <div class="d-flex align-items-center gap-3">
         <iconify-icon icon="solar:shield-check-bold" width="40" style="color: var(--portal-primary);"></iconify-icon>
         <div>
-            <h2>Transparencia Contratual</h2>
-            <p>Acompanhe os contratos publicos, fornecedores, aditivos e informacoes de gestao contratual do municipio. Dados atualizados conforme a Lei de Acesso a Informacao (Lei 12.527/2011).</p>
+            <h2>Transparência Contratual</h2>
+            <p>Acompanhe os contratos públicos, fornecedores, aditivos e informações de gestão contratual do município. Dados atualizados conforme a Lei de Acesso à Informação (Lei 12.527/2011).</p>
         </div>
     </div>
 </div>
@@ -98,27 +98,27 @@
 @endif
 
 {{-- Links Rapidos --}}
-<h3 class="portal-section-title">Acesso Rapido</h3>
+<h3 class="portal-section-title">Acesso Rápido</h3>
 <div class="row g-3">
     <div class="col-sm-6 col-lg-3">
         <a href="{{ route('portal.contratos', $tenant->slug) }}" class="portal-link-card">
             <div class="link-icon"><iconify-icon icon="solar:document-bold" width="22"></iconify-icon></div>
             <h6>Contratos</h6>
-            <p>Consulte todos os contratos publicos</p>
+            <p>Consulte todos os contratos públicos</p>
         </a>
     </div>
     <div class="col-sm-6 col-lg-3">
         <a href="{{ route('portal.fornecedores', $tenant->slug) }}" class="portal-link-card">
             <div class="link-icon"><iconify-icon icon="solar:users-group-rounded-bold" width="22"></iconify-icon></div>
             <h6>Fornecedores</h6>
-            <p>Empresas contratadas pelo municipio</p>
+            <p>Empresas contratadas pelo município</p>
         </a>
     </div>
     <div class="col-sm-6 col-lg-3">
         <a href="{{ route('portal.lai.create', $tenant->slug) }}" class="portal-link-card">
             <div class="link-icon"><iconify-icon icon="solar:chat-round-dots-bold" width="22"></iconify-icon></div>
             <h6>e-SIC</h6>
-            <p>Solicite informacoes publicas</p>
+            <p>Solicite informações públicas</p>
         </a>
     </div>
     <div class="col-sm-6 col-lg-3">

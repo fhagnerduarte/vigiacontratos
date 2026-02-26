@@ -1,16 +1,16 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Transparencia';
-    $subTitle = 'Solicitacoes LAI (e-SIC)';
+    $title = 'Transparência';
+    $subTitle = 'Solicitações LAI (e-SIC)';
 @endphp
 
-@section('title', 'Solicitacoes LAI')
+@section('title', 'Solicitações LAI')
 
 @section('content')
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Solicitacoes de Acesso a Informacao</h6>
+    <h6 class="fw-semibold mb-0">Solicitações de Acesso à Informação</h6>
 </div>
 
 {{-- Resumo --}}
@@ -51,7 +51,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body text-center py-12">
                 <h4 class="text-info fw-bold mb-0">{{ $resumo['tempo_medio_resposta'] }} dias</h4>
-                <small class="text-muted">Tempo Medio de Resposta</small>
+                <small class="text-muted">Tempo Médio de Resposta</small>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
         @if ($solicitacoes->isEmpty())
             <div class="text-center py-40">
                 <iconify-icon icon="solar:inbox-bold" class="text-neutral-400 mb-12" style="font-size: 48px;"></iconify-icon>
-                <p class="text-neutral-500">Nenhuma solicitacao LAI encontrada.</p>
+                <p class="text-neutral-500">Nenhuma solicitação LAI encontrada.</p>
             </div>
         @else
             <div class="table-responsive">
@@ -111,7 +111,7 @@
                             <th>Status</th>
                             <th>Prazo</th>
                             <th>Recebida em</th>
-                            <th class="text-center">Acoes</th>
+                            <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>

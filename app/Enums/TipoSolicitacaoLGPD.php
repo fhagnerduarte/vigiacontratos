@@ -13,11 +13,11 @@ enum TipoSolicitacaoLGPD: string
     public function label(): string
     {
         return match ($this) {
-            self::Anonimizacao => 'Anonimizacao de dados',
-            self::Exclusao => 'Exclusao de dados',
+            self::Anonimizacao => 'Anonimização de dados',
+            self::Exclusao => 'Exclusão de dados',
             self::Portabilidade => 'Portabilidade de dados',
-            self::Retificacao => 'Retificacao de dados',
-            self::Revogacao => 'Revogacao de consentimento',
+            self::Retificacao => 'Retificação de dados',
+            self::Revogacao => 'Revogação de consentimento',
         };
     }
 }
