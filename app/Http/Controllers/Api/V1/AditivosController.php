@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\StatusContrato;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\StoreAditivoRequest;
 use App\Http\Resources\AditivoResource;
 use App\Models\Aditivo;
 use App\Models\Contrato;
+use App\Services\AditivoService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -58,5 +62,49 @@ class AditivosController extends Controller
                 ->orderByDesc('numero_sequencial')
                 ->paginate($perPage)
         );
+    }
+
+    public function store(StoreAditivoRequest $request, int $id): JsonResponse
+    {
+        $contrato = Contrato::findOrFail($id);
+
+        $this->authorize('create', Aditivo::class);
+
+        if (! in_array($contrato->status, [StatusContrato::Vigente, StatusContrato::Vencido])) {
+            return response()->json([
+                'message' => 'Aditivo so pode ser adicionado a contrato vigente ou vencido (RN-009/RN-052).',
+            ], 422);
+        }
+
+        $dados = $request->validated();
+
+        $novoAcrescimo = (float) ($dados['valor_acrescimo'] ?? 0);
+        $percentualProjetado = AditivoService::calcularPercentualAcumulado($contrato, $novoAcrescimo);
+        $limiteLegal = AditivoService::verificarLimiteLegal($contrato, $percentualProjetado);
+
+        if (! $limiteLegal['dentro_limite']) {
+            if ($limiteLegal['is_bloqueante']) {
+                return response()->json([
+                    'message' => "Percentual acumulado ({$percentualProjetado}%) ultrapassa limite legal de {$limiteLegal['limite']}% (RN-101).",
+                ], 422);
+            }
+
+            if (empty($dados['justificativa_excesso_limite'])) {
+                return response()->json([
+                    'message' => 'Percentual acumulado ultrapassa limite legal. Justificativa obrigatoria (RN-102).',
+                    'errors' => ['justificativa_excesso_limite' => ['Justificativa obrigatoria para prosseguir.']],
+                ], 422);
+            }
+        }
+
+        try {
+            $aditivo = AditivoService::criar($dados, $contrato, $request->user(), $request->ip());
+
+            return (new AditivoResource($aditivo))
+                ->response()
+                ->setStatusCode(201);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
     }
 }

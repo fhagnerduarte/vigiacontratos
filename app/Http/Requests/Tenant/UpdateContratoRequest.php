@@ -19,8 +19,17 @@ class UpdateContratoRequest extends FormRequest
     {
         // RN-006: Contrato vencido nao pode ser editado
         $contrato = $this->route('contrato');
-        if ($contrato && $contrato->status === StatusContrato::Vencido) {
+
+        // Suporta route model binding (web) e int ID (API)
+        if ($contrato && is_object($contrato) && $contrato->status === StatusContrato::Vencido) {
             return false;
+        }
+
+        if ($contrato && is_string($contrato)) {
+            $model = \App\Models\Contrato::find($contrato);
+            if ($model && $model->status === StatusContrato::Vencido) {
+                return false;
+            }
         }
 
         return $this->user()->hasPermission('contrato.editar');

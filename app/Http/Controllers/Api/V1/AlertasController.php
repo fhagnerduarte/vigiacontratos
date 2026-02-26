@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AlertaResource;
 use App\Models\Alerta;
+use App\Services\AlertaService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -41,10 +43,26 @@ class AlertasController extends Controller
         );
     }
 
-    public function show(Alerta $alerta): AlertaResource
+    public function show(int $id): AlertaResource
     {
+        $alerta = Alerta::findOrFail($id);
         $alerta->load('contrato');
 
         return new AlertaResource($alerta);
+    }
+
+    public function resolver(Request $request, int $id): JsonResponse
+    {
+        $alerta = Alerta::findOrFail($id);
+
+        $request->validate([
+            'observacoes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        AlertaService::resolverManualmente($alerta, $request->user());
+
+        return response()->json([
+            'message' => 'Alerta resolvido com sucesso.',
+        ]);
     }
 }

@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\StoreFornecedorRequest;
+use App\Http\Requests\Tenant\UpdateFornecedorRequest;
 use App\Http\Resources\FornecedorResource;
 use App\Models\Fornecedor;
+use App\Services\FornecedorService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -43,5 +47,44 @@ class FornecedoresController extends Controller
         $this->authorize('view', $fornecedor);
 
         return new FornecedorResource($fornecedor);
+    }
+
+    public function store(StoreFornecedorRequest $request): JsonResponse
+    {
+        $this->authorize('create', Fornecedor::class);
+
+        $data = $request->validated();
+        $data['cnpj'] = FornecedorService::formatarCnpj($data['cnpj']);
+
+        $fornecedor = Fornecedor::create($data);
+
+        return (new FornecedorResource($fornecedor))
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    public function update(UpdateFornecedorRequest $request, int $id): FornecedorResource
+    {
+        $fornecedor = Fornecedor::findOrFail($id);
+
+        $this->authorize('update', $fornecedor);
+
+        $data = $request->validated();
+        $data['cnpj'] = FornecedorService::formatarCnpj($data['cnpj']);
+
+        $fornecedor->update($data);
+
+        return new FornecedorResource($fornecedor->fresh());
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $fornecedor = Fornecedor::findOrFail($id);
+
+        $this->authorize('delete', $fornecedor);
+
+        $fornecedor->delete();
+
+        return response()->json(null, 204);
     }
 }
