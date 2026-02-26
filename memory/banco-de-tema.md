@@ -19,4 +19,5 @@
 | [padroes-documentos.md](tema/padroes-documentos.md) | Padrões visuais do módulo Documentos (central, upload, completude) | Módulo Documentos |
 | [padroes-executivo.md](tema/padroes-executivo.md) | Padrões visuais do Dashboard Executivo (blocos, gráficos, score) | Módulo Dashboard |
 | [padroes-risco.md](tema/padroes-risco.md) | Padrões visuais do Painel de Risco (ranking, mapa, semáforo) | Módulo Painel de Risco |
+| [padroes-portal.md](tema/padroes-portal.md) | Padrões visuais do Portal Público de Transparência (CSS variables, classes, timeline, branding) | Portal Público |
 | [integracao.md](tema/integracao.md) | Integração de assets, ordem de carregamento CSS/JS, ícones, sidebar | Layout, menu, assets |

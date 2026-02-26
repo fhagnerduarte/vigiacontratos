@@ -53,6 +53,31 @@ class TenantController extends Controller
         return back()->with('success', "Tenant '{$tenant->nome}' desativado.");
     }
 
+    public function updateBranding(Request $request, Tenant $tenant)
+    {
+        $validated = $request->validate([
+            'logo' => ['nullable', 'image', 'max:2048'],
+            'cor_primaria' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'cor_secundaria' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'endereco' => ['nullable', 'string', 'max:255'],
+            'telefone' => ['nullable', 'string', 'max:20'],
+            'email_contato' => ['nullable', 'email', 'max:255'],
+            'horario_atendimento' => ['nullable', 'string', 'max:100'],
+            'cnpj' => ['nullable', 'string', 'max:18'],
+            'gestor_nome' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('tenants/' . $tenant->slug . '/branding', 's3');
+            $validated['logo_path'] = $path;
+        }
+
+        unset($validated['logo']);
+        $tenant->update($validated);
+
+        return back()->with('success', 'Configuracoes do portal atualizadas com sucesso.');
+    }
+
     public function updateMfaConfig(Request $request, Tenant $tenant)
     {
         $validated = $request->validate([

@@ -132,10 +132,16 @@ class DadosAbertosService
             ->get()
             ->toArray();
 
+        $totalSecretarias = Contrato::withoutGlobalScopes()
+            ->visivelNoPortal()
+            ->distinct('secretaria_id')
+            ->count('secretaria_id');
+
         return [
             'total_contratos' => $totalContratos,
             'valor_total' => $valorTotal,
             'contratos_vigentes' => $contratosVigentes,
+            'total_secretarias' => $totalSecretarias,
             'por_secretaria' => $porSecretaria,
         ];
     }

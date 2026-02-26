@@ -12,20 +12,21 @@
 |---|---|
 | Projeto | vigiacontratos |
 | Tipo | Sistema de gestão contratual municipal |
-| Fase Atual | Fase 8 — Conformidade LAI (Lei 12.527/2011) em andamento |
+| Fase Atual | Fase 9 — Redesign Portal Público de Transparência (concluído) |
 | Última Atualização | 2026-02-25 |
-| Próximo Passo | IMP-060 (Integração Final + Testes E2E LAI) |
+| Próximo Passo | Testes visuais portal + migration branding |
 | Branch Ativa | `main` |
 | Fluxo Git | `feature/*` → PR → `homolog` → (validação) → `main` |
 | Plano Conformidade Legal | 7 IMPs (049-055) — TODOS CONCLUÍDOS E TESTADOS |
-| Plano Conformidade LAI | 5 IMPs (056-060) — 3 concluídos (056/057/058), 2 pendentes (059/060) |
+| Plano Conformidade LAI | 5 IMPs (056-060) — TODOS CONCLUÍDOS E TESTADOS |
+| Plano Redesign Portal | 3 IMPs (061-063) — TODOS CONCLUÍDOS |
 | Local dos Planos | `memory/plans/` (NUNCA em `.claude/plans/`) |
 
 ### Cadeia de Fases
 
 ```
-[Fase 0: Setup] → [Fase 1a: Ambiente+MultiTenant] → [Fase 1b: Template+Auth] → [Fase 1c: Migrations Base] → [Fase 2: RBAC Base] → [Fase 3a: Contratos] → [Fase 3b: Documentos] → [Fase 3c: Aditivos+Workflow] → [Fase 4: Alertas] → [Fase 5: Dashboard+Risco] → [Fase 6: Refinamento] → [Fase 7: Conformidade Legal] → [Fase 8: Conformidade LAI]
-  ✅              ✅                    ✅                ✅                  ✅             ✅              ✅               ✅                     ✅             ✅                   ✅                 ✅                       ▲ em andamento
+[Fase 0: Setup] → [Fase 1a: Ambiente+MultiTenant] → [Fase 1b: Template+Auth] → [Fase 1c: Migrations Base] → [Fase 2: RBAC Base] → [Fase 3a: Contratos] → [Fase 3b: Documentos] → [Fase 3c: Aditivos+Workflow] → [Fase 4: Alertas] → [Fase 5: Dashboard+Risco] → [Fase 6: Refinamento] → [Fase 7: Conformidade Legal] → [Fase 8: Conformidade LAI] → [Fase 9: Redesign Portal]
+  ✅              ✅                    ✅                ✅                  ✅             ✅              ✅               ✅                     ✅             ✅                   ✅                 ✅                       ✅                      ✅
 ```
 
 **Detalhamento das Fases:**

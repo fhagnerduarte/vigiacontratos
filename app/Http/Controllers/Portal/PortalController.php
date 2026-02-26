@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Enums\ClassificacaoSigilo;
+use App\Enums\ModalidadeContratacao;
+use App\Enums\StatusContrato;
 use App\Http\Controllers\Controller;
 use App\Models\Contrato;
 use App\Models\Fornecedor;
+use App\Models\Secretaria;
 use App\Services\DadosAbertosService;
 use Illuminate\Http\Request;
 
@@ -53,7 +56,15 @@ class PortalController extends Controller
 
         $contratos = $query->orderByDesc('created_at')->paginate(20);
 
-        return view('portal.contratos.index', compact('tenant', 'contratos'));
+        $secretarias = Secretaria::orderBy('nome')->get();
+        $anos = Contrato::withoutGlobalScopes()
+            ->visivelNoPortal()
+            ->select('ano')
+            ->distinct()
+            ->orderByDesc('ano')
+            ->pluck('ano');
+
+        return view('portal.contratos.index', compact('tenant', 'contratos', 'secretarias', 'anos'));
     }
 
     public function contratoDetalhe(string $slug, string $numero)

@@ -87,6 +87,116 @@
         </div>
     </div>
 
+    {{-- Configurações do Portal de Transparência --}}
+    <div class="col-12">
+        <div class="card radius-8 border-0">
+            <div class="card-header bg-base border-bottom py-16 px-24">
+                <div class="d-flex align-items-center gap-2">
+                    <iconify-icon icon="solar:globe-bold" class="text-primary-main text-xl"></iconify-icon>
+                    <h6 class="fw-semibold mb-0 text-lg">Portal de Transparência (Branding)</h6>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <form action="{{ route('admin-saas.tenants.branding.update', $tenant) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="row gy-4">
+                        {{-- Logo --}}
+                        <div class="col-lg-6">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Logo / Brasão</label>
+                            @if($tenant->logo_path)
+                                <div class="mb-12">
+                                    <img src="{{ $tenant->logo_url }}" alt="Logo atual" style="max-height: 60px; border-radius: 6px; border: 1px solid #dee2e6; padding: 4px;">
+                                </div>
+                            @endif
+                            <input type="file" class="form-control radius-8 @error('logo') is-invalid @enderror" name="logo" accept="image/*">
+                            <span class="text-secondary-light text-xs mt-4 d-block">PNG, JPG ou SVG. Máximo 2MB.</span>
+                            @error('logo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Cores --}}
+                        <div class="col-lg-3">
+                            <label for="cor_primaria" class="form-label fw-semibold text-primary-light text-sm mb-8">Cor Primária</label>
+                            <div class="d-flex align-items-center gap-8">
+                                <input type="color" class="form-control form-control-color radius-8" id="cor_primaria" name="cor_primaria"
+                                       value="{{ old('cor_primaria', $tenant->cor_primaria ?? '#1b55e2') }}" style="width: 50px; height: 38px;">
+                                <input type="text" class="form-control radius-8 text-sm" id="cor_primaria_text"
+                                       value="{{ old('cor_primaria', $tenant->cor_primaria ?? '#1b55e2') }}" readonly style="max-width: 100px;">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="cor_secundaria" class="form-label fw-semibold text-primary-light text-sm mb-8">Cor Secundária</label>
+                            <div class="d-flex align-items-center gap-8">
+                                <input type="color" class="form-control form-control-color radius-8" id="cor_secundaria" name="cor_secundaria"
+                                       value="{{ old('cor_secundaria', $tenant->cor_secundaria ?? '#0b3a9e') }}" style="width: 50px; height: 38px;">
+                                <input type="text" class="form-control radius-8 text-sm" id="cor_secundaria_text"
+                                       value="{{ old('cor_secundaria', $tenant->cor_secundaria ?? '#0b3a9e') }}" readonly style="max-width: 100px;">
+                            </div>
+                        </div>
+
+                        {{-- Dados Institucionais --}}
+                        <div class="col-lg-6">
+                            <label for="branding_cnpj" class="form-label fw-semibold text-primary-light text-sm mb-8">CNPJ</label>
+                            <input type="text" class="form-control radius-8 @error('cnpj') is-invalid @enderror"
+                                   id="branding_cnpj" name="cnpj" value="{{ old('cnpj', $tenant->cnpj) }}" placeholder="00.000.000/0000-00">
+                            @error('cnpj') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="gestor_nome" class="form-label fw-semibold text-primary-light text-sm mb-8">Gestor / Prefeito(a)</label>
+                            <input type="text" class="form-control radius-8 @error('gestor_nome') is-invalid @enderror"
+                                   id="gestor_nome" name="gestor_nome" value="{{ old('gestor_nome', $tenant->gestor_nome) }}" placeholder="Nome do(a) Prefeito(a)">
+                            @error('gestor_nome') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        {{-- Contato --}}
+                        <div class="col-lg-12">
+                            <label for="endereco" class="form-label fw-semibold text-primary-light text-sm mb-8">Endereço</label>
+                            <input type="text" class="form-control radius-8 @error('endereco') is-invalid @enderror"
+                                   id="endereco" name="endereco" value="{{ old('endereco', $tenant->endereco) }}" placeholder="Rua, número, bairro — CEP">
+                            @error('endereco') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="branding_telefone" class="form-label fw-semibold text-primary-light text-sm mb-8">Telefone</label>
+                            <input type="text" class="form-control radius-8 @error('telefone') is-invalid @enderror"
+                                   id="branding_telefone" name="telefone" value="{{ old('telefone', $tenant->telefone) }}" placeholder="(00) 0000-0000">
+                            @error('telefone') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="email_contato" class="form-label fw-semibold text-primary-light text-sm mb-8">E-mail de Contato</label>
+                            <input type="email" class="form-control radius-8 @error('email_contato') is-invalid @enderror"
+                                   id="email_contato" name="email_contato" value="{{ old('email_contato', $tenant->email_contato) }}" placeholder="contato@prefeitura.gov.br">
+                            @error('email_contato') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="horario_atendimento" class="form-label fw-semibold text-primary-light text-sm mb-8">Horário de Atendimento</label>
+                            <input type="text" class="form-control radius-8 @error('horario_atendimento') is-invalid @enderror"
+                                   id="horario_atendimento" name="horario_atendimento" value="{{ old('horario_atendimento', $tenant->horario_atendimento) }}" placeholder="Seg-Sex, 8h às 14h">
+                            @error('horario_atendimento') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    {{-- Link Portal --}}
+                    <div class="mt-24 p-16 bg-neutral-50 radius-8">
+                        <h6 class="fw-semibold text-sm mb-8">Portal de Transparência</h6>
+                        <p class="text-secondary-light text-xs mb-0">
+                            URL: <a href="{{ url($tenant->slug . '/portal') }}" target="_blank" class="text-primary-main">{{ url($tenant->slug . '/portal') }}</a>
+                        </p>
+                    </div>
+
+                    <div class="mt-24">
+                        <button type="submit" class="btn btn-primary text-sm btn-sm px-24 py-12 radius-8">
+                            <iconify-icon icon="mdi:content-save-outline" class="text-lg me-4"></iconify-icon>
+                            Salvar Configurações do Portal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {{-- Configuração MFA --}}
     <div class="col-12">
         <div class="card radius-8 border-0">
@@ -255,6 +365,19 @@ document.addEventListener('DOMContentLoaded', function() {
     radios.forEach(function(radio) {
         radio.addEventListener('change', updateUI);
     });
+
+    // Sincronizar color pickers com campos de texto
+    var corPrimaria = document.getElementById('cor_primaria');
+    var corPrimariaText = document.getElementById('cor_primaria_text');
+    var corSecundaria = document.getElementById('cor_secundaria');
+    var corSecundariaText = document.getElementById('cor_secundaria_text');
+
+    if (corPrimaria && corPrimariaText) {
+        corPrimaria.addEventListener('input', function() { corPrimariaText.value = this.value; });
+    }
+    if (corSecundaria && corSecundariaText) {
+        corSecundaria.addEventListener('input', function() { corSecundariaText.value = this.value; });
+    }
 });
 </script>
 @endsection

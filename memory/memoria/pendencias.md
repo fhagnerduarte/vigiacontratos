@@ -392,6 +392,29 @@
 - [x] Atualizar base conhecimento: remover "Nao e portal publico", adicionar portal LAI *(IMP-060)*
 - [x] Testes E2E: LaiIntegracaoTest (15 testes, 67 assertions) — ciclo completo *(IMP-060)*
 
+### Módulo: Portal Público — Redesign (Fase 9)
+
+**IMP-061: Branding por Tenant + Layout Master + CSS Portal** *(Concluído)*
+- [x] Migration 000007 (master): tenants +9 campos branding (logo_path, cor_primaria, cor_secundaria, endereco, telefone, email_contato, horario_atendimento, cnpj, gestor_nome) *(IMP-061)*
+- [x] Model Tenant: +9 $fillable + accessor getLogoUrlAttribute() *(IMP-061)*
+- [x] CSS dedicado: public/assets/css/portal.css (~400 linhas — design system completo com CSS variables) *(IMP-061)*
+- [x] Layout portal/layout.blade.php: reescrita completa (accessibility bar, header institucional, sticky nav, offcanvas mobile, breadcrumb, footer 3 colunas, LGPD banner, JS acessibilidade) *(IMP-061)*
+- [x] Admin SaaS: TenantController::updateBranding() + rota + campos branding no show.blade.php (logo upload S3, color pickers, dados institucionais) *(IMP-061)*
+
+**IMP-062: Redesign Home + Contratos (Listagem + Detalhe)** *(Concluído)*
+- [x] DadosAbertosService: +total_secretarias em obterIndicadoresPublicos() *(IMP-062)*
+- [x] PortalController: imports + $secretarias/$anos para view contratos *(IMP-062)*
+- [x] portal/index.blade.php: hero section + 4 stat cards + ApexCharts bar chart + ranking table + quick links *(IMP-062)*
+- [x] portal/contratos/index.blade.php: 5 filtros avancados + tabela profissional + badges status + empty state + paginacao *(IMP-062)*
+- [x] portal/contratos/show.blade.php: breadcrumb + dados gerais + contratado + valores + vigencia + aditivos *(IMP-062)*
+
+**IMP-063: Redesign Paginas Restantes (Fornecedores + Dados Abertos + LAI)** *(Concluído)*
+- [x] portal/fornecedores/index.blade.php: busca com icone + tabela + empty state + paginacao *(IMP-063)*
+- [x] portal/dados-abertos.blade.php: info card LAI + cards JSON/CSV + secao explicativa *(IMP-063)*
+- [x] portal/lai/create.blade.php: info card prazo + formulario com secoes + mascaras CPF/telefone *(IMP-063)*
+- [x] portal/lai/consultar.blade.php: card centralizado + formulario busca + link nova solicitacao *(IMP-063)*
+- [x] portal/lai/show.blade.php: layout 2 colunas + dados solicitacao + resposta + prorrogacao + timeline visual + sidebar status/acoes *(IMP-063)*
+
 ### Geral
 - [x] Testes unitários Services: ContratoService, AlertaService, RiscoService, AuditoriaService, FiscalService, ExecucaoFinanceiraService, DocumentoService, PermissaoService, WorkflowService, FornecedorService, DashboardService, PainelRiscoService, MfaService *(IMP-027/028/030)*
 - [x] Testes unitários validação de CNPJ + CPF *(IMP-028)*

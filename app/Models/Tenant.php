@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Tenant extends Model
 {
@@ -16,6 +17,15 @@ class Tenant extends Model
         'database_host',
         'is_ativo',
         'plano',
+        'logo_path',
+        'cor_primaria',
+        'cor_secundaria',
+        'endereco',
+        'telefone',
+        'email_contato',
+        'horario_atendimento',
+        'cnpj',
+        'gestor_nome',
         'mfa_habilitado',
         'mfa_modo',
         'mfa_perfis_obrigatorios',
@@ -28,6 +38,15 @@ class Tenant extends Model
             'mfa_habilitado' => 'boolean',
             'mfa_perfis_obrigatorios' => 'array',
         ];
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (! $this->logo_path) {
+            return null;
+        }
+
+        return Storage::disk('s3')->url($this->logo_path);
     }
 
     /**

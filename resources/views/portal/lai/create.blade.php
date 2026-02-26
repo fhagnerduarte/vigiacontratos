@@ -1,14 +1,25 @@
 @extends('portal.layout')
 
+@section('title', 'Nova Solicitacao e-SIC')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('portal.index', $tenant->slug) }}">Inicio</a></li>
+    <li class="breadcrumb-item">e-SIC</li>
+    <li class="breadcrumb-item active" aria-current="page">Nova Solicitacao</li>
+@endsection
+
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <h2 class="mb-3">Solicitacao de Informacao (e-SIC)</h2>
-        <p class="text-muted mb-4">
-            Conforme a Lei de Acesso a Informacao (Lei 12.527/2011), todo cidadao tem direito de solicitar
-            informacoes publicas. O prazo legal para resposta e de <strong>20 dias uteis</strong>, prorrogavel
-            por mais 10 dias mediante justificativa.
-        </p>
+        <h2 class="portal-section-title">Solicitacao de Informacao (e-SIC)</h2>
+
+        {{-- Info Card --}}
+        <div class="portal-info-card">
+            <iconify-icon icon="solar:info-circle-bold" width="22"></iconify-icon>
+            <div>
+                <p>Conforme a Lei de Acesso a Informacao (Lei 12.527/2011), todo cidadao tem direito de solicitar informacoes publicas. O prazo legal para resposta e de <strong>20 dias uteis</strong>, prorrogavel por mais 10 dias mediante justificativa.</p>
+            </div>
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -24,15 +35,15 @@
             </div>
         @endif
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Nova Solicitacao</h5>
+        <div class="card portal-card">
+            <div class="card-header" style="background: var(--portal-primary); color: #fff;">
+                <h5 class="mb-0"><iconify-icon icon="solar:pen-new-round-bold" width="18"></iconify-icon> Nova Solicitacao</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('portal.lai.store', $tenant->slug) }}" method="POST">
                     @csrf
 
-                    <h6 class="text-muted mb-3">Dados do Solicitante</h6>
+                    <h6 class="text-muted mb-3"><iconify-icon icon="solar:user-bold" width="16"></iconify-icon> Dados do Solicitante</h6>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
@@ -75,7 +86,7 @@
                     </div>
 
                     <hr>
-                    <h6 class="text-muted mb-3">Informacao Solicitada</h6>
+                    <h6 class="text-muted mb-3"><iconify-icon icon="solar:document-text-bold" width="16"></iconify-icon> Informacao Solicitada</h6>
 
                     <div class="mb-3">
                         <label for="assunto" class="form-label">Assunto <span class="text-danger">*</span></label>
@@ -99,9 +110,11 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                         <a href="{{ route('portal.lai.consultar', $tenant->slug) }}" class="btn btn-outline-secondary">
-                            Consultar Solicitacao Existente
+                            <iconify-icon icon="solar:magnifer-bold" width="16"></iconify-icon> Consultar Existente
                         </a>
-                        <button type="submit" class="btn btn-primary">Enviar Solicitacao</button>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <iconify-icon icon="solar:plain-bold" width="16"></iconify-icon> Enviar Solicitacao
+                        </button>
                     </div>
                 </form>
             </div>
@@ -113,10 +126,10 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Mascara CPF
-    const cpf = document.getElementById('cpf_solicitante');
+    var cpf = document.getElementById('cpf_solicitante');
     if (cpf) {
         cpf.addEventListener('input', function() {
-            let v = this.value.replace(/\D/g, '').substring(0, 11);
+            var v = this.value.replace(/\D/g, '').substring(0, 11);
             v = v.replace(/(\d{3})(\d)/, '$1.$2');
             v = v.replace(/(\d{3})(\d)/, '$1.$2');
             v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
@@ -124,10 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Mascara Telefone
-    const tel = document.getElementById('telefone_solicitante');
+    var tel = document.getElementById('telefone_solicitante');
     if (tel) {
         tel.addEventListener('input', function() {
-            let v = this.value.replace(/\D/g, '').substring(0, 11);
+            var v = this.value.replace(/\D/g, '').substring(0, 11);
             if (v.length > 10) {
                 v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
             } else if (v.length > 6) {

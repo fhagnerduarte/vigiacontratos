@@ -8,9 +8,10 @@
 | Modelo | SaaS com banco isolado por prefeitura (database-per-tenant) |
 | Stack | Laravel 12, PHP 8.2+, MySQL 8, Redis, S3-compatible |
 | Container | Docker / Laravel Sail |
-| Fase Atual | Fase 0 — Setup Inicial |
-| Cadeia de Fases | 0 → 1a → 1b → 1c → 2 → 3a → 3b → 3c → 4 → 5 → 6 |
-| Última Atualização | 2026-02-18 |
+| Fase Atual | Fase 9 — Redesign Portal Público (concluído) |
+| Cadeia de Fases | 0 → 1a → 1b → 1c → 2 → 3a → 3b → 3c → 4 → 5 → 6 → 7 → 8 → 9 |
+| Total IMPs | 63 (IMP-001 a IMP-063 — todas concluídas) |
+| Última Atualização | 2026-02-25 |
 
 ---
 
