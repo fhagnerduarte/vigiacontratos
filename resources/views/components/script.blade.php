@@ -6,8 +6,7 @@
     <script src="{{ asset('assets/js/lib/apexcharts.min.js') }}"></script>
     <!-- Data Table js -->
     <script src="{{ asset('assets/js/lib/dataTables.min.js') }}"></script>
-    <!-- Iconify Font js -->
-    <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
+    <!-- Iconify Icon: carregado no head.blade.php -->
     <!-- jQuery UI js -->
     <script src="{{ asset('assets/js/lib/jquery-ui.min.js') }}"></script>
     <!-- Vector Map js -->

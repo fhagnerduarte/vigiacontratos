@@ -39,5 +39,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <!-- custom overrides -->
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
+    <!-- Iconify Icon web component (carregado no head para registrar custom element antes do DOM) -->
+    <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
     @stack('styles')
 </head>
