@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -17,6 +20,17 @@ return Application::configure(basePath: dirname(__DIR__))
 
             Route::middleware('web')
                 ->group(base_path('routes/portal.php'));
+
+            Route::prefix('api')
+                ->group(base_path('routes/api.php'));
+
+            RateLimiter::for('api', function (Request $request) {
+                return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+            });
+
+            RateLimiter::for('api-auth', function (Request $request) {
+                return Limit::perMinute(10)->by($request->ip());
+            });
         },
     )
     ->withSchedule(function (Schedule $schedule): void {
@@ -59,6 +73,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'security.headers' => \App\Http\Middleware\SecurityHeaders::class,
             'tenant.public' => \App\Http\Middleware\ResolveTenantPublic::class,
+            'api.tenant' => \App\Http\Middleware\EnsureApiTenantResolved::class,
         ]);
 
         $middleware->appendToGroup('web', \App\Http\Middleware\SecurityHeaders::class);
@@ -79,6 +94,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return null;
+            }
+
             if ($request->is('admin-saas/*')) {
                 return route('admin-saas.login');
             }
