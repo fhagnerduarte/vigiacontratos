@@ -125,16 +125,32 @@ class PainelRiscoService
 
     /**
      * Dados para o relatorio TCE em PDF (RN-150/151).
+     * Aceita filtros opcionais: status, secretaria_id, nivel_risco.
      */
-    public static function dadosRelatorioTCE(): array
+    public static function dadosRelatorioTCE(array $filtros = []): array
     {
         $tenant = Tenant::where('is_ativo', true)->first();
 
         // Relatorio TCE e documento global de compliance — desativa scope por secretaria
-        $contratos = Contrato::withoutGlobalScope(SecretariaScope::class)
-            ->where('status', StatusContrato::Vigente->value)
-            ->with(['secretaria:id,nome,sigla', 'fornecedor:id,razao_social,cnpj', 'fiscalAtual', 'documentos', 'aditivos'])
-            ->orderByDesc('score_risco')
+        $query = Contrato::withoutGlobalScope(SecretariaScope::class)
+            ->with(['secretaria:id,nome,sigla', 'fornecedor:id,razao_social,cnpj', 'fiscalAtual', 'documentos', 'aditivos']);
+
+        // Filtros opcionais
+        if (! empty($filtros['status'])) {
+            $query->where('status', $filtros['status']);
+        } else {
+            $query->where('status', StatusContrato::Vigente->value);
+        }
+
+        if (! empty($filtros['secretaria_id'])) {
+            $query->where('secretaria_id', $filtros['secretaria_id']);
+        }
+
+        if (! empty($filtros['nivel_risco'])) {
+            $query->where('nivel_risco', $filtros['nivel_risco']);
+        }
+
+        $contratos = $query->orderByDesc('score_risco')
             ->get()
             ->map(function ($contrato) {
                 $expandido = RiscoService::calcularExpandido($contrato);
@@ -164,6 +180,20 @@ class PainelRiscoService
                     'cor_nivel' => $expandido['nivel']->cor(),
                     'categorias' => $categoriasAtivas,
                     'justificativas' => $justificativas,
+                    // Campos TCE extras (IMP-064)
+                    'modalidade' => $contrato->modalidade_contratacao?->label(),
+                    'numero_processo' => $contrato->numero_processo,
+                    'fundamento_legal' => $contrato->fundamento_legal,
+                    'data_assinatura' => $contrato->data_assinatura?->format('d/m/Y'),
+                    'data_publicacao' => $contrato->data_publicacao?->format('d/m/Y'),
+                    'veiculo_publicacao' => $contrato->veiculo_publicacao,
+                    'fiscal_titular' => $contrato->fiscalAtual?->nome,
+                    'qtd_aditivos' => $contrato->aditivos->count(),
+                    'valor_total_aditivos' => (float) $contrato->aditivos->sum('valor_acrescimo'),
+                    'percentual_executado' => (float) $contrato->percentual_executado,
+                    'valor_empenhado' => (float) $contrato->valor_empenhado,
+                    'saldo_contratual' => (float) $contrato->saldo_contratual,
+                    'status' => $contrato->status?->label(),
                 ];
             })
             ->toArray();

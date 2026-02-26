@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\OcorrenciasController;
 use App\Http\Controllers\Api\V1\PainelRiscoController;
 use App\Http\Controllers\Api\V1\SecretariasController;
 use App\Http\Controllers\Api\V1\ServidoresController;
+use App\Http\Controllers\Api\V1\TceController;
 use App\Http\Controllers\Api\V1\WebhooksController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,12 @@ Route::middleware(['api.tenant', 'auth:sanctum', 'throttle:api'])
         // Painel de Risco
         Route::get('/painel-risco/indicadores', [PainelRiscoController::class, 'indicadores'])->name('api.painel-risco.indicadores');
         Route::get('/painel-risco/ranking', [PainelRiscoController::class, 'ranking'])->name('api.painel-risco.ranking');
+
+        // TCE — Exportacao Estruturada (IMP-064)
+        Route::get('/tce/dados', [TceController::class, 'dados'])->name('api.tce.dados');
+        Route::get('/tce/validar', [TceController::class, 'validar'])->name('api.tce.validar');
+        Route::post('/tce/exportar', [TceController::class, 'exportar'])->name('api.tce.exportar');
+        Route::get('/tce/historico', [TceController::class, 'historico'])->name('api.tce.historico');
 
         // Webhooks (CRUD)
         Route::get('/webhooks', [WebhooksController::class, 'index'])->name('api.webhooks.index');

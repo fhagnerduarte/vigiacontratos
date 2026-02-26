@@ -1,0 +1,861 @@
+{
+	"info": {
+		"_postman_id": "vigiacontratos-api-v1",
+		"name": "vigiacontratos API v1",
+		"description": "API REST do sistema vigiacontratos — Gestão Contratual Municipal.\n\n## Autenticação\n\nA API usa **Laravel Sanctum** (Bearer Token). Para obter um token:\n1. Faça POST em `/api/v1/auth/login` com email, password e device_name\n2. Use o token retornado no header `Authorization: Bearer {token}`\n\n## Tenant\n\nToda requisição **obrigatoriamente** deve incluir o header `X-Tenant-Slug` com o slug do município.\n\n## Rate Limiting\n- Endpoints de autenticação: 10 req/min\n- Endpoints protegidos: 60 req/min\n\n## Paginação\nEndpoints de listagem suportam `page` e `per_page` (max 100).\n\n## Enums\nCampos enum são retornados como `{ \"value\": \"string\", \"label\": \"string\" }`.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{api_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/api/v1",
+			"description": "URL base da API (ajuste para seu ambiente)"
+		},
+		{
+			"key": "tenant_slug",
+			"value": "prefeitura-exemplo",
+			"description": "Slug do tenant/município"
+		},
+		{
+			"key": "api_token",
+			"value": "",
+			"description": "Token Sanctum (preenchido automaticamente após login)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({",
+					"    key: 'X-Tenant-Slug',",
+					"    value: pm.collectionVariables.get('tenant_slug')",
+					"});",
+					"pm.request.headers.add({",
+					"    key: 'Accept',",
+					"    value: 'application/json'",
+					"});"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "01 — Autenticação",
+			"description": "Endpoints de autenticação e gerenciamento de tokens Sanctum.",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('api_token', jsonData.token);",
+									"    pm.test('Token salvo automaticamente', function () {",
+									"        pm.expect(jsonData.token).to.be.a('string');",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@exemplo.com\",\n    \"password\": \"password\",\n    \"device_name\": \"Postman\",\n    \"abilities\": [\"*\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Autentica o usuário e retorna um token Sanctum.\n\n**O token é salvo automaticamente** na variável `api_token` da collection.\n\n- `abilities`: array opcional de permissões do token (use `[\"*\"]` para acesso total)"
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Revoga o token atual."
+					}
+				},
+				{
+					"name": "Usuário Autenticado (me)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "me"]
+						},
+						"description": "Retorna dados do usuário autenticado, incluindo role, secretarias vinculadas, perfil estratégico e status MFA."
+					}
+				},
+				{
+					"name": "Listar Tokens",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/auth/tokens",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "tokens"]
+						},
+						"description": "Lista todos os tokens ativos do usuário."
+					}
+				},
+				{
+					"name": "Revogar Token",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/auth/tokens/1",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "tokens", "1"]
+						},
+						"description": "Revoga um token específico pelo ID."
+					}
+				}
+			]
+		},
+		{
+			"name": "02 — Contratos",
+			"description": "CRUD de contratos + endpoints aninhados (fiscais, documentos, aditivos, execuções, ocorrências).",
+			"item": [
+				{
+					"name": "Listar Contratos",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/contratos?per_page=15&page=1",
+							"host": ["{{base_url}}"],
+							"path": ["contratos"],
+							"query": [
+								{ "key": "per_page", "value": "15", "description": "Itens por página (max 100)" },
+								{ "key": "page", "value": "1" },
+								{ "key": "status", "value": "vigente", "disabled": true, "description": "Filtro: vigente, vencido, encerrado, cancelado, suspenso" },
+								{ "key": "secretaria_id", "value": "1", "disabled": true },
+								{ "key": "modalidade", "value": "pregao", "disabled": true, "description": "licitacao, dispensa, inexigibilidade, pregao" },
+								{ "key": "nivel_risco", "value": "alto", "disabled": true, "description": "baixo, medio, alto, critico" },
+								{ "key": "tipo", "value": "servico", "disabled": true, "description": "obra, servico, bem, consultoria, terceirizacao" },
+								{ "key": "data_inicio_de", "value": "2026-01-01", "disabled": true },
+								{ "key": "data_inicio_ate", "value": "2026-12-31", "disabled": true },
+								{ "key": "valor_min", "value": "10000", "disabled": true },
+								{ "key": "valor_max", "value": "500000", "disabled": true },
+								{ "key": "q", "value": "", "disabled": true, "description": "Busca em numero e objeto" }
+							]
+						},
+						"description": "Lista contratos com paginação e 9 filtros opcionais.\n\nDesabilite/habilite os query params conforme necessário."
+					}
+				},
+				{
+					"name": "Ver Contrato",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/contratos/1?include=fornecedor,secretaria,fiscalAtual,aditivos",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1"],
+							"query": [
+								{ "key": "include", "value": "fornecedor,secretaria,fiscalAtual,aditivos", "description": "Includes: fornecedor, secretaria, gestor, fiscalAtual, fiscalSubstituto, aditivos, documentosVersaoAtual, alertasPendentes, execucoesFinanceiras, ocorrencias, relatoriosFiscais, encerramento" }
+							]
+						},
+						"description": "Retorna um contrato específico.\n\nO parâmetro `include` permite carregar relacionamentos (comma-separated)."
+					}
+				},
+				{
+					"name": "Criar Contrato",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ano\": \"2026\",\n    \"objeto\": \"Prestação de serviços de manutenção predial\",\n    \"tipo\": \"servico\",\n    \"modalidade_contratacao\": \"pregao\",\n    \"secretaria_id\": 1,\n    \"numero_processo\": \"2026/001\",\n    \"fornecedor_id\": 1,\n    \"valor_global\": 150000.00,\n    \"valor_mensal\": 12500.00,\n    \"tipo_pagamento\": \"parcelado\",\n    \"fonte_recurso\": \"Recursos Próprios\",\n    \"dotacao_orcamentaria\": \"3.3.90.39\",\n    \"data_assinatura\": \"2026-01-10\",\n    \"data_inicio\": \"2026-02-01\",\n    \"data_fim\": \"2027-01-31\",\n    \"data_publicacao\": \"2026-01-15\",\n    \"veiculo_publicacao\": \"Diário Oficial do Município\",\n    \"fundamento_legal\": \"Lei 14.133/2021\",\n    \"fiscal_servidor_id\": 1,\n    \"observacoes\": \"Contrato de manutenção predial.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos",
+							"host": ["{{base_url}}"],
+							"path": ["contratos"]
+						},
+						"description": "Cria um novo contrato.\n\n**Campos obrigatórios**: ano, objeto, tipo, modalidade_contratacao, secretaria_id, numero_processo, fornecedor_id, valor_global, data_inicio, data_fim, fiscal_servidor_id\n\n**Regras de negócio**:\n- `fundamento_legal` obrigatório se modalidade = dispensa ou inexigibilidade\n- `responsavel_tecnico` obrigatório se tipo = obra\n- `data_assinatura` deve ser anterior ou igual a `data_inicio`\n- `data_fim` deve ser posterior ou igual a `data_inicio`"
+					}
+				},
+				{
+					"name": "Atualizar Contrato",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"objeto\": \"Prestação de serviços de manutenção predial — atualizado\",\n    \"valor_global\": 180000.00,\n    \"observacoes\": \"Valor atualizado conforme aditivo.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos/1",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1"]
+						},
+						"description": "Atualiza um contrato existente.\n\n**RN-006**: Contrato vencido não pode ser editado (retorna 422)."
+					}
+				},
+				{
+					"name": "Excluir Contrato",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/contratos/1",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1"]
+						},
+						"description": "Exclui um contrato (soft delete). Retorna 204 No Content."
+					}
+				},
+				{
+					"name": "Fiscais do Contrato",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/contratos/1/fiscais",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "fiscais"]
+						},
+						"description": "Lista os fiscais designados para um contrato."
+					}
+				},
+				{
+					"name": "Documentos do Contrato",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/contratos/1/documentos?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "documentos"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "tipo_documento", "value": "assinado", "disabled": true, "description": "assinado, projeto_basico, memorando_tecnico, analise_risco, parecer_tecnico, parecer_juridico, relatorio_fiscal, documento_conformidade, termo_entrega, comprovante_pagamento, aditivo_documento, outros" }
+							]
+						},
+						"description": "Lista os documentos de um contrato (paginado)."
+					}
+				},
+				{
+					"name": "Upload Documento",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "arquivo", "type": "file", "description": "Arquivo PDF (max 20MB)" },
+								{ "key": "tipo_documento", "value": "assinado", "type": "text", "description": "Tipo: assinado, projeto_basico, parecer_tecnico, parecer_juridico, relatorio_fiscal, etc." },
+								{ "key": "descricao", "value": "Contrato assinado digitalizado", "type": "text", "description": "Descrição opcional (max 255)" }
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos/1/documentos",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "documentos"]
+						},
+						"description": "Faz upload de um documento PDF para um contrato.\n\n**Requisitos**:\n- Formato: PDF apenas\n- Tamanho máximo: 20MB\n- Magic bytes `%PDF` obrigatórios"
+					}
+				},
+				{
+					"name": "Criar Aditivo (via Contrato)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo\": \"valor\",\n    \"data_assinatura\": \"2026-06-01\",\n    \"fundamentacao_legal\": \"Art. 124 da Lei 14.133/2021\",\n    \"justificativa\": \"Necessidade de acréscimo de serviços não previstos inicialmente.\",\n    \"justificativa_tecnica\": \"Parecer técnico identificou necessidade de ampliação do escopo.\",\n    \"valor_acrescimo\": 25000.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos/1/aditivos",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "aditivos"]
+						},
+						"description": "Cria um aditivo vinculado ao contrato.\n\n**Tipos**: prazo, valor, prazo_e_valor, supressao, misto, reequilibrio\n\n**Regras de negócio**:\n- RN-009/RN-052: Só contratos vigentes ou vencidos\n- RN-101: Verifica limite legal de acréscimo (25% serviço, 50% reforma)\n- RN-102: Se ultrapassar limite, exige `justificativa_excesso_limite`\n- Contrato vencido exige `justificativa_retroativa` (min 50 chars)"
+					}
+				},
+				{
+					"name": "Registrar Execução Financeira",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo_execucao\": \"empenho\",\n    \"descricao\": \"Empenho referente à parcela de março/2026\",\n    \"valor\": 12500.00,\n    \"data_execucao\": \"2026-03-05\",\n    \"numero_empenho\": \"2026NE001234\",\n    \"competencia\": \"2026-03\",\n    \"observacoes\": \"Parcela mensal conforme cronograma.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos/1/execucoes",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "execucoes"]
+						},
+						"description": "Registra uma execução financeira para o contrato.\n\n**Tipos**: empenho, pagamento, devolucao\n\n**Competência**: formato YYYY-MM"
+					}
+				},
+				{
+					"name": "Registrar Ocorrência",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo_ocorrencia\": \"atraso_pagamento\",\n    \"data_ocorrencia\": \"2026-02-20\",\n    \"descricao\": \"Atraso no pagamento da parcela referente a janeiro/2026 por falta de empenho.\",\n    \"providencia\": \"Encaminhar ofício à Secretaria de Finanças solicitando empenho.\",\n    \"prazo_providencia\": \"2026-03-05\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/contratos/1/ocorrencias",
+							"host": ["{{base_url}}"],
+							"path": ["contratos", "1", "ocorrencias"]
+						},
+						"description": "Registra uma ocorrência contratual.\n\n**Tipos**: atraso_empenho, atraso_pagamento, atraso_emissao_nf, inadequacao_servico, problema_fornecedor, outro\n\n**Descrição**: mínimo 10 caracteres, máximo 2000"
+					}
+				}
+			]
+		},
+		{
+			"name": "03 — Aditivos",
+			"description": "Listagem e consulta de aditivos contratuais.",
+			"item": [
+				{
+					"name": "Listar Aditivos",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/aditivos?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["aditivos"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "contrato_id", "value": "1", "disabled": true },
+								{ "key": "tipo", "value": "valor", "disabled": true, "description": "prazo, valor, prazo_e_valor, supressao, misto, reequilibrio" },
+								{ "key": "status", "value": "vigente", "disabled": true, "description": "vigente, vencido, cancelado" }
+							]
+						},
+						"description": "Lista todos os aditivos com filtros opcionais."
+					}
+				},
+				{
+					"name": "Ver Aditivo",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/aditivos/1",
+							"host": ["{{base_url}}"],
+							"path": ["aditivos", "1"]
+						},
+						"description": "Retorna um aditivo com contrato, documentos e aprovações carregados."
+					}
+				}
+			]
+		},
+		{
+			"name": "04 — Fornecedores",
+			"description": "CRUD completo de fornecedores.",
+			"item": [
+				{
+					"name": "Listar Fornecedores",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/fornecedores?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["fornecedores"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "q", "value": "", "disabled": true, "description": "Busca em razao_social, nome_fantasia, cnpj" },
+								{ "key": "uf", "value": "SP", "disabled": true, "description": "Filtro por UF (2 caracteres)" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Ver Fornecedor",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/fornecedores/1",
+							"host": ["{{base_url}}"],
+							"path": ["fornecedores", "1"]
+						}
+					}
+				},
+				{
+					"name": "Criar Fornecedor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"razao_social\": \"Empresa de Serviços Gerais LTDA\",\n    \"nome_fantasia\": \"ServiGeral\",\n    \"cnpj\": \"12.345.678/0001-90\",\n    \"representante_legal\": \"João da Silva\",\n    \"email\": \"contato@servigeral.com.br\",\n    \"telefone\": \"(11) 99999-8888\",\n    \"endereco\": \"Rua das Flores, 123\",\n    \"cidade\": \"São Paulo\",\n    \"uf\": \"SP\",\n    \"cep\": \"01234-567\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/fornecedores",
+							"host": ["{{base_url}}"],
+							"path": ["fornecedores"]
+						},
+						"description": "Cria um novo fornecedor.\n\n**CNPJ** deve ser único e válido."
+					}
+				},
+				{
+					"name": "Atualizar Fornecedor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"razao_social\": \"Empresa de Serviços Gerais LTDA - ME\",\n    \"telefone\": \"(11) 98888-7777\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/fornecedores/1",
+							"host": ["{{base_url}}"],
+							"path": ["fornecedores", "1"]
+						}
+					}
+				},
+				{
+					"name": "Excluir Fornecedor",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/fornecedores/1",
+							"host": ["{{base_url}}"],
+							"path": ["fornecedores", "1"]
+						},
+						"description": "Exclui um fornecedor. Retorna 204 No Content.\n\n**Atenção**: fornecedores vinculados a contratos não podem ser excluídos (FK restrict)."
+					}
+				}
+			]
+		},
+		{
+			"name": "05 — Secretarias",
+			"description": "Consulta de secretarias municipais.",
+			"item": [
+				{
+					"name": "Listar Secretarias",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/secretarias?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["secretarias"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "q", "value": "", "disabled": true, "description": "Busca em nome e sigla" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Ver Secretaria",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/secretarias/1",
+							"host": ["{{base_url}}"],
+							"path": ["secretarias", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "06 — Servidores",
+			"description": "Consulta de servidores públicos.",
+			"item": [
+				{
+					"name": "Listar Servidores",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/servidores?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["servidores"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "q", "value": "", "disabled": true, "description": "Busca em nome, matricula, cargo" },
+								{ "key": "secretaria_id", "value": "1", "disabled": true },
+								{ "key": "is_ativo", "value": "true", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Ver Servidor",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/servidores/1",
+							"host": ["{{base_url}}"],
+							"path": ["servidores", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "07 — Alertas",
+			"description": "Consulta e resolução de alertas contratuais.",
+			"item": [
+				{
+					"name": "Listar Alertas",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/alertas?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["alertas"],
+							"query": [
+								{ "key": "per_page", "value": "15" },
+								{ "key": "status", "value": "pendente", "disabled": true },
+								{ "key": "tipo_evento", "value": "", "disabled": true },
+								{ "key": "prioridade", "value": "alta", "disabled": true, "description": "baixa, media, alta, critica" },
+								{ "key": "contrato_id", "value": "1", "disabled": true },
+								{ "key": "pendentes", "value": "true", "disabled": true, "description": "true = apenas pendentes" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Ver Alerta",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/alertas/1",
+							"host": ["{{base_url}}"],
+							"path": ["alertas", "1"]
+						}
+					}
+				},
+				{
+					"name": "Resolver Alerta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"observacoes\": \"Providências tomadas conforme orientação da PGM.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/alertas/1/resolver",
+							"host": ["{{base_url}}"],
+							"path": ["alertas", "1", "resolver"]
+						},
+						"description": "Resolve um alerta pendente.\n\n**observacoes**: opcional, máximo 2000 caracteres."
+					}
+				}
+			]
+		},
+		{
+			"name": "08 — Ocorrências",
+			"description": "Resolução de ocorrências contratuais (criação via endpoint aninhado em Contratos).",
+			"item": [
+				{
+					"name": "Resolver Ocorrência",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"observacoes\": \"Ocorrência resolvida após emissão do empenho.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ocorrencias/1/resolver",
+							"host": ["{{base_url}}"],
+							"path": ["ocorrencias", "1", "resolver"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "09 — Dashboard",
+			"description": "Indicadores gerais do dashboard.",
+			"item": [
+				{
+					"name": "Indicadores do Dashboard",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/dashboard/indicadores",
+							"host": ["{{base_url}}"],
+							"path": ["dashboard", "indicadores"]
+						},
+						"description": "Retorna KPIs gerais: total de contratos, valores, vencimentos, ranking de secretarias e score de gestão."
+					}
+				}
+			]
+		},
+		{
+			"name": "10 — Painel de Risco",
+			"description": "Indicadores e ranking de risco contratual.",
+			"item": [
+				{
+					"name": "Indicadores de Risco",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/painel-risco/indicadores",
+							"host": ["{{base_url}}"],
+							"path": ["painel-risco", "indicadores"]
+						},
+						"description": "Retorna indicadores consolidados de risco: total monitorado, contratos críticos/altos, valor em risco."
+					}
+				},
+				{
+					"name": "Ranking de Risco",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/painel-risco/ranking",
+							"host": ["{{base_url}}"],
+							"path": ["painel-risco", "ranking"]
+						},
+						"description": "Retorna contratos ordenados por score de risco (maior → menor), com motivos principais."
+					}
+				}
+			]
+		},
+		{
+			"name": "11 — TCE (Tribunal de Contas)",
+			"description": "Exportação estruturada para o Tribunal de Contas do Estado.\n\nFormatos: XML (leiaute TCE v1.0), CSV (separador ;, BOM UTF-8), Excel.",
+			"item": [
+				{
+					"name": "Dados TCE",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/tce/dados",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "dados"],
+							"query": [
+								{ "key": "status", "value": "vigente", "disabled": true, "description": "vigente, vencido, encerrado" },
+								{ "key": "secretaria_id", "value": "1", "disabled": true },
+								{ "key": "nivel_risco", "value": "alto", "disabled": true, "description": "baixo, medio, alto, critico" }
+							]
+						},
+						"description": "Retorna dados de contratos no formato TCE (com campos extras: modalidade, processo, fiscal, aditivos, execução financeira)."
+					}
+				},
+				{
+					"name": "Validar Completude TCE",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/tce/validar",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "validar"],
+							"query": [
+								{ "key": "status", "value": "vigente", "disabled": true },
+								{ "key": "secretaria_id", "value": "1", "disabled": true },
+								{ "key": "nivel_risco", "value": "alto", "disabled": true }
+							]
+						},
+						"description": "Valida se os contratos possuem todos os campos obrigatórios para exportação TCE.\n\n**10 campos obrigatórios**: numero, objeto, cnpj_fornecedor, valor_global, data_inicio, data_fim, modalidade, numero_processo, data_publicacao, fiscal_titular"
+					}
+				},
+				{
+					"name": "Exportar TCE (XML)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"formato\": \"xml\",\n    \"filtros\": {\n        \"status\": \"vigente\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tce/exportar",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "exportar"]
+						},
+						"description": "Exporta dados para o TCE em XML (leiaute v1.0).\n\nRetorna o conteúdo XML inline no campo `conteudo`."
+					}
+				},
+				{
+					"name": "Exportar TCE (CSV)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"formato\": \"csv\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tce/exportar",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "exportar"]
+						},
+						"description": "Exporta dados para o TCE em CSV (separador `;`, BOM UTF-8).\n\nRegistra no histórico e retorna mensagem de confirmação."
+					}
+				},
+				{
+					"name": "Exportar TCE (Excel)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"formato\": \"excel\",\n    \"filtros\": {\n        \"nivel_risco\": \"alto\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tce/exportar",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "exportar"]
+						},
+						"description": "Exporta dados para o TCE em Excel (.xlsx) com 21 colunas."
+					}
+				},
+				{
+					"name": "Histórico de Exportações",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/tce/historico?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["tce", "historico"],
+							"query": [
+								{ "key": "per_page", "value": "15" }
+							]
+						},
+						"description": "Lista exportações TCE anteriores (paginado, ordenado por data desc)."
+					}
+				}
+			]
+		},
+		{
+			"name": "12 — Webhooks",
+			"description": "CRUD de webhooks para integração com sistemas externos.\n\nO sistema dispara webhooks via HMAC-SHA256. O header `X-Webhook-Signature` contém a assinatura do payload.",
+			"item": [
+				{
+					"name": "Listar Webhooks",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/webhooks",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks"]
+						}
+					}
+				},
+				{
+					"name": "Ver Webhook",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/webhooks/1",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "1"]
+						}
+					}
+				},
+				{
+					"name": "Criar Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://meu-sistema.com.br/webhooks/vigiacontratos\",\n    \"eventos\": [\n        \"contrato.criado\",\n        \"contrato.atualizado\",\n        \"alerta.gerado\"\n    ],\n    \"descricao\": \"Integração com sistema de acompanhamento\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/webhooks",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks"]
+						},
+						"description": "Cria um webhook.\n\n**IMPORTANTE**: O `secret` (64 chars) é retornado **apenas nesta resposta**. Salve-o para validar assinaturas HMAC-SHA256.\n\n**Eventos disponíveis** (12):\n- contrato.criado, contrato.atualizado, contrato.excluido\n- aditivo.criado\n- fornecedor.criado, fornecedor.atualizado\n- alerta.gerado, alerta.resolvido\n- documento.uploaded\n- ocorrencia.criada, ocorrencia.resolvida\n- execucao_financeira.criada"
+					}
+				},
+				{
+					"name": "Atualizar Webhook",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eventos\": [\n        \"contrato.criado\",\n        \"contrato.atualizado\",\n        \"contrato.excluido\",\n        \"alerta.gerado\",\n        \"alerta.resolvido\"\n    ],\n    \"is_ativo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/webhooks/1",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "1"]
+						},
+						"description": "Atualiza URL, eventos, descrição ou status ativo/inativo."
+					}
+				},
+				{
+					"name": "Excluir Webhook",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/webhooks/1",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "1"]
+						},
+						"description": "Exclui um webhook. Retorna 204 No Content."
+					}
+				},
+				{
+					"name": "Eventos Disponíveis",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/webhooks/eventos",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "eventos"]
+						},
+						"description": "Lista os 12 eventos disponíveis para subscrição de webhooks."
+					}
+				}
+			]
+		}
+	]
+}
