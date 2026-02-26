@@ -225,6 +225,44 @@
                             </dd>
                         </dl>
                     </div>
+
+                    {{-- Classificacao e Portal --}}
+                    <div class="col-md-6 mt-16">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5 text-secondary-light">Classificacao:</dt>
+                            <dd class="col-sm-7">
+                                @if ($contrato->classificacao_sigilo)
+                                    <span class="badge bg-{{ $contrato->classificacao_sigilo->cor() }}-focus text-{{ $contrato->classificacao_sigilo->cor() }}-main px-12 py-4 radius-4">
+                                        <iconify-icon icon="{{ $contrato->classificacao_sigilo->icone() }}" class="me-4"></iconify-icon>
+                                        {{ $contrato->classificacao_sigilo->label() }}
+                                    </span>
+                                @else
+                                    -
+                                @endif
+                            </dd>
+
+                            <dt class="col-sm-5 text-secondary-light">Portal Publico:</dt>
+                            <dd class="col-sm-7">
+                                @if ($contrato->publicado_portal)
+                                    <span class="badge bg-success-focus text-success-main px-12 py-4 radius-4">
+                                        <iconify-icon icon="ic:baseline-check-circle" class="me-4"></iconify-icon> Visivel no Portal
+                                    </span>
+                                @else
+                                    <span class="badge bg-neutral-200 text-secondary-light px-12 py-4 radius-4">
+                                        <iconify-icon icon="ic:baseline-cancel" class="me-4"></iconify-icon> Nao publicado no Portal
+                                    </span>
+                                @endif
+                            </dd>
+                        </dl>
+                    </div>
+                    @if ($contrato->justificativa_sigilo)
+                        <div class="col-md-6 mt-16">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5 text-secondary-light">Justificativa Sigilo:</dt>
+                                <dd class="col-sm-7">{{ $contrato->justificativa_sigilo }}</dd>
+                            </dl>
+                        </div>
+                    @endif
                 </div>
             </div>
 

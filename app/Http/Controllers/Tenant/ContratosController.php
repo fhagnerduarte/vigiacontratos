@@ -101,6 +101,9 @@ class ContratosController extends Controller
         // Checkbox prorrogacao_automatica
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
 
+        // Checkbox publicado_portal
+        $dados['publicado_portal'] = $request->boolean('publicado_portal');
+
         $contrato = ContratoService::criar($dados, $dadosFiscal, $request->user(), $request->ip());
 
         // Designar fiscal substituto se informado (Lei 14.133 art. 117)
@@ -202,6 +205,7 @@ class ContratosController extends Controller
 
         $dados = $request->validated();
         $dados['prorrogacao_automatica'] = $request->boolean('prorrogacao_automatica');
+        $dados['publicado_portal'] = $request->boolean('publicado_portal');
 
         ContratoService::atualizar($contrato, $dados, $request->user(), $request->ip());
 

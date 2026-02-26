@@ -455,6 +455,44 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Classificacao de Sigilo</label>
+                    <select name="classificacao_sigilo" id="classificacao_sigilo"
+                            class="form-select radius-8 @error('classificacao_sigilo') is-invalid @enderror">
+                        @foreach (\App\Enums\ClassificacaoSigilo::cases() as $classificacao)
+                            <option value="{{ $classificacao->value }}" {{ old('classificacao_sigilo', 'publico') === $classificacao->value ? 'selected' : '' }}>
+                                {{ $classificacao->label() }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('classificacao_sigilo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4" id="publicado_portal_wrapper" style="{{ old('classificacao_sigilo', 'publico') !== 'publico' ? 'display:none' : '' }}">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Portal de Transparencia</label>
+                    <div class="form-check form-switch mt-8">
+                        <input type="hidden" name="publicado_portal" value="0">
+                        <input class="form-check-input" type="checkbox" name="publicado_portal" id="publicado_portal" value="1"
+                               {{ old('publicado_portal') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="publicado_portal">Publicar no Portal Publico</label>
+                    </div>
+                    @error('publicado_portal')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-12" id="justificativa_sigilo_wrapper" style="{{ old('classificacao_sigilo', 'publico') === 'publico' ? 'display:none' : '' }}">
+                    <label class="form-label fw-semibold text-primary-light text-sm mb-8">Justificativa de Sigilo</label>
+                    <textarea name="justificativa_sigilo" rows="3"
+                              class="form-control radius-8 @error('justificativa_sigilo') is-invalid @enderror"
+                              placeholder="Justifique a classificacao de sigilo (obrigatorio para contratos nao publicos)">{{ old('justificativa_sigilo') }}</textarea>
+                    @error('justificativa_sigilo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
         </div>
     </div>
@@ -594,6 +632,21 @@ document.addEventListener('DOMContentLoaded', function() {
             showStep(currentStep - 1);
         }
     });
+
+    // Campos condicionais — classificacao de sigilo
+    var classificacaoSelect = document.getElementById('classificacao_sigilo');
+    var portalWrapper = document.getElementById('publicado_portal_wrapper');
+    var justificativaWrapper = document.getElementById('justificativa_sigilo_wrapper');
+    if (classificacaoSelect) {
+        classificacaoSelect.addEventListener('change', function() {
+            var isPublico = this.value === 'publico';
+            portalWrapper.style.display = isPublico ? '' : 'none';
+            justificativaWrapper.style.display = isPublico ? 'none' : '';
+            if (!isPublico) {
+                document.getElementById('publicado_portal').checked = false;
+            }
+        });
+    }
 
     // Campos condicionais — modalidade
     const modalidadeSelect = document.getElementById('modalidade_contratacao');

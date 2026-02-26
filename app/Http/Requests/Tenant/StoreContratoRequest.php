@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tenant;
 
 use App\Enums\CategoriaContrato;
 use App\Enums\CategoriaServico;
+use App\Enums\ClassificacaoSigilo;
 use App\Enums\ModalidadeContratacao;
 use App\Enums\RegimeExecucao;
 use App\Enums\TipoContrato;
@@ -56,6 +57,9 @@ class StoreContratoRequest extends FormRequest
             'data_publicacao' => ['nullable', 'date'],
             'veiculo_publicacao' => ['nullable', 'string', 'max:255'],
             'link_transparencia' => ['nullable', 'string', 'max:500', 'url'],
+            'classificacao_sigilo' => ['nullable', 'string', Rule::in(array_column(ClassificacaoSigilo::cases(), 'value'))],
+            'publicado_portal' => ['nullable', 'boolean'],
+            'justificativa_sigilo' => ['nullable', 'required_unless:classificacao_sigilo,publico,classificacao_sigilo,null', 'string'],
 
             // Condicionais
             'fundamento_legal' => ['nullable', 'required_if:modalidade_contratacao,dispensa', 'required_if:modalidade_contratacao,inexigibilidade', 'string', 'max:255'],
