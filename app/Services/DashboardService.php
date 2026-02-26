@@ -12,20 +12,49 @@ use App\Models\Fornecedor;
 use App\Models\HistoricoAlteracao;
 use App\Models\Secretaria;
 use App\Models\SolicitacaoLai;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
     /**
+     * Aplica filtros do dashboard a uma query de contratos (RN-073/074).
+     */
+    private static function aplicarFiltros(Builder $query, array $filtros): Builder
+    {
+        if (! empty($filtros['secretaria_id'])) {
+            $query->where('secretaria_id', $filtros['secretaria_id']);
+        }
+        if (! empty($filtros['tipo_contrato'])) {
+            $query->where('tipo', $filtros['tipo_contrato']);
+        }
+        if (! empty($filtros['nivel_risco'])) {
+            $query->where('nivel_risco', $filtros['nivel_risco']);
+        }
+        if (! empty($filtros['modalidade'])) {
+            $query->where('modalidade_contratacao', $filtros['modalidade']);
+        }
+        if (! empty($filtros['faixa_valor_min'])) {
+            $query->where('valor_global', '>=', $filtros['faixa_valor_min']);
+        }
+        if (! empty($filtros['faixa_valor_max'])) {
+            $query->where('valor_global', '<=', $filtros['faixa_valor_max']);
+        }
+        if (! empty($filtros['fonte_recurso'])) {
+            $query->where('fonte_recurso', $filtros['fonte_recurso']);
+        }
+
+        return $query;
+    }
+
+    /**
      * Indicadores financeiros: total ativos, valor contratado, executado, saldo, ticket medio (RN-058 a RN-061).
      */
-    public static function indicadoresFinanceiros(?int $secretariaId = null): array
+    public static function indicadoresFinanceiros(array $filtros = []): array
     {
         $query = Contrato::where('status', StatusContrato::Vigente->value);
-        if ($secretariaId) {
-            $query->where('secretaria_id', $secretariaId);
-        }
+        self::aplicarFiltros($query, $filtros);
 
         $dados = $query->selectRaw('
             COUNT(*) as total,
@@ -51,12 +80,10 @@ class DashboardService
     /**
      * Mapa de risco: distribuicao baixo/medio/alto (RN-062 a RN-065).
      */
-    public static function mapaRisco(?int $secretariaId = null): array
+    public static function mapaRisco(array $filtros = []): array
     {
         $query = Contrato::where('status', StatusContrato::Vigente->value);
-        if ($secretariaId) {
-            $query->where('secretaria_id', $secretariaId);
-        }
+        self::aplicarFiltros($query, $filtros);
 
         $distribuicao = $query->selectRaw("
             SUM(CASE WHEN nivel_risco = 'baixo' THEN 1 ELSE 0 END) as baixo,
@@ -82,7 +109,7 @@ class DashboardService
     /**
      * Janelas de vencimento: 0-30d, 31-60d, 61-90d, 91-120d, >120d (RN-066/067).
      */
-    public static function vencimentosPorJanela(?int $secretariaId = null): array
+    public static function vencimentosPorJanela(array $filtros = []): array
     {
         $hoje = now()->startOfDay();
 
@@ -90,9 +117,7 @@ class DashboardService
             ->whereNotNull('data_fim')
             ->where('data_fim', '>=', $hoje);
 
-        if ($secretariaId) {
-            $query->where('secretaria_id', $secretariaId);
-        }
+        self::aplicarFiltros($query, $filtros);
 
         $janelas = $query->selectRaw("
             SUM(CASE WHEN DATEDIFF(data_fim, ?) BETWEEN 0 AND 30 THEN 1 ELSE 0 END) as j_0_30,
@@ -531,12 +556,10 @@ class DashboardService
      */
     private static function obterDadosTempoReal(array $filtros): array
     {
-        $secretariaId = $filtros['secretaria_id'] ?? null;
-
         return [
-            'financeiros' => self::indicadoresFinanceiros($secretariaId),
-            'mapa_risco' => self::mapaRisco($secretariaId),
-            'vencimentos' => self::vencimentosPorJanela($secretariaId),
+            'financeiros' => self::indicadoresFinanceiros($filtros),
+            'mapa_risco' => self::mapaRisco($filtros),
+            'vencimentos' => self::vencimentosPorJanela($filtros),
             'score_gestao' => self::scoreGestao(),
             'ranking_secretarias' => self::rankingSecretarias(),
             'contratos_essenciais' => self::contratosEssenciais(),

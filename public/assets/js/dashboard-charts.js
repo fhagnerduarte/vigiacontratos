@@ -290,4 +290,76 @@
         new ApexCharts(document.getElementById('chartTendencias'), optionsTend).render();
     }
 
+    // ============================================
+    // 4. Horizontal Bar — Top 10 Fornecedores (RN-079/080)
+    // ============================================
+    if (document.getElementById('chartRankingFornecedores') && dashboardData.fornecedores && dashboardData.fornecedores.length > 0) {
+        var forn = dashboardData.fornecedores;
+        var nomesF = forn.map(function (f) {
+            var nome = f.razao_social || '';
+            return nome.length > 20 ? nome.substring(0, 20) + '...' : nome;
+        });
+        var volumesF = forn.map(function (f) { return f.volume_financeiro; });
+
+        var optionsForn = {
+            series: [{
+                name: 'Volume (R$)',
+                data: volumesF
+            }],
+            chart: {
+                type: 'bar',
+                height: Math.max(300, forn.length * 36),
+                fontFamily: 'inherit',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 3,
+                    barHeight: '60%',
+                    distributed: true
+                }
+            },
+            colors: ['#487FFF', '#3b82f6', '#60a5fa', '#93bbfd', '#bfdbfe',
+                     '#487FFF', '#3b82f6', '#60a5fa', '#93bbfd', '#bfdbfe'],
+            xaxis: {
+                categories: nomesF,
+                labels: {
+                    style: { fontSize: '11px' },
+                    formatter: function (val) {
+                        if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M';
+                        if (val >= 1000) return (val / 1000).toFixed(0) + 'K';
+                        return val;
+                    }
+                }
+            },
+            yaxis: {
+                labels: { style: { fontSize: '11px' } }
+            },
+            legend: { show: false },
+            dataLabels: { enabled: false },
+            tooltip: {
+                custom: function (opts) {
+                    var idx = opts.dataPointIndex;
+                    var f = forn[idx];
+                    var vol = 'R$ ' + f.volume_financeiro.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                    return '<div style="padding: 8px 12px; font-size: 13px;">' +
+                        '<strong>' + f.razao_social + '</strong><br>' +
+                        'Volume: ' + vol + '<br>' +
+                        'Contratos: ' + f.total_contratos + '<br>' +
+                        'Idx Aditivos: ' + f.indice_aditivos +
+                        ' <span style="color:' + (f.cor_indice === 'danger' ? '#ef4444' : f.cor_indice === 'warning' ? '#f59e0b' : '#22c55e') + '">' +
+                        '(' + f.classificacao_indice + ')</span>' +
+                        '</div>';
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: { chart: { height: 250 } }
+            }]
+        };
+
+        new ApexCharts(document.getElementById('chartRankingFornecedores'), optionsForn).render();
+    }
+
 })();
