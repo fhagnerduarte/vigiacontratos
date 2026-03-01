@@ -202,7 +202,14 @@
                             <small class="text-secondary-light">{{ \Illuminate\Support\Str::limit($alerta->contrato->objeto ?? '', 40) }}</small>
                         </td>
                         <td>{{ $alerta->contrato->fornecedor->razao_social ?? '-' }}</td>
-                        <td>{{ $alerta->tipo_evento->label() }}</td>
+                        <td>
+                            {{ $alerta->tipo_evento->label() }}
+                            @if (($alerta->alertas_relacionados ?? 1) > 1)
+                                <span class="badge bg-neutral-200 text-secondary-light text-xs ms-4" title="{{ $alerta->alertas_relacionados }} alertas agrupados para este contrato/evento">
+                                    {{ $alerta->alertas_relacionados }}x
+                                </span>
+                            @endif
+                        </td>
                         <td>{{ $alerta->data_vencimento->format('d/m/Y') }}</td>
                         <td>
                             <span class="fw-bold {{ $alerta->dias_para_vencimento <= 7 ? 'text-danger-main' : ($alerta->dias_para_vencimento <= 30 ? 'text-warning-main' : '') }}">

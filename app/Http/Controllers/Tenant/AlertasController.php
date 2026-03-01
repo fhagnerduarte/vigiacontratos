@@ -13,6 +13,7 @@ use App\Models\Secretaria;
 use App\Services\AlertaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AlertasController extends Controller
@@ -22,13 +23,31 @@ class AlertasController extends Controller
      */
     public function index(Request $request): View
     {
-        // Indicadores (RN-055)
+        // Auto-gerar alertas se a tabela estiver vazia mas houver contratos (RN-055)
+        if (Alerta::count() === 0) {
+            AlertaService::verificarVencimentos();
+        }
+
+        // Indicadores baseados nos alertas gerados (RN-055)
         $indicadores = AlertaService::gerarIndicadoresDashboard();
+
+        // Deduplicação visual: para cada contrato+tipo_evento, mostra apenas
+        // o alerta mais relevante (menor dias_antecedencia_config). Isso evita
+        // exibir 4-5 linhas idênticas geradas por diferentes thresholds (RN-016).
+        $deduplicadosSubquery = Alerta::selectRaw('MIN(id) as id')
+            ->groupBy('contrato_id', 'tipo_evento', 'data_vencimento');
 
         // Query de alertas com filtros (RN-056)
         $query = Alerta::with(['contrato.fornecedor', 'contrato.secretaria'])
-            ->orderByRaw("FIELD(prioridade, 'urgente', 'atencao', 'informativo')")
-            ->orderBy('data_vencimento');
+            ->joinSub(
+                $deduplicadosSubquery,
+                'dedup',
+                fn ($join) => $join->on('alertas.id', '=', 'dedup.id')
+            )
+            ->select('alertas.*')
+            ->selectRaw('(SELECT COUNT(*) FROM alertas AS a2 WHERE a2.contrato_id = alertas.contrato_id AND a2.tipo_evento = alertas.tipo_evento AND a2.data_vencimento = alertas.data_vencimento) as alertas_relacionados')
+            ->orderByRaw("FIELD(alertas.prioridade, 'urgente', 'atencao', 'informativo')")
+            ->orderBy('alertas.data_vencimento');
 
         // Scope por secretaria: usuarios nao-estrategicos veem apenas alertas
         // de contratos vinculados as suas secretarias (RN-326).
@@ -39,20 +58,20 @@ class AlertasController extends Controller
 
         // Filtro: status
         if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+            $query->where('alertas.status', $request->input('status'));
         } else {
             // Default: mostrar nao-resolvidos
-            $query->naoResolvidos();
+            $query->where('alertas.status', '!=', StatusAlerta::Resolvido->value);
         }
 
         // Filtro: prioridade (criticidade)
         if ($request->filled('prioridade')) {
-            $query->where('prioridade', $request->input('prioridade'));
+            $query->where('alertas.prioridade', $request->input('prioridade'));
         }
 
         // Filtro: tipo_evento
         if ($request->filled('tipo_evento')) {
-            $query->where('tipo_evento', $request->input('tipo_evento'));
+            $query->where('alertas.tipo_evento', $request->input('tipo_evento'));
         }
 
         // Filtro: secretaria
